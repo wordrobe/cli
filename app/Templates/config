@@ -1,0 +1,5 @@
+{
+	"themes_path": "{THEMES_PATH}"
+    "theme_name": "{THEME_NAME}",
+    "template_engine": "{TEMPLATE_ENGINE}"
+}

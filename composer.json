@@ -1,0 +1,20 @@
+{
+    "name": "fiad/wordress",
+    "description": "Boosting development CLI for Wordpress",
+    "type": "cli",
+    "require": {
+        "php": "^7.1",
+        "symfony/console": "^4.0"
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Wordress\\": "app"
+        }
+    },
+    "authors": [
+        {
+            "name": "Andrea 'Fiad' Fiadone",
+            "email": "andrea.fiadone@purplenetwork.it"
+        }
+    ]
+}
