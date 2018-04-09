@@ -10,7 +10,6 @@ use Wordress\Helper\Config;
  */
 class StyleTemplateBuilder extends TemplateBuilder
 {
-
 	protected function configure()
 	{
 		$this->setTemplate('style');
@@ -25,6 +24,9 @@ class StyleTemplateBuilder extends TemplateBuilder
 		$this->setTextDomain();
 	}
 
+	/**
+	 * Theme name setter
+	 */
 	private function setThemeName()
 	{
 		$name = self::normalizeString(Config::get('theme_name'));
@@ -32,6 +34,9 @@ class StyleTemplateBuilder extends TemplateBuilder
 		$this->fill('{THEME_NAME}', $name);
 	}
 
+	/**
+	 * Theme description setter
+	 */
 	private function setThemeDescription()
 	{
 		$name = self::normalizeString(Config::get('theme_name'));
@@ -41,6 +46,9 @@ class StyleTemplateBuilder extends TemplateBuilder
 		$this->fill('{THEME_DESCRIPTION}', $description);
 	}
 
+	/**
+	 * Theme text domain setter
+	 */
 	private function setTextDomain()
 	{
 		$this->fill('{THEME_TEXTDOMAIN}', Config::get('theme_name'));

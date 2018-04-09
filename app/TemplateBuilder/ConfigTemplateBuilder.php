@@ -8,7 +8,6 @@ namespace Wordress\TemplateBuilder;
  */
 class ConfigTemplateBuilder extends TemplateBuilder
 {
-
 	protected function configure()
 	{
 		$this->setTemplate('config');
@@ -23,6 +22,9 @@ class ConfigTemplateBuilder extends TemplateBuilder
 		$this->setTemplateEngine();
 	}
 
+	/**
+	 * Themes path setter
+	 */
 	private function setThemesPath()
 	{
 		$path = $this->dialog->getAnswer('Please enter themes path (e.g. wp-content/themes):');
@@ -36,6 +38,9 @@ class ConfigTemplateBuilder extends TemplateBuilder
 		$this->fill('{THEMES_PATH}', $path);
 	}
 
+	/**
+	 * Theme name setter
+	 */
 	private function setThemeName()
 	{
 		$name = $this->dialog->getAnswer('Please enter theme name (e.g. my-theme):');
@@ -48,6 +53,9 @@ class ConfigTemplateBuilder extends TemplateBuilder
 		$this->fill('{THEME_NAME}', $name);
 	}
 
+	/**
+	 * Template engine setter
+	 */
 	private function setTemplateEngine()
 	{
 		$engine = $this->dialog->getChoice('Please choose template engine:', array('Twig (Timber)', 'PHP (Standard Wordpress)'));

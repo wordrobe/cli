@@ -8,7 +8,6 @@ namespace Wordress\Helper;
  */
 class Config
 {
-
 	private static $config;
 
 	/**
@@ -36,7 +35,6 @@ class Config
 			}
 			return self::$config;
 		}
-
 		return false;
 	}
 

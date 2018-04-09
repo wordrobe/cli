@@ -8,7 +8,6 @@ namespace Wordress\Helper;
  */
 class Boilerplate
 {
-
     /**
      * Copies theme boilerplate files
      *
@@ -17,11 +16,12 @@ class Boilerplate
     public static function copy()
     {
 		$themePath = Config::projectRootPath() . Config::get('themes_path') . Config::get('theme_name');
-        $boilerplatePath = realpath(__DIR__ . '/' . Config::get('template_engine'));
-		if (!$boilerplatePath) {
+		$boilerplateCommonsPath = __DIR__ . '/commons';
+        $boilerplateTypePath = __DIR__ . '/' . Config::get('template_engine');
+		if (!$boilerplateTypePath) {
 			return false;
 		}
-        $command = 'cp -R ' . $boilerplatePath . '/* ' . $themePath . '/';
+        $command = 'cp -R ' . $boilerplateCommonsPath . '/* ' . $themePath . '/ && cp -R ' . $boilerplateTypePath . '/* ' . $themePath . '/';
         exec($command, $out, $error);
         if ($error) {
             return false;

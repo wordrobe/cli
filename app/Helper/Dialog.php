@@ -15,9 +15,9 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
  */
 class Dialog
 {
-    private $questionHelper;
-    private $input;
-    private $output;
+    public $questionHelper;
+    public $input;
+    public $output;
 
     /**
      * Dialog constructor.

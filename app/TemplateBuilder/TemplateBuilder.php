@@ -27,7 +27,6 @@ class TemplateBuilder
 	{
 		// DIALOG
 		$this->dialog = $dialog;
-
 		// CONFIGURE
 		$this->configure();
 	}
@@ -45,10 +44,8 @@ class TemplateBuilder
 			$hasInitialDot = true;
 			$filename = substr($filename, 1);
 		}
-
 		// SPLITTING FILENAME
 		$filenameParts = explode('.', $filename);
-
 		// SETTING NAME
 		$name = self::normalizeString($filenameParts[0]);
 		$name = str_replace(' ', '-', $name);
@@ -57,17 +54,14 @@ class TemplateBuilder
 		} else {
 			$this->name = $name;
 		}
-
 		// SETTING EXTENSION IF IT'S NOT SET YET
 		if ($this->extension === NULL) {
 			// REMOVING BASENAME FROM FILENAME PARTS
 			array_shift($filenameParts);
-
 			// SETTING FILE EXTENSION
 			$extension = implode(' ', $filenameParts);
 			$extension = self::normalizeString($extension);
 			$extension = str_replace(' ', '.', $extension);
-
 			if (!empty($extension)) {
 				$this->extension = $extension;
 			} else {
@@ -76,7 +70,6 @@ class TemplateBuilder
 				if (preg_match('/^\..+/', $extension)) { // removing initial dot
 					$extension = substr($extension, 1);
 				}
-
 				$this->extension = $extension;
 			}
 		}
@@ -98,17 +91,14 @@ class TemplateBuilder
 			}
 			$this->setFilename($name);
 		}
-
 		// CHECKING EXISTENCE
 		if (!$forceOverride) {
 			if (!$this->isWritable()) {
 				exit();
 			}
 		}
-
 		// STARTING TEMPLATE BUILDING WIZARD
 		$this->build();
-
 		// WRITING TEMPLATE FILE
 		$this->write();
 	}
@@ -119,7 +109,8 @@ class TemplateBuilder
 	 * @param $string
 	 * @return string
 	 */
-	public static function normalizeString($string) {
+	public static function normalizeString($string)
+	{
 		$string = preg_replace('/(?<!^)\.[a-z0-9\.]+$/', '', $string); // file extension
 		$string = preg_replace('/[^a-zA-Z0-9\s]/', ' ', $string); // symbols
 		$string = preg_replace('/\s+/', ' ', $string); // multiple white spaces
@@ -204,7 +195,6 @@ class TemplateBuilder
 		if (!is_dir($this->path)) {
 			exec('mkdir ' . $this->path);
 		}
-
 		// WRITING FILE
 		$filename = $this->name;
 		if (!empty($this->extension)) {
