@@ -1,5 +1,13 @@
 #!/usr/bin/env php
+
 <?php
 
-require_once dirname(__DIR__) . '/vendor/autoload.php';
+$paths = [__DIR__ . '/../vendor/autoload.php', __DIR__ . '/../../../autoload.php'];
+foreach ($paths as $path) {
+	if (file_exists($path)) {
+		require_once $path;
+		break;
+	}
+}
+
 include dirname(__DIR__) . '/app/Wordrobe.php';
