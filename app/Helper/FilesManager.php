@@ -49,10 +49,10 @@ class FilesManager {
 	 * @param int $mode
 	 * @param bool $log
 	 */
-	public static function createDirectory($path, $mode = 0755, $log = true)
+	public static function createDirectory($path, $mode = 0755, $log = false)
 	{
 		if (!self::directoryExists($path)) {
-			$created = mkdir(PROJECT_ROOT . $path, $mode, true);
+			$created = mkdir($path, $mode);
 			if ($log) {
 				if ($created) {
 					Dialog::write('Done', 'green');
@@ -68,7 +68,7 @@ class FilesManager {
 	 *
 	 * @param $filepath
 	 */
-	public static function writeFile($filepath, $content, $log = true)
+	public static function writeFile($filepath, $content, $log = false)
 	{
 		if ($dirname = StringsManager::extractDirname($filepath)) {
 			self::createDirectory($dirname);
@@ -94,7 +94,7 @@ class FilesManager {
 	 * @param $mode
 	 * @param bool $log
 	 */
-	public static function setPermissions($path, $mode, $log = true)
+	public static function setPermissions($path, $mode, $log = false)
 	{
 		if ($log) {
 			Dialog::write("Setting $path directory permissions... ", 'yellow', false);
@@ -117,28 +117,25 @@ class FilesManager {
 	 * @param bool $log
 	 * @param array $errors
 	 */
-	public static function copyFiles($source, $destination, $log = true, $errors = [])
+	public static function copyFiles($source, $destination, $log = false, $errors = [])
 	{
-		$dir = opendir($source);
+		$files = scandir($source);
 		if ($log) {
 			Dialog::write("Copying $source to $destination... ", 'yellow', false);
 		}
-		if (!self::directoryExists($destination)) {
-			self::createDirectory($destination);
-		}
-		while ($file = readdir($dir) !== false) {
-			if (($file != '.') && ($file != '..')) {
-				if (self::directoryExists($source . '/' . $file)) {
-					self::copyFiles($source . '/' . $file, $destination . '/' . $file, false, $errors);
+		self::createDirectory($destination);
+		foreach ($files as $file) {
+			if ($file != '.' && $file != '..') {
+				if (self::directoryExists("$source/$file")) {
+					self::copyFiles("$source/$file", "$destination/$file", false, $errors);
 				} else {
-					$copied = copy($source . '/' . $file, $destination . '/' . $file);
+					$copied = copy("$source/$file", "$destination/$file");
 					if (!$copied) {
 						$errors[] = $file;
 					}
 				}
 			}
 		}
-		closedir($dir);
 		if ($log) {
 			if (count($errors)) {
 				Dialog::write('Fail', 'red');

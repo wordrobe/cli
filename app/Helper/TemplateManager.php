@@ -16,7 +16,7 @@ class TemplateManager {
 	 */
 	public static function getTemplateContent($template)
 	{
-		$templateFile = TEMPLATES_PATH . $template;
+		$templateFile = TEMPLATES_PATH . '/' . $template;
 		if (!file_exists($templateFile)) {
 			Dialog::write('Error: "' . $template . '" template not found! Unable to continue.', 'red');
 			exit();

@@ -16,8 +16,8 @@ class BoilerplateManager
     public static function copyFiles()
     {
 		$themePath = PROJECT_ROOT . '/' . Config::get('theme_root');
-		$commonsFilesPath = __DIR__ . '/commons';
-        $specificFilesPath = __DIR__ . '/' . Config::get('template_engine');
+		$commonsFilesPath = BOILERPLATES_PATH . '/commons';
+        $specificFilesPath = BOILERPLATES_PATH . '/' . Config::get('template_engine');
 		if (FilesManager::directoryExists($specificFilesPath)) {
 			FilesManager::copyFiles($commonsFilesPath, $themePath);
 			FilesManager::copyFiles($specificFilesPath, $themePath);

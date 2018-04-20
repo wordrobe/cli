@@ -39,13 +39,10 @@ class ConfigTemplateBuilder extends TemplateBuilder
 	{
 		$path = Dialog::getAnswer('Please enter themes path (e.g. wp-content/themes):');
 		if (empty($path)) {
-			Dialog::write('Error: themes path is required! Unable to continue.', 'red');
-			exit();
+			Dialog::write('Error: themes path is required!', 'red');
+			return $this->askForThemesPath();
 		}
-		if (substr($path, -1) !== '/') {
-			$path .= '/'; // adding trailing slash if missing
-		}
-		$this->fill('{THEMES_PATH}', $path);
+		$this->fill('{THEMES_PATH}', trim($path, '/'));
 	}
 
 	/**
@@ -55,8 +52,8 @@ class ConfigTemplateBuilder extends TemplateBuilder
 	{
 		$name = Dialog::getAnswer('Please enter theme name (e.g. my-theme):');
 		if (empty($name)) {
-			Dialog::write('Error: theme name is required! Unable to continue.', 'red');
-			exit();
+			Dialog::write('Theme name is required!', 'red');
+			return $this->askForThemeName();
 		}
 		$this->fill('{THEME_NAME}', StringsManager::toWordsJoinedBy($name, '-'));
 	}
@@ -67,8 +64,8 @@ class ConfigTemplateBuilder extends TemplateBuilder
 	private function askForTemplateEngine()
 	{
 		$engine = Dialog::getChoice('Please choose template engine:', ['Twig (Timber)', 'PHP (Standard Wordpress)']);
-		if ($engine === 'Timber/Twig') {
-			$this->fill('{TEMPLATE_ENGINE}', 'twig');
+		if ($engine === 'Twig (Timber)') {
+			$this->fill('{TEMPLATE_ENGINE}', 'timber');
 		} else {
 			$this->fill('{TEMPLATE_ENGINE}', 'standard');
 		}

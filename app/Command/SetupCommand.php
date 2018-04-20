@@ -35,13 +35,11 @@ class SetupCommand extends BaseCommand
 			$firstTimeSetup = false;
 		} else {
 			$this->buildConfigTemplate();
+			Config::read();
 		}
 
 		// SETTING THEMES DIRECTORY PERMISSIONS
-		FilesManager::setPermissions(PROJECT_ROOT . Config::get('themes_path'), 0755);
-
-		// CREATING THEME DIRECTORY
-		FilesManager::createDirectory(PROJECT_ROOT . Config::get('themes_path') . Config::get('theme_name'));
+		FilesManager::setPermissions(PROJECT_ROOT . '/' . Config::get('themes_path'), 0755);
 
 		// ADDING THEME FILES
         if ($firstTimeSetup) {

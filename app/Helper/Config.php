@@ -16,8 +16,8 @@ class Config
 	 */
 	public static function read()
 	{
-		if (file_exists(PROJECT_ROOT . self::FILENAME)) {
-			self::$config = json_decode(file_get_contents(PROJECT_ROOT . self::FILENAME), true);
+		if (FilesManager::fileExists(PROJECT_ROOT . '/' . self::FILENAME)) {
+			self::$config = json_decode(file_get_contents(PROJECT_ROOT . '/' . self::FILENAME), true);
 		}
 	}
 
