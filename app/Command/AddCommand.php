@@ -18,8 +18,8 @@ class AddCommand extends BaseCommand
 {
     protected function configure()
     {
-        $this->setName('create');
-        $this->setDescription('Creates a new template.');
+        $this->setName('add');
+        $this->setDescription('Adds a new template.');
         $this->addArgument('template-type', InputArgument::REQUIRED, 'The template type.');
         $this->addArgument('filename', InputArgument::OPTIONAL, 'The template filename.');
     }
