@@ -1,4 +1,4 @@
-# Wordress
+# Wordrobe
 
 ### Wordpress Development Booster
 
@@ -6,15 +6,15 @@
 
 ## Setup and Configuration
 ```
-php app/console wordress:setup
+vendor/bin/wordrobe setup
 ```
 This command starts a setup wizard that helps you to configure your project.
 
 It provides/creates:
-- a configuration file (wordress-config.json) on your project's root directory
+- a configuration file (wordrobe-config.json) on your project's root directory
 - a brand new theme directory with basic theme's scaffolding and template files
 
-## Development
+## Template engine
 During setup, you can choose between two different templating modes: "Twig (Timber)" and "Standard (native Wordpress)".
 
 ### Twig
@@ -25,10 +25,10 @@ Please read [Timber documentation](TIMBER.md) for more information.
 ### Standard
 It provides a standard theme scaffolding/boilerplate based on default Wordpress templates files.
 
-## The wordress:create Command
-To help you to easily create your theme's templates and features, the tool provides the wordress:create command:
+## Theme development
+To help you to easily create your theme's templates and features, the tool provides the _add_ command:
 ```
-php app/console wordress:create [template] [filename]
+vendor/bin/wordrobe add [template] [filename]
 ```
 where [template] defines which type of content you want to be created (examples below), while [filename] (optional*) is the template's filename.
 
@@ -38,18 +38,18 @@ where [template] defines which type of content you want to be created (examples 
 
 #### Creating Pages
 ```
-php app/console wordress:create page [basename]
+vendor/bin/wordrobe add page [basename]
 ```
 In "Twig" mode, both Controller and View will be created.
 
 #### Creating Partials
 ```
-php app/console wordress:create partial [basename]
+vendor/bin/wordrobe add partial [basename]
 ```
 
 #### Creating Post Types
 ```
-php app/console wordress:create post-type [basename]
+vendor/bin/wordrobe add post-type [basename]
 ```
 This command also creates the __single-[post-type].php__.
 
@@ -57,39 +57,8 @@ In "Twig" mode, the __single-[post-type].html.twig__ file is created too.
 
 #### Creating Taxonomies
 ```
-php app/console wordress:create taxonomy [basename]
+vendor/bin/wordrobe add taxonomy [basename]
 ```
 This command also creates the __taxonomy-[taxonomy].php__.
 
 In "Twig" mode, the __taxonomy-[taxonomy].html.twig__ file is created too.
-
-#### Creating Singles
-```
-php app/console wordress:create single [basename]
-```
-In "Twig" mode, both Controller and View will be created.
-
-#### Creating Archives
-```
-php app/console wordress:create archive [basename]
-```
-In "Twig" mode, both Controller and View will be created.
-
-#### Creating Services*
-```
-php app/console wordress:create service [basename]
-```
-*Creates an API-like ajax service
-
-#### Creating Shortcodes*
-```
-php app/console wordress:create shortcode [basename]
-```
-*Creates a shortcode bundle (php + js plugin)
-
-#### Creating Utils*
-```
-php app/console wordress:create utility [basename]
-```
-*Creates a generic php file to wrap utility functions 
-
