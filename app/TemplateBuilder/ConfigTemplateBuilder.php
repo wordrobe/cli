@@ -1,35 +1,45 @@
 <?php
 
-namespace Wordress\TemplateBuilder;
+namespace Wordrobe\TemplateBuilder;
+
+use Wordrobe\Helper\Config;
+use Wordrobe\Helper\Dialog;
+use Wordrobe\Helper\StringsManager;
 
 /**
  * Class ConfigTemplateBuilder
- * @package Wordress\TemplateBuilder
+ * @package Wordrobe\TemplateBuilder
  */
 class ConfigTemplateBuilder extends TemplateBuilder
 {
+	/**
+	 * Handles template configuration
+	 */
 	protected function configure()
 	{
 		$this->setTemplate('config');
-		$this->setPath('/', true);
-		$this->setExtension('json');
+		$this->setFilename(Config::FILENAME);
+		$this->setDirname('/', true);
 	}
 
-	protected function build()
+	/**
+	 * Provides a template build wizard
+	 */
+	protected function wizard()
 	{
-		$this->setThemesPath();
-		$this->setThemeName();
-		$this->setTemplateEngine();
+		$this->askForThemesPath();
+		$this->askForThemeName();
+		$this->askForTemplateEngine();
 	}
 
 	/**
 	 * Themes path setter
 	 */
-	private function setThemesPath()
+	private function askForThemesPath()
 	{
-		$path = $this->dialog->getAnswer('Please enter themes path (e.g. wp-content/themes):');
+		$path = Dialog::getAnswer('Please enter themes path (e.g. wp-content/themes):');
 		if (empty($path)) {
-			$this->dialog->write('Error: themes path is required! Unable to continue.', 'red');
+			Dialog::write('Error: themes path is required! Unable to continue.', 'red');
 			exit();
 		}
 		if (substr($path, -1) !== '/') {
@@ -41,24 +51,22 @@ class ConfigTemplateBuilder extends TemplateBuilder
 	/**
 	 * Theme name setter
 	 */
-	private function setThemeName()
+	private function askForThemeName()
 	{
-		$name = $this->dialog->getAnswer('Please enter theme name (e.g. my-theme):');
+		$name = Dialog::getAnswer('Please enter theme name (e.g. my-theme):');
 		if (empty($name)) {
-			$this->dialog->write('Error: theme name is required! Unable to continue.', 'red');
+			Dialog::write('Error: theme name is required! Unable to continue.', 'red');
 			exit();
 		}
-		$name = self::normalizeString($name);
-		$name = str_replace(' ', '-', $name);
-		$this->fill('{THEME_NAME}', $name);
+		$this->fill('{THEME_NAME}', StringsManager::toWordsJoinedBy($name, '-'));
 	}
 
 	/**
 	 * Template engine setter
 	 */
-	private function setTemplateEngine()
+	private function askForTemplateEngine()
 	{
-		$engine = $this->dialog->getChoice('Please choose template engine:', array('Twig (Timber)', 'PHP (Standard Wordpress)'));
+		$engine = Dialog::getChoice('Please choose template engine:', ['Twig (Timber)', 'PHP (Standard Wordpress)']);
 		if ($engine === 'Timber/Twig') {
 			$this->fill('{TEMPLATE_ENGINE}', 'twig');
 		} else {

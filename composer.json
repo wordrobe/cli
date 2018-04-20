@@ -1,9 +1,10 @@
 {
-    "name": "fiad/wordress",
+    "name": "fiad/wordrobe",
     "description": "Boosting development CLI for Wordpress",
     "type": "cli",
     "bin": [
-        "bin/wordress"
+        "bin/wordrobe",
+        "bin/wordrobe.php"
     ],
     "require": {
         "php": "^7.1",
@@ -11,7 +12,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Wordress\\": "app"
+            "Wordrobe\\": "app"
         }
     },
     "authors": [

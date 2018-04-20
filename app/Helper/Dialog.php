@@ -1,6 +1,6 @@
 <?php
 
-namespace Wordress\Helper;
+namespace Wordrobe\Helper;
 
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
@@ -11,43 +11,27 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 /**
  * Class Dialog
- * @package Wordress\Helper
+ * @package Wordrobe\Helper
  */
 class Dialog
 {
-    public $questionHelper;
-    public $input;
-    public $output;
+    public static $questionHelper;
+    public static $input;
+    public static $output;
 
-    /**
-     * Dialog constructor.
-     *
-     * @param QuestionHelper $questionHelper
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     */
-    function __construct(QuestionHelper $questionHelper, InputInterface $input, OutputInterface $output)
-    {
-        $this->questionHelper = $questionHelper;
-        $this->input = $input;
-        $this->output = $output;
-    }
-
-    /**
-     * A QuestionHelper's "ask" method wrapper
-     *
-     * @param Question $question
-     * @return mixed
-     */
-    private function ask(Question $question)
-    {
-        $answer = $this->questionHelper->ask(
-            $this->input,
-            $this->output,
-            $question
-        );
-        return $answer;
-    }
+	/**
+	 * Initializes Dialog
+	 *
+	 * @param QuestionHelper $questionHelper
+	 * @param InputInterface $input
+	 * @param OutputInterface $output
+	 */
+    public static function init(QuestionHelper $questionHelper, InputInterface $input, OutputInterface $output)
+	{
+		self::$questionHelper = $questionHelper;
+		self::$input = $input;
+		self::$output = $output;
+	}
 
     /**
      * Provides an open-ended question
@@ -57,10 +41,10 @@ class Dialog
      * @param string $color - The text color
      * @return mixed
      */
-    public function getAnswer($text, $default = '', $color = 'blue')
+    public static function getAnswer($text, $default = '', $color = 'blue')
     {
         $question = new Question('<fg=' . $color . '>' . $text . ' </>', $default);
-        $answer = $this->ask($question);
+        $answer = self::ask($question);
         return $answer;
     }
 
@@ -73,10 +57,10 @@ class Dialog
      * @param string $color
      * @return mixed
      */
-    public function getChoice($text, $choices, $default = 0, $color = 'blue')
+    public static function getChoice($text, $choices, $default = 0, $color = 'blue')
     {
         $question = new ChoiceQuestion('<fg=' . $color . '>' . $text . ' </>', $choices, $default);
-        $answer = $this->ask($question);
+        $answer = self::ask($question);
         return $answer;
     }
 
@@ -88,11 +72,11 @@ class Dialog
      * @param string $color
      * @return mixed
      */
-    public function getConfirmation($text, $default = false, $color = 'red')
+    public static function getConfirmation($text, $default = false, $color = 'red')
     {
         $options = $default ? '[Y|n]' : '[y|N]';
         $question = new ConfirmationQuestion('<fg=' . $color . '>' . $text . ' ' . $options . ' </>', $default);
-        $answer = $this->ask($question);
+        $answer = self::ask($question);
         return $answer;
     }
 
@@ -103,13 +87,13 @@ class Dialog
      * @param $color
      * @param bool $newLine
      */
-    public function write($text, $color = 'black', $newLine = true)
+    public static function write($text, $color = 'black', $newLine = true)
     {
         $message = '<fg=' . $color . '>' . $text . ' </>';
         if ($newLine) {
-            $this->output->writeln($message);
+            self::$output->writeln($message);
         } else {
-            $this->output->write($message);
+            self::$output->write($message);
         }
     }
 
@@ -119,8 +103,24 @@ class Dialog
      * @param $argument
      * @return mixed
      */
-    public function read($argument)
+    public static function read($argument)
     {
-        return $this->input->getArgument($argument);
+        return self::$input->getArgument($argument);
     }
+
+	/**
+	 * A QuestionHelper's "ask" method wrapper
+	 *
+	 * @param Question $question
+	 * @return mixed
+	 */
+	private static function ask(Question $question)
+	{
+		$answer = self::$questionHelper->ask(
+			self::$input,
+			self::$output,
+			$question
+		);
+		return $answer;
+	}
 }

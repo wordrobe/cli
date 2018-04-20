@@ -1,13 +1,14 @@
 <?php
 
-namespace Wordress\Helper;
+namespace Wordrobe\Helper;
 
 /**
  * Class Config
- * @package Wordress\Helper
+ * @package Wordrobe\Helper
  */
 class Config
 {
+	const FILENAME = 'wordrobe-config.json';
 	private static $config;
 
 	/**
@@ -15,9 +16,8 @@ class Config
 	 */
 	public static function read()
 	{
-		$rootPath = self::projectRootPath();
-		if (file_exists($rootPath . 'wordress-config.json')) {
-			self::$config = json_decode(file_get_contents($rootPath . 'wordress-config.json'), true);
+		if (file_exists(PROJECT_ROOT . self::FILENAME)) {
+			self::$config = json_decode(file_get_contents(PROJECT_ROOT . self::FILENAME), true);
 		}
 	}
 
@@ -36,15 +36,5 @@ class Config
 			return self::$config;
 		}
 		return false;
-	}
-
-	/**
-	 * Project root path getter
-	 *
-	 * @return string
-	 */
-	public static function projectRootPath()
-	{
-		return realpath(__DIR__ . '/../../../../') . '/'; // Helper <-- app <-- wordress <-- vendor <-- root
 	}
 }
