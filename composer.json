@@ -3,12 +3,11 @@
     "description": "Boosting development CLI for Wordpress",
     "type": "cli",
     "bin": [
-        "bin/wordrobe",
-        "bin/wordrobe.php"
+        "bin/wordrobe"
     ],
     "require": {
         "php": "^7.1",
-        "symfony/console": "^4.0"
+        "symfony/console": "3.3"
     },
     "autoload-dev": {
         "psr-4": {

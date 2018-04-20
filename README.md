@@ -28,7 +28,7 @@ It provides a standard theme scaffolding/boilerplate based on default Wordpress 
 ## Theme development
 To help you to easily create your theme's templates and features, the tool provides the _add_ command:
 ```
-vendor/bin/wordrobe add [template] [filename]
+vendor/bin/wordrobe add [template] [basename]
 ```
 where [template] defines which type of content you want to be created (examples below), while [filename] (optional*) is the template's filename.
 
