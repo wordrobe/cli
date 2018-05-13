@@ -1,48 +1,26 @@
 <?php
 
-namespace Wordrobe\TemplateBuilder;
+namespace Wordrobe\Builder;
 
 use Wordrobe\Helper\Config;
 use Wordrobe\Helper\Dialog;
+use Wordrobe\Helper\FilesManager;
 use Wordrobe\Helper\StringsManager;
+use Wordrobe\Builder\StyleBuilder;
 
 /**
- * Class ConfigTemplateBuilder
- * @package Wordrobe\TemplateBuilder
+ * Class themeBuilder
+ * @package Wordrobe\Builder
  */
-class ConfigTemplateBuilder extends TemplateBuilder
+class ThemeBuilder extends Builder
 {
 	/**
-	 * Handles template configuration
-	 */
-	protected function configure()
-	{
-		$this->setTemplate('config');
-		$this->setFilename(Config::FILENAME);
-		$this->setDirname('/', true);
-	}
-
-	/**
-	 * Provides a template build wizard
+	 * Handles theme creation
 	 */
 	protected function wizard()
 	{
-		$this->askForThemesPath();
 		$this->askForThemeName();
 		$this->askForTemplateEngine();
-	}
-
-	/**
-	 * Themes path setter
-	 */
-	private function askForThemesPath()
-	{
-		$path = Dialog::getAnswer('Please enter themes path (e.g. wp-content/themes):');
-		if (empty($path)) {
-			Dialog::write('Error: themes path is required!', 'red');
-			return $this->askForThemesPath();
-		}
-		$this->fill('{THEMES_PATH}', trim($path, '/'));
 	}
 
 	/**
@@ -55,7 +33,7 @@ class ConfigTemplateBuilder extends TemplateBuilder
 			Dialog::write('Theme name is required!', 'red');
 			return $this->askForThemeName();
 		}
-		$this->fill('{THEME_NAME}', StringsManager::toWordsJoinedBy($name, '-'));
+		$this->fill('{THEME_NAME}', StringsManager::joinWordsBy($name, '-'));
 	}
 
 	/**
@@ -70,4 +48,10 @@ class ConfigTemplateBuilder extends TemplateBuilder
 			$this->fill('{TEMPLATE_ENGINE}', 'standard');
 		}
 	}
+
+	// COPYING THEME BOILERPLATE FILES
+BoilerplateManager::copyFiles();
+
+	// CREATING style.css
+$this->buildStyleTemplate();
 }

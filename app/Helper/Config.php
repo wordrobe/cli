@@ -13,12 +13,18 @@ class Config
 
 	/**
 	 * Project config file reader
+	 *
+	 * @return mixed|null
 	 */
 	public static function read()
 	{
-		if (FilesManager::fileExists(PROJECT_ROOT . '/' . self::FILENAME)) {
-			self::$config = json_decode(file_get_contents(PROJECT_ROOT . '/' . self::FILENAME), true);
+		if (FilesManager::fileExists(Config::get('project_root') . '/' . self::FILENAME)) {
+			if (!self::$config) {
+				self::$config = json_decode(file_get_contents(Config::get('project_root') . '/' . self::FILENAME), true);
+			}
+			return self::$config;
 		}
+		return null;
 	}
 
 	/**

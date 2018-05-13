@@ -11,7 +11,7 @@ use Wordrobe\Helper\Dialog;
  * Class BaseCommand
  * @package Wordrobe\Command
  */
-class BaseCommand extends Command
+abstract class BaseCommand extends Command
 {
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{

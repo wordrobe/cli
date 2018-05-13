@@ -9,6 +9,10 @@ namespace Wordrobe\Helper;
  */
 class StringsManager {
 
+	/**
+	 * @param $string
+	 * @return string
+	 */
 	public static function sanitize($string)
 	{
 		$string = iconv('UTF-8', 'ASCII//TRANSLIT', $string);
@@ -22,9 +26,8 @@ class StringsManager {
 	 * @param $string
 	 * @return string
 	 */
-	public static function normalize($string)
+	public static function dashesToSpace($string)
 	{
-		$string = self::sanitize($string);
 		return str_replace(['_', '-'], ' ', $string);
 	}
 
@@ -32,10 +35,11 @@ class StringsManager {
 	 * @param $filename
 	 * @return mixed
 	 */
-	public static function cleanFilename($filename)
+	public static function normalizeFilename($filename)
 	{
-		$filename = self::extractFilename($filename);
-		return self::toWordsJoinedBy($filename, '-');
+		$filename = self::sanitize($filename);
+		$filename = self::dashesToSpace($filename);
+		return self::joinWordsBy($filename, '-');
 	}
 
 	/**
@@ -44,7 +48,7 @@ class StringsManager {
 	 */
 	public static function toCamelCase($string)
 	{
-		$string = self::normalize($string);
+		$string = self::dashesToSpace($string);
 		return str_replace(' ', '', ucwords($string));
 	}
 
@@ -53,40 +57,10 @@ class StringsManager {
 	 * @param $delimiter
 	 * @return mixed
 	 */
-	public static function toWordsJoinedBy($string, $delimiter)
+	public static function joinWordsBy($string, $delimiter)
 	{
-		$string = self::normalize($string);
+		$string = self::dashesToSpace($string);
 		return str_replace(' ', $delimiter, $string);
-	}
-
-	/**
-	 * @param $string
-	 * @return string
-	 */
-	public static function extractExtension($string)
-	{
-		$pathinfo = pathinfo($string);
-		return $pathinfo['extension'];
-	}
-
-	/**
-	 * @param $string
-	 * @return mixed
-	 */
-	public static function extractBasename($string)
-	{
-		$pathinfo = pathinfo($string);
-		return $pathinfo['basename'];
-	}
-
-	/**
-	 * @param $string
-	 * @return mixed
-	 */
-	public static function extractFilename($string)
-	{
-		$pathinfo = pathinfo($string);
-		return $pathinfo['filename'];
 	}
 
 	/**
@@ -97,5 +71,37 @@ class StringsManager {
 	{
 		$pathinfo = pathinfo($string);
 		return $pathinfo['dirname'];
+	}
+
+	/**
+	 * @param $string
+	 * @return mixed
+	 */
+	public static function extractBasename($string)
+	{
+		$pathinfo = pathinfo($string);
+		$basename = $pathinfo['basename'];
+		return self::normalizeFilename($basename);
+	}
+
+	/**
+	 * @param $string
+	 * @return mixed
+	 */
+	public static function extractFilename($string)
+	{
+		$pathinfo = pathinfo($string);
+		$filename = $pathinfo['filename'];
+		return self::normalizeFilename($filename);
+	}
+
+	/**
+	 * @param $string
+	 * @return string
+	 */
+	public static function extractFileExtension($string)
+	{
+		$pathinfo = pathinfo($string);
+		return strtolower($pathinfo['extension']);
 	}
 }

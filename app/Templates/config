@@ -1,6 +1,0 @@
-{
-	"themes_path": "{THEMES_PATH}",
-    "theme_name": "{THEME_NAME}",
-    "theme_root": "{THEMES_PATH}/{THEME_NAME}",
-    "template_engine": "{TEMPLATE_ENGINE}"
-}

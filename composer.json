@@ -1,7 +1,15 @@
 {
-    "name": "fiad/wordrobe",
+    "name": "wordrobe/cli",
+    "type": "library",
     "description": "Boosting development CLI for Wordpress",
-    "type": "cli",
+    "authors": [
+        {
+            "name": "Andrea 'Fiad' Fiadone",
+            "email": "andrea.fiadone@purplenetwork.it",
+            "homepage": "http://www.purplenetwork.it",
+            "role": "Developer"
+        }
+    ],
     "bin": [
         "bin/wordrobe"
     ],
@@ -13,11 +21,5 @@
         "psr-4": {
             "Wordrobe\\": "app/"
         }
-    },
-    "authors": [
-        {
-            "name": "Andrea 'Fiad' Fiadone",
-            "email": "andrea.fiadone@purplenetwork.it"
-        }
-    ]
+    }
 }

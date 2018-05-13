@@ -1,0 +1,5 @@
+"{THEME_NAME}": {
+	"path": "{THEMES_PATH}/{THEME_NAME}",
+	"template_engine": "{TEMPLATE_ENGINE}",
+	"parent": "{PARENT_THEME}"
+}
