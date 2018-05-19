@@ -10,7 +10,11 @@ class AjaxService implements ThemeEntity {
 
 	private $name;
 
-	public function __construct($name)
+	/**
+	 * AjaxService constructor.
+	 * @param $name
+	 */
+	function __construct($name)
 	{
 		$this->name = $name;
 		add_action("wp_ajax_nopriv_$name", [$this, 'register']);

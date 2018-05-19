@@ -20,7 +20,6 @@ class CustomPostType implements ThemeEntity {
 
 	/**
 	 * CustomPostType constructor
-	 *
 	 * @param $key
 	 * @param $generalName
 	 * @param $singularName
@@ -31,7 +30,7 @@ class CustomPostType implements ThemeEntity {
 	 * @param bool $slug
 	 * @param string $description
 	 */
-	public function __construct($key, $generalName, $singularName, $textDomain, $capabilityType = 'post', $taxonomies = [], $icon = 'dashicons-admin-post', $slug = true, $description = '')
+	function __construct($key, $generalName, $singularName, $textDomain, $capabilityType = 'post', $taxonomies = [], $icon = 'dashicons-admin-post', $slug = true, $description = '')
 	{
 		$this->key = $key;
 		$this->generalName = $generalName;
@@ -55,7 +54,6 @@ class CustomPostType implements ThemeEntity {
 
 	/**
 	 * Returns all post type's supportable features according to capability type
-	 *
 	 * @return array
 	 */
 	private function getSupportableFeatures()
@@ -71,7 +69,6 @@ class CustomPostType implements ThemeEntity {
 
 	/**
 	 * Returns post type's admin labels
-	 *
 	 * @return array
 	 */
 	private function getLabels()
@@ -109,7 +106,6 @@ class CustomPostType implements ThemeEntity {
 
 	/**
 	 * Returns post type's settings
-	 *
 	 * @return array
 	 */
 	private function getSettings()

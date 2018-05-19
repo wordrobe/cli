@@ -17,7 +17,6 @@ class CustomTaxonomy implements ThemeEntity {
 
 	/**
 	 * CustomTaxonomy constructor
-	 *
 	 * @param $key
 	 * @param $generalName
 	 * @param $singularName
@@ -25,7 +24,7 @@ class CustomTaxonomy implements ThemeEntity {
 	 * @param $postTypes
 	 * @param bool $hierarchical
 	 */
-	public function __construct($key, $generalName, $singularName, $textDomain, $postTypes, $hierarchical = true)
+	function __construct($key, $generalName, $singularName, $textDomain, $postTypes, $hierarchical = true)
 	{
 		$this->key = $key;
 		$this->generalName = $generalName;
@@ -46,7 +45,6 @@ class CustomTaxonomy implements ThemeEntity {
 
 	/**
 	 * Returns taxonomy's admin labels
-	 *
 	 * @return array
 	 */
 	private function getLabels()
@@ -77,7 +75,6 @@ class CustomTaxonomy implements ThemeEntity {
 
 	/**
 	 * Returns taxonomy's settings
-	 *
 	 * @return array
 	 */
 	private function getSettings()

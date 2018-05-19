@@ -1,0 +1,5 @@
+ {
+ 	"name": "{THEME_NAME}",
+ 	"template_engine": "{TEMPLATE_ENGINE}",
+ 	"parent": "{PARENT_THEME}"
+ }

@@ -2,45 +2,45 @@
 
 namespace Wordrobe\Command;
 
-use Symfony\Component\Console\Input\ArrayInput;
-use Wordrobe\Helper\Config;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 use Wordrobe\Helper\Dialog;
 
 /**
  * Class AddCommand
  * @package Wordrobe\Command
  */
-abstract class AddCommand extends BaseCommand
+class AddCommand extends BaseCommand
 {
-	/**
-	 * Checks config existence and starts setup if missing
-	 */
-	protected function checkSetup()
+	protected function configure()
 	{
-		if (!Config::read()) {
-			$runSetup = Dialog::getConfirmation('Attention: your project is not configured. Do you want to run setup?', true);
-			if ($runSetup) {
-				$command = $this->getApplication()->find('setup');
-				$arguments = ['command' => 'setup'];
-				$command->run(new ArrayInput($arguments), Dialog::$output);
-			}
-			exit();
-		}
+		$this->setName('add');
+		$this->setDescription("Adds a new theme's feature");
+		$this->addArgument('entity', InputArgument::REQUIRED, 'The entity name');
+	}
+
+	protected function execute(InputInterface $input, OutputInterface $output)
+	{
+		parent::execute($input, $output);
+		$entity = Dialog::read('entity');
+		$factory = self::getFactory($entity);
+		$factory::startWizard();
 	}
 
 	/**
-	 * Template builder getter
+	 * Entity factory getter
 	 *
-	 * @param $name
+	 * @param $entity
 	 * @return string
 	 */
-	protected function getBuilder($name)
+	protected function getFactory($entity)
 	{
-		$builder = 'Wordrobe\Builder\\' . $name . 'Builder';
-		if (!class_exists($builder)) {
-			Dialog::write('Error: ' . $builder . ' is not defined.', 'red');
+		$factory = 'Wordrobe\Factory\\' . $entity . 'Factory';
+		if (!class_exists($factory)) {
+			Dialog::write('Error: ' . $factory . ' is not defined.', 'red');
 			exit();
 		}
-		return $builder;
+		return $factory;
 	}
 }

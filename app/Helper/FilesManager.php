@@ -11,7 +11,6 @@ class FilesManager {
 
 	/**
 	 * Checks file existence
-	 *
 	 * @param $filepath
 	 * @return bool
 	 */
@@ -22,7 +21,6 @@ class FilesManager {
 
 	/**
 	 * Checks directory existence
-	 *
 	 * @param $path
 	 * @return bool
 	 */
@@ -33,7 +31,6 @@ class FilesManager {
 
 	/**
 	 * Asks for override confirmation
-	 *
 	 * @param $filepath
 	 * @return mixed
 	 */
@@ -44,7 +41,6 @@ class FilesManager {
 
 	/**
 	 * Handles directory creation
-	 *
 	 * @param $path
 	 * @param int $mode
 	 * @param bool $log
@@ -65,12 +61,11 @@ class FilesManager {
 
 	/**
 	 * Handles file write
-	 *
 	 * @param $filepath
 	 */
 	public static function writeFile($filepath, $content, $log = false)
 	{
-		if ($dirname = StringsManager::extractDirname($filepath)) {
+		if ($dirname = dirname($filepath)) {
 			self::createDirectory($dirname);
 		}
 		$file = fopen($filepath, 'w');
@@ -88,8 +83,20 @@ class FilesManager {
 	}
 
 	/**
+	 * File contents getter
+	 * @param $filepath
+	 * @return null|string
+	 */
+	public static function readFile($filepath)
+	{
+		if (self::fileExists($filepath)) {
+			return file_get_contents($filepath);
+		}
+		return null;
+	}
+
+	/**
 	 * Handles file/directory permissions modification
-	 *
 	 * @param $path
 	 * @param $mode
 	 * @param bool $log
@@ -111,7 +118,6 @@ class FilesManager {
 
 	/**
 	 * Handles files copy
-	 *
 	 * @param $source
 	 * @param $destination
 	 * @param bool $log

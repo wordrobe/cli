@@ -15,52 +15,31 @@ class StringsManager {
 	 */
 	public static function sanitize($string)
 	{
-		$string = iconv('UTF-8', 'ASCII//TRANSLIT', $string);
-		$string = preg_replace('/\s+/', ' ', $string);
-		$string = str_replace(' ', '_', $string);
-		$string = preg_replace('/[^a-zA-Z0-9\-\._]/', '', $string);
+		$string = iconv('UTF-8', 'ASCII//TRANSLIT', $string); // parsing accented chars
+		$string = preg_replace('/[-_]/', ' ', $string); // replacing dashes with space
+		$string = preg_replace('/\s+/', ' ', $string); // removing double spaces
+		$string = preg_replace('/[^a-zA-Z0-9\.\s]/', '', $string); // removing other symbols
 		return strtolower($string);
 	}
 
 	/**
 	 * @param $string
-	 * @return string
-	 */
-	public static function dashesToSpace($string)
-	{
-		return str_replace(['_', '-'], ' ', $string);
-	}
-
-	/**
-	 * @param $filename
 	 * @return mixed
 	 */
-	public static function normalizeFilename($filename)
+	public static function toKebabCase($string)
 	{
-		$filename = self::sanitize($filename);
-		$filename = self::dashesToSpace($filename);
-		return self::joinWordsBy($filename, '-');
+		$sanitized = self::sanitize($string);
+		return str_replace(' ', '-', $sanitized);
 	}
 
 	/**
 	 * @param $string
 	 * @return mixed
 	 */
-	public static function toCamelCase($string)
+	public static function toSnakeCase($string)
 	{
-		$string = self::dashesToSpace($string);
-		return str_replace(' ', '', ucwords($string));
-	}
-
-	/**
-	 * @param $string
-	 * @param $delimiter
-	 * @return mixed
-	 */
-	public static function joinWordsBy($string, $delimiter)
-	{
-		$string = self::dashesToSpace($string);
-		return str_replace(' ', $delimiter, $string);
+		$sanitized = self::sanitize($string);
+		return str_replace(' ', '_', ucwords($sanitized));
 	}
 
 	/**
@@ -81,7 +60,7 @@ class StringsManager {
 	{
 		$pathinfo = pathinfo($string);
 		$basename = $pathinfo['basename'];
-		return self::normalizeFilename($basename);
+		return self::toKebabCase($basename);
 	}
 
 	/**
@@ -92,7 +71,7 @@ class StringsManager {
 	{
 		$pathinfo = pathinfo($string);
 		$filename = $pathinfo['filename'];
-		return self::normalizeFilename($filename);
+		return self::toKebabCase($filename);
 	}
 
 	/**

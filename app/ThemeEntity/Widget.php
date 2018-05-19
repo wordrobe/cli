@@ -8,7 +8,7 @@ namespace Wordrobe\ThemeEntity;
  */
 class Widget implements ThemeEntity {
 
-	public function __construct()
+	function __construct()
 	{
 
 	}
