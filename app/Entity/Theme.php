@@ -69,22 +69,9 @@ class Theme
 	}
 
 	/**
-	 * Copies theme boilerplate
-	 */
-	private function copyBoilerplate()
-	{
-		$commonsFilesPath = BOILERPLATES_PATH . '/commons';
-		$specificFilesPath = BOILERPLATES_PATH . '/' . $this->template_engine;
-		if (FilesManager::directoryExists($specificFilesPath)) {
-			FilesManager::copyFiles($commonsFilesPath, $this->path);
-			FilesManager::copyFiles($specificFilesPath, $this->path);
-		}
-	}
-
-	/**
 	 * Adds style.css to theme
 	 */
-	private function addStylesheet()
+	protected function addStylesheet()
 	{
 		$stylesheet = new Template('theme-stylesheet', [
 			'{THEME_NAME}' => $this->theme_name,
@@ -104,12 +91,24 @@ class Theme
 	/**
 	 * Adds theme params to Config
 	 */
-	private function updateConfig()
+	protected function updateConfig()
 	{
 		$themeConfig = new Template('theme-config', [
-			'{THEME_ID}' => $this->folder_name,
 			'{TEMPLATE_ENGINE}' => $this->template_engine
 		]);
-		Config::set(NULL, json_encode($themeConfig->getContent()), 'themes');
+		Config::set($this->folder_name, json_decode($themeConfig->getContent(), true), 'themes');
+	}
+
+	/**
+	 * Copies theme boilerplate
+	 */
+	private function copyBoilerplate()
+	{
+		$commonsFilesPath = BOILERPLATES_PATH . '/commons';
+		$specificFilesPath = BOILERPLATES_PATH . '/' . $this->template_engine;
+		if (FilesManager::directoryExists($specificFilesPath)) {
+			FilesManager::copyFiles($commonsFilesPath, $this->path);
+			FilesManager::copyFiles($specificFilesPath, $this->path);
+		}
 	}
 }

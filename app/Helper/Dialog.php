@@ -33,17 +33,20 @@ class Dialog
 		self::$output = $output;
 	}
 
-    /**
-     * Provides an open-ended question
-     *
-     * @param string $text - The question text
-     * @param string $default - The default value for the answer
-     * @param string $color - The text color
-     * @return mixed
-     */
-    public static function getAnswer($text, $default = '', $color = 'blue')
+	/**
+	 * Provides an open-ended question
+	 * @param $text
+	 * @param string $default
+	 * @param string $color
+	 * @param array $autocomplete
+	 * @return mixed
+	 */
+    public static function getAnswer($text, $default = '', $color = 'blue', $autocomplete = null)
     {
         $question = new Question('<fg=' . $color . '>' . $text . ' </>', $default);
+		if ($autocomplete) {
+			$question->setAutocompleterValues($autocomplete);
+		}
         $answer = self::ask($question);
         return $answer;
     }
@@ -52,7 +55,7 @@ class Dialog
      * Provides a multiple choice question
      *
      * @param $text
-     * @param $choices
+     * @param array $choices
      * @param int $default
      * @param string $color
      * @return mixed

@@ -43,12 +43,13 @@ class FilesManager {
 	 * Handles directory creation
 	 * @param $path
 	 * @param int $mode
+	 * @param bool $recursive
 	 * @param bool $log
 	 */
-	public static function createDirectory($path, $mode = 0755, $log = false)
+	public static function createDirectory($path, $mode = 0755, $recursive = true, $log = false)
 	{
 		if (!self::directoryExists($path)) {
-			$created = mkdir($path, $mode);
+			$created = mkdir($path, $mode, $recursive);
 			if ($log) {
 				if ($created) {
 					Dialog::write('Done', 'green');

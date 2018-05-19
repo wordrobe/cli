@@ -19,6 +19,7 @@ class StringsManager {
 		$string = preg_replace('/[-_]/', ' ', $string); // replacing dashes with space
 		$string = preg_replace('/\s+/', ' ', $string); // removing double spaces
 		$string = preg_replace('/[^a-zA-Z0-9\.\s]/', '', $string); // removing other symbols
+		$string = trim($string);
 		return strtolower($string);
 	}
 
@@ -39,7 +40,17 @@ class StringsManager {
 	public static function toSnakeCase($string)
 	{
 		$sanitized = self::sanitize($string);
-		return str_replace(' ', '_', ucwords($sanitized));
+		return str_replace(' ', '_', $sanitized);
+	}
+
+	/**
+	 * @param $string
+	 * @return mixed
+	 */
+	public static function toPascalCase($string)
+	{
+		$sanitized = self::sanitize($string);
+		return str_replace(' ', '', ucwords($sanitized));
 	}
 
 	/**

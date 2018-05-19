@@ -1,12 +1,17 @@
 #!/usr/bin/env php
 <?php
 
-$paths = [__DIR__ . '/../vendor/autoload.php', __DIR__ . '/../../../autoload.php'];
-foreach ($paths as $path) {
-	if (file_exists($path)) {
-		require_once $path;
+$autoload_paths = [__DIR__ . '/../vendor/autoload.php', __DIR__ . '/../../../autoload.php'];
+foreach ($autoload_paths as $filepath) {
+	if (file_exists($filepath)) {
+		require_once $filepath;
 		break;
 	}
 }
-
-include dirname(__DIR__) . '/app/Wordrobe.php';
+$wordrobe_paths = [__DIR__ . '/../app/Wordrobe.php', __DIR__ . '/../wordrobe/cli/app/Wordrobe.php'];
+foreach ($wordrobe_paths as $filepath) {
+	if (file_exists($filepath)) {
+		require_once $filepath;
+		break;
+	}
+}

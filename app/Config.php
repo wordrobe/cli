@@ -3,6 +3,7 @@
 namespace Wordrobe;
 
 use Wordrobe\Entity\Template;
+use Wordrobe\Helper\FilesManager;
 
 /**
  * Class Config
@@ -10,30 +11,44 @@ use Wordrobe\Entity\Template;
  */
 class Config
 {
-	private static $template;
-	private static $params;
+	const FILENAME = 'wordrobe.json';
+
+	/**
+	 * Checks Config existence
+	 * @return bool
+	 */
+	public static function exists()
+	{
+		return FilesManager::fileExists(PROJECT_ROOT . '/' . self::FILENAME);
+	}
 
 	/**
 	 * Initializes Config
 	 * @param null $params
 	 */
-	public static function init($params = NULL)
+	public static function init($params = null)
 	{
-		if (!self::$template) {
-			self::$template = new Template('project-config', $params);
-			self::$params = json_decode(self::$template->getContent(), true);
-			self::write();
+		if (!self::exists()) {
+			$template = new Template('project-config', $params);
+			$template->save(PROJECT_ROOT . '/' . self::FILENAME);
 		}
 	}
 
 	/**
 	 * Gets Config param
-	 * @param null $key
+	 * @param $key
+	 * @param null $subkey
 	 * @return mixed
 	 */
-	public static function get($key)
+	public static function get($key, $subkey = null)
 	{
-		return self::$params[$key];
+		if ($config = self::getContent()) {
+			if ($subkey) {
+				return $config[$key][$subkey];
+			}
+			return $config[$key];
+		}
+		return null;
 	}
 
 	/**
@@ -42,24 +57,37 @@ class Config
 	 * @param $value
 	 * @param null $parentKey
 	 */
-	public static function set($key, $value, $parentKey = NULL)
+	public static function set($key, $value, $parentKey = null)
 	{
-		if ($parentKey) {
-			self::$params[$parentKey][$key] = $value;
-		} else {
-			self::$params[$key] = $value;
+		if ($config = self::getContent()) {
+			if ($parentKey) {
+				$config[$parentKey][$key] = $value;
+			} else {
+				$config[$key] = $value;
+			}
+			self::setContent($config);
 		}
-		self::write();
 	}
 
 	/**
-	 * Writes Config file
+	 * Gets Config file contents
+	 * @return mixed|null
 	 */
-	private static function write()
+	private static function getContent()
 	{
-		if (self::$template) {
-			self::$template->setContent(json_encode(self::$params));
-			self::$template->save(PROJECT_ROOT . '/wordrobe.json');
+		$config = FilesManager::readFile(PROJECT_ROOT . '/' . self::FILENAME);
+		if ($config) {
+			return json_decode($config, true);
 		}
+		return null;
+	}
+
+	/**
+	 * Sets Config file content
+	 * @param $content
+	 */
+	private static function setContent($content)
+	{
+		FilesManager::writeFile(PROJECT_ROOT . '/' . self::FILENAME, json_encode($content, JSON_PRETTY_PRINT));
 	}
 }
