@@ -1,0 +1,13 @@
+<?php
+
+/*
+ * Template Name: {TEMPLATE_NAME}
+ */
+
+// Logic here
+
+get_header();
+
+// Contents here
+
+get_footer();

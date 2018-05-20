@@ -30,7 +30,7 @@ class ChildTheme extends Theme
 	function __construct($theme_name, $theme_uri, $author, $author_uri, $description, $version, $license, $license_uri, $text_domain, $tags, $folder_name, $parent)
 	{
 		$this->parent = $parent;
-		$template_engine = Config::get('themes', $this->parent)['template_engine'];
+		$template_engine = Config::get('template_engine', ['themes', $this->parent]);
 		parent::__construct($theme_name, $theme_uri, $author, $author_uri, $description, $version, $license, $license_uri, $text_domain, $tags, $folder_name, $template_engine);
 	}
 

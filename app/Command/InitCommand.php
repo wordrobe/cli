@@ -5,6 +5,7 @@ namespace Wordrobe\Command;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Wordrobe\Config;
 use Wordrobe\Factory\ConfigFactory;
 use Wordrobe\Helper\Dialog;
 
@@ -24,11 +25,5 @@ class InitCommand extends BaseCommand
 	{
 		parent::execute($input, $output);
 		ConfigFactory::startWizard();
-		$runThemeCreation = Dialog::getConfirmation("Your project doesn't have any themes yet. Do you want to create one right now?", true, 'yellow');
-		if ($runThemeCreation) {
-			$command = $this->getApplication()->find('add');
-			$arguments = ['command' => 'add', 'feature' => 'theme'];
-			$command->run(new ArrayInput($arguments), Dialog::$output);
-		}
 	}
 }

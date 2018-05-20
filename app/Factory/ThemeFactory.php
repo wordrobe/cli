@@ -31,7 +31,6 @@ class ThemeFactory implements Factory
 		$template_engine = self::askForTemplateEngine();
 		$theme = new Theme($theme_name, $theme_uri, $author, $author_uri, $description, $version, $license, $license_uri, $text_domain, $tags, $folder_name, $template_engine);
 		$theme->install();
-		Dialog::write('Theme created!', 'green');
 	}
 
 	/**
@@ -156,7 +155,7 @@ class ThemeFactory implements Factory
 			'Twig (Timber)' => 'timber',
 			'PHP (Standard Wordpress)' => 'standard'
 		];
-		$choice = Dialog::getChoice('Template engine:', array_keys($template_engines), 0);
+		$choice = Dialog::getChoice('Template engine:', array_keys($template_engines), null);
 		return $template_engines[$choice];
 	}
 }

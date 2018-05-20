@@ -19,7 +19,6 @@ class ConfigFactory implements Factory
 	{
 		$themesPath = self::askForThemesPath();
 		Config::init(['{THEMES_PATH}' => $themesPath]);
-		Dialog::write('Project configured!', 'green');
 	}
 
 	/**
@@ -33,14 +32,5 @@ class ConfigFactory implements Factory
 			return self::askForThemesPath();
 		}
 		return $themes_path;
-	}
-
-	/**
-	 * Asks for
-	 * @return mixed
-	 */
-	private static function askForThemeDirectoryCreation()
-	{
-		return Dialog::getConfirmation("Directory doesn't exist. Do you want to create it?", true, 'yellow');
 	}
 }

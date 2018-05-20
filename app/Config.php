@@ -37,14 +37,14 @@ class Config
 	/**
 	 * Gets Config param
 	 * @param $key
-	 * @param null $subkey
+	 * @param null|string|array $ancestors
 	 * @return mixed
 	 */
-	public static function get($key, $subkey = null)
+	public static function get($key, $ancestors = null)
 	{
 		if ($config = self::getContent()) {
-			if ($subkey) {
-				return $config[$key][$subkey];
+			if ($ancestors) {
+				return self::getSubsetParam($config, $ancestors, $key);
 			}
 			return $config[$key];
 		}
@@ -55,17 +55,57 @@ class Config
 	 * Set Config param
 	 * @param $key
 	 * @param $value
-	 * @param null $parentKey
+	 * @param null|string|array $ancestors
 	 */
-	public static function set($key, $value, $parentKey = null)
+	public static function set($key, $value, $ancestors = null)
 	{
 		if ($config = self::getContent()) {
-			if ($parentKey) {
-				$config[$parentKey][$key] = $value;
+			if ($ancestors) {
+				self::setSubsetParam($config, $ancestors, $key, $value);
 			} else {
 				$config[$key] = $value;
 			}
 			self::setContent($config);
+		}
+	}
+
+	/**
+	 * Config subset params getter
+	 * @param $config
+	 * @param $subset
+	 * @param $param
+	 * @return mixed
+	 */
+	private static function getSubsetParam(&$config, $subset, $param)
+	{
+		if (is_array($subset)) {
+			$subset = $config;
+			foreach ($subset as $key) {
+				$subset = $subset[$key];
+			}
+			return $subset[$param];
+		}
+		return $config[$subset][$param];
+	}
+
+	/**
+	 * Config subset param setter
+	 * @param $config
+	 * @param $subset
+	 * @param $param
+	 * @param $value
+	 * @return mixed
+	 */
+	private static function setSubsetParam(&$config, $subset, $param, $value)
+	{
+		if (is_array($subset)) {
+			$subset = $config;
+			foreach ($subset as $key) {
+				$subset = $subset[$key];
+			}
+			$subset[$param] = $value;
+		} else {
+			$config[$subset][$param] = $value;
 		}
 	}
 

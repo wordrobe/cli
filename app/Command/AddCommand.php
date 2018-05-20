@@ -16,7 +16,7 @@ use Wordrobe\Helper\StringsManager;
  */
 class AddCommand extends BaseCommand
 {
-	const OPTIONS = [
+	const FEATURES = [
 		'theme',
 		'child-theme',
 		'page',
@@ -47,14 +47,15 @@ class AddCommand extends BaseCommand
 			}
 			$command = $this->getApplication()->find('init');
 			$arguments = ['command' => 'init'];
-			return $command->run(new ArrayInput($arguments), Dialog::$output);
+			$command->run(new ArrayInput($arguments), Dialog::$output);
+			return self::execute($input, $output);
 		}
 
 		if (!$feature = Dialog::read('feature')) {
-			$feature = Dialog::getChoice('What kind of content do you want to add?', self::OPTIONS, null);
+			$feature = Dialog::getChoice('What kind of content do you want to add?', self::FEATURES, null);
 		}
 
-		if ($factory = self::getFactory($feature)) {
+		if (in_array($feature, self::FEATURES) && $factory = self::getFactory($feature)) {
 			$factory::startWizard();
 		}
 	}

@@ -1,0 +1,13 @@
+<?php
+
+/*
+ * Template Name: {TEMPLATE_NAME}
+ */
+
+use Timber\Timber;
+use Timber\Post;
+
+$context = Timber::get_context();
+$context['page'] = new Post();
+
+Timber::render('views/pages/{VIEW_FILENAME}.html.twig', $context);
