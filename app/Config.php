@@ -13,6 +13,7 @@ use Wordrobe\Helper\FilesManager;
 class Config
 {
 	const FILENAME = 'wordrobe.json';
+	const FILEPATH = PROJECT_ROOT . '/' . self::FILENAME;
 
 	/**
 	 * Checks Config existence
@@ -20,7 +21,7 @@ class Config
 	 */
 	public static function exists()
 	{
-		return FilesManager::fileExists(PROJECT_ROOT . '/' . self::FILENAME);
+		return FilesManager::fileExists(self::FILEPATH);
 	}
 
 	/**
@@ -31,7 +32,7 @@ class Config
 	{
 		if (!self::exists()) {
 			$template = new Template('project-config', $params);
-			$template->save(PROJECT_ROOT . '/' . self::FILENAME);
+			$template->save(self::FILEPATH);
 		}
 	}
 
@@ -125,7 +126,7 @@ class Config
 	 */
 	private static function getContent()
 	{
-		$config = FilesManager::readFile(PROJECT_ROOT . '/' . self::FILENAME);
+		$config = FilesManager::readFile(self::FILEPATH);
 
 		if ($config) {
 			return json_decode($config, true);
@@ -141,10 +142,12 @@ class Config
 	private static function setContent($content)
 	{
 		try {
-			FilesManager::writeFile(PROJECT_ROOT . '/' . self::FILENAME, json_encode($content, JSON_PRETTY_PRINT));
+			FilesManager::writeFile(self::FILEPATH, json_encode($content, JSON_PRETTY_PRINT), true);
 		} catch (\Exception $e) {
 			Dialog::write($e->getMessage(), 'red');
 			exit();
 		}
+
+		Dialog::write(self::FILEPATH . ' updated!', 'cyan');
 	}
 }

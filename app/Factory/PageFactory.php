@@ -29,6 +29,7 @@ class PageFactory extends TemplateFactory implements Factory
 		}
 
 		$page_ctrl->save("$theme_path/pages/$filename.php");
+		Dialog::write('Page added!', 'green');
 	}
 
 	/**

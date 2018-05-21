@@ -70,7 +70,7 @@ class Template
 			exit();
 		}
 
-		Dialog::write("$filepath written!", 'green');
+		Dialog::write("$filepath written!", 'cyan');
 	}
 
 	/**

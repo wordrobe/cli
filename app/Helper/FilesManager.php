@@ -61,12 +61,13 @@ class FilesManager {
 	 * Handles file write
 	 * @param $filepath
 	 * @param $content
+	 * @param bool $force_override
 	 * @throws \Exception
 	 */
-	public static function writeFile($filepath, $content)
+	public static function writeFile($filepath, $content, $force_override = false)
 	{
 		$file_exists = self::fileExists($filepath);
-		$override = $file_exists ? self::getOverrideConfirmation($filepath) : null;
+		$override = $file_exists ? $force_override || self::getOverrideConfirmation($filepath) : null;
 
 		if (!$file_exists || $override) {
 			self::createDirectory(dirname($filepath));

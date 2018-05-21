@@ -31,6 +31,7 @@ class ThemeFactory implements Factory
 		$template_engine = self::askForTemplateEngine();
 		$theme = new Theme($theme_name, $theme_uri, $author, $author_uri, $description, $version, $license, $license_uri, $text_domain, $tags, $folder_name, $template_engine);
 		$theme->install();
+		Dialog::write('Theme installed!', 'green');
 	}
 
 	/**

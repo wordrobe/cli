@@ -19,6 +19,7 @@ class ConfigFactory implements Factory
 	{
 		$themesPath = self::askForThemesPath();
 		Config::init(['{THEMES_PATH}' => $themesPath]);
+		Dialog::write('Configuration completed!', 'green');
 	}
 
 	/**

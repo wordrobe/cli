@@ -72,8 +72,6 @@ class Theme
 			Dialog::write($e->getMessage(), 'red');
 			exit();
 		}
-
-		Dialog::write('Theme installed!', 'green');
 	}
 
 	/**
