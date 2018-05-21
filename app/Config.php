@@ -78,45 +78,45 @@ class Config
 	/**
 	 * Config subset params getter
 	 * @param $config
-	 * @param $subset
-	 * @param $param
+	 * @param $ancestors
+	 * @param $key
 	 * @return mixed
 	 */
-	private static function getSubsetParam(&$config, $subset, $param)
+	private static function getSubsetParam(&$config, $ancestors, $key)
 	{
-		if (is_array($subset)) {
+		if (is_array($ancestors)) {
 			$subset = $config;
 
-			foreach ($subset as $key) {
-				$subset = $subset[$key];
+			foreach ($ancestors as $param) {
+				$subset = $subset[$param];
 			}
 
-			return $subset[$param];
+			return $subset[$key];
 		}
 
-		return $config[$subset][$param];
+		return $config[$ancestors][$key];
 	}
 
 	/**
 	 * Config subset param setter
 	 * @param $config
-	 * @param $subset
-	 * @param $param
+	 * @param $ancestors
+	 * @param $key
 	 * @param $value
 	 * @return mixed
 	 */
-	private static function setSubsetParam(&$config, $subset, $param, $value)
+	private static function setSubsetParam(&$config, $ancestors, $key, $value)
 	{
-		if (is_array($subset)) {
+		if (is_array($ancestors)) {
 			$subset = $config;
 
-			foreach ($subset as $key) {
-				$subset = $subset[$key];
+			foreach ($ancestors as $param) {
+				$subset = $subset[$param];
 			}
 
-			$subset[$param] = $value;
+			$subset[$key] = $value;
 		} else {
-			$config[$subset][$param] = $value;
+			$config[$ancestors][$key] = $value;
 		}
 	}
 
