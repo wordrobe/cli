@@ -44,18 +44,15 @@ class FilesManager {
 	 * @param $path
 	 * @param int $mode
 	 * @param bool $recursive
-	 * @param bool $log
+	 * @throws \Exception
 	 */
-	public static function createDirectory($path, $mode = 0755, $recursive = true, $log = false)
+	public static function createDirectory($path, $mode = 0755, $recursive = true)
 	{
 		if (!self::directoryExists($path)) {
-			$created = mkdir($path, $mode, $recursive);
-			if ($log) {
-				if ($created) {
-					Dialog::write('Done', 'green');
-				} else {
-					Dialog::write('Fail', 'red');
-				}
+			$dir = mkdir($path, $mode, $recursive);
+
+			if (!$dir) {
+				throw new \Exception("Error: unable to create $path");
 			}
 		}
 	}
@@ -63,57 +60,51 @@ class FilesManager {
 	/**
 	 * Handles file write
 	 * @param $filepath
+	 * @param $content
+	 * @throws \Exception
 	 */
-	public static function writeFile($filepath, $content, $log = false)
+	public static function writeFile($filepath, $content)
 	{
-		if ($dirname = dirname($filepath)) {
-			self::createDirectory($dirname);
-		}
-		$file = fopen($filepath, 'w');
-		if ($log) {
-			Dialog::write('Writing ' . $filepath . '...', 'yellow', false);
-			if (fwrite($file, $content)) {
-				fclose($file);
-				Dialog::write('Done', 'green');
-			} else {
-				Dialog::write('Fail', 'red');
-			}
-		} else if (fwrite($file, $content)) {
+		$file_exists = self::fileExists($filepath);
+		$override = $file_exists ? self::getOverrideConfirmation($filepath) : null;
+
+		if (!$file_exists || $override) {
+			self::createDirectory(dirname($filepath));
+			$file = fopen($filepath, 'w');
+			$written = fwrite($file, $content);
 			fclose($file);
+
+			if (!$written) {
+				throw new \Exception("Error: unable to write $filepath");
+			}
 		}
 	}
 
 	/**
 	 * File contents getter
 	 * @param $filepath
-	 * @return null|string
+	 * @return string
+	 * @throws \Exception
 	 */
 	public static function readFile($filepath)
 	{
-		if (self::fileExists($filepath)) {
-			return file_get_contents($filepath);
+		if (!self::fileExists($filepath)) {
+			throw new \Exception("Error: $filepath doesn't exist");
 		}
-		return null;
+
+		return file_get_contents($filepath);
 	}
 
 	/**
 	 * Handles file/directory permissions modification
 	 * @param $path
 	 * @param $mode
-	 * @param bool $log
+	 * @throws \Exception
 	 */
-	public static function setPermissions($path, $mode, $log = false)
+	public static function setPermissions($path, $mode)
 	{
-		if ($log) {
-			Dialog::write("Setting $path directory permissions... ", 'yellow', false);
-		}
-		$changed = chmod($path, $mode);
-		if ($log) {
-			if ($changed) {
-				Dialog::write('Done', 'green');
-			} else {
-				Dialog::write('Fail', 'red');
-			}
+		if (!chmod($path, $mode)) {
+			throw new \Exception("Error: unable to change $path permissions");
 		}
 	}
 
@@ -121,20 +112,26 @@ class FilesManager {
 	 * Handles files copy
 	 * @param $source
 	 * @param $destination
-	 * @param bool $log
 	 * @param array $errors
+	 * @throws \Exception
 	 */
-	public static function copyFiles($source, $destination, $log = false, $errors = [])
+	public static function copyFiles($source, $destination, $errors = [])
 	{
-		$files = scandir($source);
-		if ($log) {
-			Dialog::write("Copying $source to $destination... ", 'yellow', false);
+		if (!self::directoryExists($source)) {
+			throw new \Exception("Error: $source doesn't exist");
 		}
+
+		$files = scandir($source);
 		self::createDirectory($destination);
+
 		foreach ($files as $file) {
 			if ($file != '.' && $file != '..') {
 				if (self::directoryExists("$source/$file")) {
-					self::copyFiles("$source/$file", "$destination/$file", false, $errors);
+					try {
+						self::copyFiles("$source/$file", "$destination/$file", $errors);
+					} catch (\Exception $e) {
+						// continue
+					}
 				} else {
 					$copied = copy("$source/$file", "$destination/$file");
 					if (!$copied) {
@@ -143,12 +140,10 @@ class FilesManager {
 				}
 			}
 		}
-		if ($log) {
-			if (count($errors)) {
-				Dialog::write('Fail', 'red');
-			} else {
-				Dialog::write('Done', 'green');
-			}
+
+		if (count($errors)) {
+			$error_files = implode(', ', $errors);
+			throw new \Exception("Error: unable to copy following files [$error_files]");
 		}
 	}
 }

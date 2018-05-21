@@ -3,6 +3,7 @@
 namespace Wordrobe\Entity;
 
 use Wordrobe\Config;
+use Wordrobe\Helper\Dialog;
 use Wordrobe\Helper\FilesManager;
 
 /**
@@ -62,10 +63,17 @@ class Theme
 	 */
 	public function install()
 	{
-		FilesManager::createDirectory($this->path);
-		$this->copyBoilerplate();
-		$this->addStylesheet();
-		$this->updateConfig();
+		try {
+			FilesManager::createDirectory($this->path);
+			$this->copyBoilerplate();
+			$this->addStylesheet();
+			$this->updateConfig();
+		} catch (\Exception $e) {
+			Dialog::write($e->getMessage(), 'red');
+			exit();
+		}
+
+		Dialog::write('Theme installed!', 'green');
 	}
 
 	/**
@@ -93,9 +101,7 @@ class Theme
 	 */
 	protected function updateConfig()
 	{
-		$themeConfig = new Template('theme-config', [
-			'{TEMPLATE_ENGINE}' => $this->template_engine
-		]);
+		$themeConfig = new Template('theme-config', ['{TEMPLATE_ENGINE}' => $this->template_engine]);
 		Config::set($this->folder_name, json_decode($themeConfig->getContent(), true), 'themes');
 	}
 
@@ -106,9 +112,7 @@ class Theme
 	{
 		$commonsFilesPath = BOILERPLATES_PATH . '/commons';
 		$specificFilesPath = BOILERPLATES_PATH . '/' . $this->template_engine;
-		if (FilesManager::directoryExists($specificFilesPath)) {
-			FilesManager::copyFiles($commonsFilesPath, $this->path);
-			FilesManager::copyFiles($specificFilesPath, $this->path);
-		}
+		FilesManager::copyFiles($commonsFilesPath, $this->path);
+		FilesManager::copyFiles($specificFilesPath, $this->path);
 	}
 }

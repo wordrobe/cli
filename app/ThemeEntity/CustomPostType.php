@@ -59,11 +59,13 @@ class CustomPostType implements ThemeEntity {
 	private function getSupportableFeatures()
 	{
 		$supports = ['title', 'editor', 'author', 'thumbnail', 'excerpt', 'trackbacks', 'custom-fields', 'comments', 'revisions'];
+
 		if ($this->capabilityType === 'page') {
 			$supports[] = 'page-attributes';
 		} else {
 			$supports[] = 'post-formats';
 		}
+
 		return $supports;
 	}
 

@@ -38,9 +38,11 @@ class PageFactory extends TemplateFactory implements Factory
 	private static function askForName()
 	{
 		$name = Dialog::getAnswer('Template name (e.g. My Custom Page):');
+
 		if (!$name) {
 			return self::askForName();
 		}
+
 		return ucwords($name);
 	}
 }

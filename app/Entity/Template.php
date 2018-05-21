@@ -2,6 +2,7 @@
 
 namespace Wordrobe\Entity;
 
+use Wordrobe\Helper\Dialog;
 use Wordrobe\Helper\FilesManager;
 
 /**
@@ -62,7 +63,14 @@ class Template
 	 */
 	public function save($filepath)
 	{
-		FilesManager::writeFile($filepath, $this->content);
+		try {
+			FilesManager::writeFile($filepath, $this->content);
+		} catch (\Exception $e) {
+			Dialog::write($e->getMessage(), 'red');
+			exit();
+		}
+
+		Dialog::write("$filepath written!", 'green');
 	}
 
 	/**
@@ -74,9 +82,12 @@ class Template
 	private static function getModelContent($model)
 	{
 		$templateFile = TEMPLATES_MODELS_PATH . '/' . $model;
-		if (!file_exists($templateFile)) {
-			throw new \Exception('Error: "' . $model . '" template not found! Unable to continue.', 'red');
+		try {
+			$content = FilesManager::readFile($templateFile);
+		} catch (\Exception $e) {
+			Dialog::write($e->getMessage(), 'red');
+			exit();
 		}
-		return file_get_contents($templateFile);
+		return $content;
 	}
 }

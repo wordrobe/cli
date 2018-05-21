@@ -44,9 +44,11 @@ class Dialog
     public static function getAnswer($text, $default = '', $color = 'blue', $autocomplete = null)
     {
         $question = new Question('<fg=' . $color . '>' . $text . ' </>', $default);
+
 		if ($autocomplete) {
 			$question->setAutocompleterValues($autocomplete);
 		}
+
         $answer = self::ask($question);
         return $answer;
     }
@@ -93,6 +95,7 @@ class Dialog
     public static function write($text, $color = 'black', $newLine = true)
     {
         $message = '<fg=' . $color . '>' . $text . ' </>';
+
         if ($newLine) {
             self::$output->writeln($message);
         } else {
@@ -119,11 +122,7 @@ class Dialog
 	 */
 	private static function ask(Question $question)
 	{
-		$answer = self::$questionHelper->ask(
-			self::$input,
-			self::$output,
-			$question
-		);
+		$answer = self::$questionHelper->ask(self::$input, self::$output, $question);
 		return $answer;
 	}
 }

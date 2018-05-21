@@ -28,9 +28,11 @@ class ConfigFactory implements Factory
 	private static function askForThemesPath()
 	{
 		$themes_path = Dialog::getAnswer('Please provide themes directory path (e.g. wp-content/themes):');
+
 		if (!$themes_path) {
 			return self::askForThemesPath();
 		}
+
 		return $themes_path;
 	}
 }

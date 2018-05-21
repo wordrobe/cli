@@ -3,6 +3,7 @@
 namespace Wordrobe;
 
 use Wordrobe\Entity\Template;
+use Wordrobe\Helper\Dialog;
 use Wordrobe\Helper\FilesManager;
 
 /**
@@ -43,9 +44,11 @@ class Config
 	public static function get($key, $ancestors = null)
 	{
 		if ($config = self::getContent()) {
+
 			if ($ancestors) {
 				return self::getSubsetParam($config, $ancestors, $key);
 			}
+
 			return $config[$key];
 		}
 		return null;
@@ -60,11 +63,13 @@ class Config
 	public static function set($key, $value, $ancestors = null)
 	{
 		if ($config = self::getContent()) {
+
 			if ($ancestors) {
 				self::setSubsetParam($config, $ancestors, $key, $value);
 			} else {
 				$config[$key] = $value;
 			}
+
 			self::setContent($config);
 		}
 	}
@@ -80,11 +85,14 @@ class Config
 	{
 		if (is_array($subset)) {
 			$subset = $config;
+
 			foreach ($subset as $key) {
 				$subset = $subset[$key];
 			}
+
 			return $subset[$param];
 		}
+
 		return $config[$subset][$param];
 	}
 
@@ -100,9 +108,11 @@ class Config
 	{
 		if (is_array($subset)) {
 			$subset = $config;
+
 			foreach ($subset as $key) {
 				$subset = $subset[$key];
 			}
+
 			$subset[$param] = $value;
 		} else {
 			$config[$subset][$param] = $value;
@@ -116,9 +126,11 @@ class Config
 	private static function getContent()
 	{
 		$config = FilesManager::readFile(PROJECT_ROOT . '/' . self::FILENAME);
+
 		if ($config) {
 			return json_decode($config, true);
 		}
+
 		return null;
 	}
 
@@ -128,6 +140,11 @@ class Config
 	 */
 	private static function setContent($content)
 	{
-		FilesManager::writeFile(PROJECT_ROOT . '/' . self::FILENAME, json_encode($content, JSON_PRETTY_PRINT));
+		try {
+			FilesManager::writeFile(PROJECT_ROOT . '/' . self::FILENAME, json_encode($content, JSON_PRETTY_PRINT));
+		} catch (\Exception $e) {
+			Dialog::write($e->getMessage(), 'red');
+			exit();
+		}
 	}
 }

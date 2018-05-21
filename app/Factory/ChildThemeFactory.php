@@ -40,9 +40,11 @@ class ChildThemeFactory extends ThemeFactory
 	protected static function askForParentTheme()
 	{
 		$parent_theme = Dialog::getAnswer('Parent theme:');
+
 		if (!$parent_theme) {
 			return self::askForParentTheme();
 		}
+
 		return StringsManager::toKebabCase($parent_theme);
 	}
 }

@@ -14,6 +14,7 @@ abstract class TemplateFactory
 	protected static function askForTheme()
 	{
 		$themes = Config::get('themes');
+
 		switch (count($themes)) {
 			case 0:
 				Dialog::write("Your project doesn't have any themes yet. Please run 'vendor/bin/wordrobe add theme' first.", 'red');
