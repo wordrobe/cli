@@ -1,1 +1,13 @@
+<?php
 
+/*
+ * Template for post type "{POST_TYPE}" single
+ */
+
+use Timber\Timber;
+use Timber\Post;
+
+$context = Timber::get_context();
+$context['post'] = new Post();
+
+Timber::render('views/default/{VIEW_NAME}.html.twig', $context);

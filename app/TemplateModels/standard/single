@@ -1,1 +1,13 @@
+<?php
 
+/*
+ * Template for post type "{POST_TYPE}" single
+ */
+
+// Logic here
+
+get_header();
+
+// Contents here
+
+get_footer();
