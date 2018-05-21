@@ -29,6 +29,34 @@ class ThemeFactory implements Factory
 		$tags = self::askForTags();
 		$folder_name = self::askForFolderName($theme_name);
 		$template_engine = self::askForTemplateEngine();
+		self::create($theme_name, $theme_uri, $author, $author_uri, $description, $version, $license, $license_uri, $text_domain, $tags, $folder_name, $template_engine);
+	}
+
+	/**
+	 * Create theme
+	 * @param mixed ...$args
+	 * @example ThemeFactory::create($theme_name, $theme_uri, $author, $author_uri, $description, $version, $license, $license_uri, $text_domain, $tags, $folder_name, $template_engine);
+	 */
+	public static function create(...$args)
+	{
+		if (func_num_args() < 12) {
+			Dialog::write("Error: unable to create theme because of missing parameters");
+			exit;
+		}
+
+		$theme_name = func_get_arg(0);
+		$theme_uri = func_get_arg(1);
+		$author = func_get_arg(2);
+		$author_uri = func_get_arg(3);
+		$description = func_get_arg(4);
+		$version = func_get_arg(5);
+		$license = func_get_arg(6);
+		$license_uri = func_get_arg(7);
+		$text_domain = func_get_arg(8);
+		$tags = func_get_arg(9);
+		$folder_name = func_get_arg(10);
+		$template_engine = func_get_arg(11);
+
 		$theme = new Theme($theme_name, $theme_uri, $author, $author_uri, $description, $version, $license, $license_uri, $text_domain, $tags, $folder_name, $template_engine);
 		$theme->install();
 		Dialog::write('Theme installed!', 'green');

@@ -16,10 +16,27 @@ class SingleFactory extends TemplateFactory implements Factory
 	{
 		$theme = self::askForTheme();
 		$post_type = self::askForPostType();
+		self::create($post_type, $theme);
+	}
+
+	/**
+	 * Creates single template
+	 * @param mixed ...$args
+	 * @example SingleFactory::create($post_type, $theme);
+	 */
+	public static function create(...$args)
+	{
+		if (func_num_args() < 2) {
+			Dialog::write("Error: unable to create single template because of missing parameters");
+			exit;
+		}
+
+		$post_type = func_get_arg(0);
+		$theme = func_get_arg(1);
+
 		$filename = "single-$post_type";
 		$template_engine = Config::get('template_engine', ['themes', $theme]);
 		$theme_path = PROJECT_ROOT . '/' . Config::get('themes_path') . '/' . $theme;
-
 		$single_ctrl = new Template("$template_engine/single", ['{POST_TYPE}' => $post_type]);
 
 		if ($template_engine === 'timber') {
@@ -29,7 +46,7 @@ class SingleFactory extends TemplateFactory implements Factory
 		}
 
 		$single_ctrl->save("$theme_path/$filename.php");
-		Dialog::write('Single template added!', 'green');
+		Dialog::write("Single template for post type '$post_type' added!", 'green');
 	}
 
 	/**

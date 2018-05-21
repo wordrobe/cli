@@ -9,28 +9,28 @@ namespace Wordrobe\ThemeEntity;
 class CustomTaxonomy implements ThemeEntity {
 
 	private $key;
-	private $generalName;
-	private $singularName;
-	private $textDomain;
-	private $postTypes;
+	private $general_name;
+	private $singular_name;
+	private $text_domain;
+	private $post_types;
 	private $hierarchical;
 
 	/**
 	 * CustomTaxonomy constructor
 	 * @param $key
-	 * @param $generalName
-	 * @param $singularName
-	 * @param $textDomain
-	 * @param $postTypes
+	 * @param $general_name
+	 * @param $singular_name
+	 * @param $text_domain
+	 * @param $post_types
 	 * @param bool $hierarchical
 	 */
-	function __construct($key, $generalName, $singularName, $textDomain, $postTypes, $hierarchical = true)
+	function __construct($key, $general_name, $singular_name, $text_domain, $post_types, $hierarchical = true)
 	{
 		$this->key = $key;
-		$this->generalName = $generalName;
-		$this->singularName = $singularName;
-		$this->textDomain = $textDomain;
-		$this->postTypes = $postTypes;
+		$this->general_name = $general_name;
+		$this->singular_name = $singular_name;
+		$this->text_domain = $text_domain;
+		$this->post_types = $post_types;
 		$this->hierarchical = $hierarchical;
 		add_action('init', [$this, 'register'], 0);
 	}
@@ -40,7 +40,7 @@ class CustomTaxonomy implements ThemeEntity {
 	 */
 	public function register() {
 		$settings = $this->getSettings();
-		register_taxonomy($this->key, $this->postTypes, $settings);
+		register_taxonomy($this->key, $this->post_types, $settings);
 	}
 
 	/**
@@ -50,26 +50,26 @@ class CustomTaxonomy implements ThemeEntity {
 	private function getLabels()
 	{
 		return [
-			'name'                       => _x($this->generalName, "$this->singularName General Name", $this->textDomain),
-			'singular_name'              => _x($this->singularName, "$this->singularName Singular Name", $this->textDomain),
-			'menu_name'                  => __($this->singularName, $this->textDomain),
-			'all_items'                  => __("All $this->generalName", $this->textDomain),
-			'parent_item'                => __("Parent $this->singularName", $this->textDomain),
-			'parent_item_colon'          => __("Parent $this->singularName:", $this->textDomain),
-			'new_item_name'              => __("New $this->singularName", $this->textDomain),
-			'add_new_item'               => __("Add New $this->singularName", $this->textDomain),
-			'edit_item'                  => __("Edit $this->singularName", $this->textDomain),
-			'update_item'                => __("Update $this->singularName", $this->textDomain),
-			'view_item'                  => __("View $this->singularName", $this->textDomain),
-			'separate_items_with_commas' => __("Separate $this->generalName with commas", $this->textDomain),
-			'add_or_remove_items'        => __("Add or remove $this->generalName", $this->textDomain),
-			'choose_from_most_used'      => __("Choose from the most used", $this->textDomain),
-			'popular_items'              => __("Popular $this->generalName", $this->textDomain),
-			'search_items'               => __("Search $this->generalName", $this->textDomain),
-			'not_found'                  => __("Not Found", $this->textDomain),
-			'no_terms'                   => __("No $this->generalName", $this->textDomain),
-			'items_list'                 => __("$this->generalName list", $this->textDomain),
-			'items_list_navigation'      => __("$this->generalName list navigation", $this->textDomain)
+			'name'                       => _x($this->general_name, "$this->singular_name General _name", $this->text_domain),
+			'singular_name'              => _x($this->singular_name, "$this->singular_name Singular _name", $this->text_domain),
+			'menu_name'                  => __($this->singular_name, $this->text_domain),
+			'all_items'                  => __("All $this->general_name", $this->text_domain),
+			'parent_item'                => __("Parent $this->singular_name", $this->text_domain),
+			'parent_item_colon'          => __("Parent $this->singular_name:", $this->text_domain),
+			'new_item_name'              => __("New $this->singular_name", $this->text_domain),
+			'add_new_item'               => __("Add New $this->singular_name", $this->text_domain),
+			'edit_item'                  => __("Edit $this->singular_name", $this->text_domain),
+			'update_item'                => __("Update $this->singular_name", $this->text_domain),
+			'view_item'                  => __("View $this->singular_name", $this->text_domain),
+			'separate_items_with_commas' => __("Separate $this->general_name with commas", $this->text_domain),
+			'add_or_remove_items'        => __("Add or remove $this->general_name", $this->text_domain),
+			'choose_from_most_used'      => __("Choose from the most used", $this->text_domain),
+			'popular_items'              => __("Popular $this->general_name", $this->text_domain),
+			'search_items'               => __("Search $this->general_name", $this->text_domain),
+			'not_found'                  => __("Not Found", $this->text_domain),
+			'no_terms'                   => __("No $this->general_name", $this->text_domain),
+			'items_list'                 => __("$this->general_name list", $this->text_domain),
+			'items_list_navigation'      => __("$this->general_name list navigation", $this->text_domain)
 		];
 	}
 

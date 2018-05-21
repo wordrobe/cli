@@ -16,10 +16,27 @@ class PageFactory extends TemplateFactory implements Factory
 	{
 		$theme = self::askForTheme();
 		$name = self::askForName();
+		self::create($name, $theme);
+	}
+
+	/**
+	 * Creates page template
+	 * @param mixed ...$args
+	 * @example PageFactory::create($name, $theme);
+	 */
+	public static function create(...$args)
+	{
+		if (func_num_args() < 2) {
+			Dialog::write("Error: unable to create page template because of missing parameters");
+			exit;
+		}
+
+		$name = func_get_arg(0);
+		$theme = func_get_arg(1);
+
 		$filename = StringsManager::toKebabCase($name);
 		$template_engine = Config::get('template_engine', ['themes', $theme]);
 		$theme_path = PROJECT_ROOT . '/' . Config::get('themes_path') . '/' . $theme;
-
 		$page_ctrl = new Template("$template_engine/page", ['{TEMPLATE_NAME}' => $name]);
 
 		if ($template_engine === 'timber') {
@@ -29,7 +46,7 @@ class PageFactory extends TemplateFactory implements Factory
 		}
 
 		$page_ctrl->save("$theme_path/pages/$filename.php");
-		Dialog::write('Page template added!', 'green');
+		Dialog::write("Page template '$name' added!", 'green');
 	}
 
 	/**

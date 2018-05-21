@@ -9,37 +9,34 @@ namespace Wordrobe\ThemeEntity;
 class CustomPostType implements ThemeEntity {
 
 	private $key;
-	private $slug;
+	private $general_name;
+	private $singular_name;
+	private $text_domain;
+	private $capability_type;
 	private $taxonomies;
-	private $generalName;
-	private $singularName;
-	private $description;
-	private $textDomain;
-	private $capabilityType;
 	private $icon;
+	private $description;
 
 	/**
 	 * CustomPostType constructor
 	 * @param $key
-	 * @param $generalName
-	 * @param $singularName
-	 * @param $textDomain
-	 * @param string $capabilityType
+	 * @param $general_name
+	 * @param $singular_name
+	 * @param $text_domain
+	 * @param string $capability_type
 	 * @param array $taxonomies
 	 * @param string $icon
-	 * @param bool $slug
 	 * @param string $description
 	 */
-	function __construct($key, $generalName, $singularName, $textDomain, $capabilityType = 'post', $taxonomies = [], $icon = 'dashicons-admin-post', $slug = true, $description = '')
+	function __construct($key, $general_name, $singular_name, $text_domain, $capability_type = 'post', $taxonomies = [], $icon = 'dashicons-admin-post', $description = '')
 	{
 		$this->key = $key;
-		$this->generalName = $generalName;
-		$this->singularName = $singularName;
-		$this->textDomain = $textDomain;
-		$this->capabilityType = $capabilityType;
-		$this->taxonomies = ($capabilityType === 'post') ? $taxonomies : null;
+		$this->general_name = $general_name;
+		$this->singular_name = $singular_name;
+		$this->text_domain = $text_domain;
+		$this->capability_type = $capability_type;
+		$this->taxonomies = ($capability_type === 'post') ? $taxonomies : null;
 		$this->icon = $icon;
-		$this->slug = $slug;
 		$this->description = $description;
 		add_action('init', [$this, 'register'], 0);
 	}
@@ -60,7 +57,7 @@ class CustomPostType implements ThemeEntity {
 	{
 		$supports = ['title', 'editor', 'author', 'thumbnail', 'excerpt', 'trackbacks', 'custom-fields', 'comments', 'revisions'];
 
-		if ($this->capabilityType === 'page') {
+		if ($this->capability_type === 'page') {
 			$supports[] = 'page-attributes';
 		} else {
 			$supports[] = 'post-formats';
@@ -76,33 +73,33 @@ class CustomPostType implements ThemeEntity {
 	private function getLabels()
 	{
 		return [
-			'name'                  => _x($this->generalName, "$this->singularName General Name", $this->textDomain),
-			'singular_name'         => _x($this->singularName, "$this->singularName Singular Name", $this->textDomain),
-			'menu_name'             => __($this->generalName, $this->textDomain),
-			'name_admin_bar'        => __($this->singularName, $this->textDomain),
-			'archives'              => __("$this->singularName Archives", $this->textDomain),
-			'attributes'            => __("$this->singularName Attributes", $this->textDomain),
-			'parent_item_colon'     => __("Parent $this->singularName:", $this->textDomain),
-			'all_items'             => __("All $this->generalName", $this->textDomain),
-			'add_new_item'          => __("Add New $this->singularName", $this->textDomain),
-			'add_new'               => __("Add New", $this->textDomain),
-			'new_item'              => __("New $this->singularName", $this->textDomain),
-			'edit_item'             => __("Edit $this->singularName", $this->textDomain),
-			'update_item'           => __("Update $this->singularName", $this->textDomain),
-			'view_item'             => __("View $this->singularName", $this->textDomain),
-			'view_items'            => __("View $this->generalName", $this->textDomain),
-			'search_items'          => __("Search $this->singularName", $this->textDomain),
-			'not_found'             => __("Not $this->singularName found", $this->textDomain),
-			'not_found_in_trash'    => __("Not $this->singularName found in Trash", $this->textDomain),
-			'featured_image'        => __("Featured Image", $this->textDomain),
-			'set_featured_image'    => __("Set featured image", $this->textDomain),
-			'remove_featured_image' => __("Remove featured image", $this->textDomain),
-			'use_featured_image'    => __("Use as featured image", $this->textDomain),
-			'insert_into_item'      => __("Insert into $this->singularName", $this->textDomain),
-			'uploaded_to_this_item' => __("Uploaded to this $this->singularName", $this->textDomain),
-			'items_list'            => __("$this->generalName list", $this->textDomain),
-			'items_list_navigation' => __("$this->generalName list navigation", $this->textDomain),
-			'filter_items_list'     => __("Filter $this->generalName list", $this->textDomain),
+			'name'                  => _x($this->general_name, "$this->singular_name General Name", $this->text_domain),
+			'singular_name'         => _x($this->singular_name, "$this->singular_name Singular Name", $this->text_domain),
+			'menu_name'             => __($this->general_name, $this->text_domain),
+			'name_admin_bar'        => __($this->singular_name, $this->text_domain),
+			'archives'              => __("$this->singular_name Archives", $this->text_domain),
+			'attributes'            => __("$this->singular_name Attributes", $this->text_domain),
+			'parent_item_colon'     => __("Parent $this->singular_name:", $this->text_domain),
+			'all_items'             => __("All $this->general_name", $this->text_domain),
+			'add_new_item'          => __("Add New $this->singular_name", $this->text_domain),
+			'add_new'               => __("Add New", $this->text_domain),
+			'new_item'              => __("New $this->singular_name", $this->text_domain),
+			'edit_item'             => __("Edit $this->singular_name", $this->text_domain),
+			'update_item'           => __("Update $this->singular_name", $this->text_domain),
+			'view_item'             => __("View $this->singular_name", $this->text_domain),
+			'view_items'            => __("View $this->general_name", $this->text_domain),
+			'search_items'          => __("Search $this->singular_name", $this->text_domain),
+			'not_found'             => __("Not $this->singular_name found", $this->text_domain),
+			'not_found_in_trash'    => __("Not $this->singular_name found in Trash", $this->text_domain),
+			'featured_image'        => __("Featured Image", $this->text_domain),
+			'set_featured_image'    => __("Set featured image", $this->text_domain),
+			'remove_featured_image' => __("Remove featured image", $this->text_domain),
+			'use_featured_image'    => __("Use as featured image", $this->text_domain),
+			'insert_into_item'      => __("Insert into $this->singular_name", $this->text_domain),
+			'uploaded_to_this_item' => __("Uploaded to this $this->singular_name", $this->text_domain),
+			'items_list'            => __("$this->general_name list", $this->text_domain),
+			'items_list_navigation' => __("$this->general_name list navigation", $this->text_domain),
+			'filter_items_list'     => __("Filter $this->general_name list", $this->text_domain),
 		];
 	}
 
@@ -113,10 +110,10 @@ class CustomPostType implements ThemeEntity {
 	private function getSettings()
 	{
 		return [
-			'label'                 => __($this->generalName, $this->textDomain),
-			'description'           => __($this->description, $this->textDomain),
+			'label'                 => __($this->general_name, $this->text_domain),
+			'description'           => __($this->description, $this->text_domain),
 			'labels'                => $this->getLabels(),
-			'capability_type'       => $this->capabilityType,
+			'capability_type'       => $this->capability_type,
 			'hierarchical'			=> true,
 			'taxonomies'			=> $this->taxonomies,
 			'has_archive'			=> true,
@@ -131,7 +128,7 @@ class CustomPostType implements ThemeEntity {
 			'public'                => true,
 			'publicly_queryable'    => true,
 			'exclude_from_search'	=> false,
-			'rewrite'				=> (gettype($this->slug) === 'boolean') ? $this->slug : ['slug' => $this->slug]
+			'rewrite'				=> true
 		];
 	}
 }

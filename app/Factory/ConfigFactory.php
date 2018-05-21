@@ -17,8 +17,25 @@ class ConfigFactory implements Factory
 	 */
 	public static function startWizard()
 	{
-		$themesPath = self::askForThemesPath();
-		Config::init(['{THEMES_PATH}' => $themesPath]);
+		$themes_path = self::askForThemesPath();
+		self::create($themes_path);
+	}
+
+	/**
+	 * Creates config
+	 * @param mixed ...$args
+	 * @example ConfigFactory::create($themes_path);
+	 */
+	public static function create(...$args)
+	{
+		if (func_num_args() < 1) {
+			Dialog::write("Error: unable to create config because of missing parameters");
+			exit;
+		}
+
+		$themes_path = func_get_arg(0);
+
+		Config::init(['{THEMES_PATH}' => $themes_path]);
 		Dialog::write('Configuration completed!', 'green');
 	}
 

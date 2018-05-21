@@ -1,0 +1,5 @@
+<?php
+
+use Wordrobe\ThemeEntity\CustomPostType;
+
+$custom_post_types['{POST_TYPE}'] = new CustomPostType('{KEY}', '{GENERAL_NAME}', '{SINGULAR_NAME}', '{TEXT_DOMAIN}', '{CAPABILITY_TYPE}', {TAXONOMIES}, '{ICON}', '{DESCRIPTION}');
