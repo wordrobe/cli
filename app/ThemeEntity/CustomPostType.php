@@ -24,18 +24,18 @@ class CustomPostType implements ThemeEntity {
 	 * @param $singular_name
 	 * @param $text_domain
 	 * @param string $capability_type
-	 * @param array $taxonomies
+	 * @param string $taxonomies
 	 * @param string $icon
 	 * @param string $description
 	 */
-	function __construct($key, $general_name, $singular_name, $text_domain, $capability_type = 'post', $taxonomies = [], $icon = 'dashicons-admin-post', $description = '')
+	function __construct($key, $general_name, $singular_name, $text_domain, $capability_type = 'post', $taxonomies = '', $icon = 'dashicons-admin-post', $description = '')
 	{
 		$this->key = $key;
 		$this->general_name = $general_name;
 		$this->singular_name = $singular_name;
 		$this->text_domain = $text_domain;
 		$this->capability_type = $capability_type;
-		$this->taxonomies = ($capability_type === 'post') ? $taxonomies : null;
+		$this->taxonomies = ($capability_type === 'post') ? explode(',', $taxonomies) : null;
 		$this->icon = $icon;
 		$this->description = $description;
 		add_action('init', [$this, 'register'], 0);

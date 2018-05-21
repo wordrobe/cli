@@ -49,7 +49,9 @@ class CustomPostTypeFactory extends TemplateFactory implements Factory
 		$description = func_get_arg(7);
 		$theme = func_get_arg(8);
 
+		$theme_path = PROJECT_ROOT . '/' . Config::get('themes_path') . '/' . $theme;
 		$custom_post_type = new Template('custom-post-type', [
+			'{POST_TYPE}' => $key,
 			'{KEY}' => $key,
 			'{GENERAL_NAME}' => $general_name,
 			'{SINGULAR_NAME}' => $singular_name,
@@ -59,7 +61,7 @@ class CustomPostTypeFactory extends TemplateFactory implements Factory
 			'{ICON}' => $icon,
 			'{DESCRIPTION}' => $description
 		]);
-		$custom_post_type->save(PROJECT_ROOT . '/' . Config::get('themes_path') . '/' . $theme . '/includes/custom-post-type/' . $key . '.php');
+		$custom_post_type->save("$theme_path/includes/custom-post-types/$key.php");
 		Dialog::write("Custom post type '$key' added!", 'green');
 		SingleFactory::create($key, $theme);
 	}
@@ -151,8 +153,7 @@ class CustomPostTypeFactory extends TemplateFactory implements Factory
 
 		if ($taxonomies) {
 			$taxonomies = array_map($filter, explode(',', $taxonomies));
-		} else {
-			$taxonomies = [];
+			$taxonomies = implode(',', $taxonomies);
 		}
 
 		return $taxonomies;
