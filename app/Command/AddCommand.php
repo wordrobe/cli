@@ -58,6 +58,10 @@ class AddCommand extends BaseCommand
 
 		if (in_array($content_type, self::CONTENT_TYPES) && $factory = self::getFactory($content_type)) {
 			$factory::startWizard();
+		} else {
+			Dialog::write("Content type '$content_type' not found", 'red');
+			$blank_add_command = $this->getApplication()->find('add');
+			$blank_add_command->run(new ArrayInput([]), $output);
 		}
 	}
 

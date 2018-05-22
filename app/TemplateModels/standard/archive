@@ -1,0 +1,23 @@
+<?php
+
+/*
+ * Archive template for {TYPE_AND_TERM}
+ */
+
+// Logic here
+
+get_header();
+
+// Content here
+
+if (have_posts()) {
+
+	while (have_posts()) {
+
+		the_post();
+
+		// Post content here
+	}
+}
+
+get_footer();

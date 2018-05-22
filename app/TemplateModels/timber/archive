@@ -1,0 +1,12 @@
+<?php
+
+/*
+ * Archive template for {TYPE_AND_TERM}
+ */
+
+use Timber\Timber;
+
+$context = Timber::get_context();
+$context['posts'] = Timber::get_posts();
+
+Timber::render('views/default/{VIEW_NAME}.html.twig', $context);

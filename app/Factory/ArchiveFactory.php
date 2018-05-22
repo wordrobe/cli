@@ -11,7 +11,7 @@ use Wordrobe\Helper\StringsManager;
  * Class ConfigFactory
  * @package Wordrobe\Factory
  */
-class ArchiveFactory implements Factory
+class ArchiveFactory extends TemplateFactory implements Factory
 {
 	const TYPES = [
 		'post-type',
@@ -51,7 +51,8 @@ class ArchiveFactory implements Factory
 		$filename = $term ? "$basename-$term" : $basename;
 		$template_engine = Config::get('template_engine', ['themes', $theme]);
 		$theme_path = PROJECT_ROOT . '/' . Config::get('themes_path') . '/' . $theme;
-		$archive_ctrl = new Template("$template_engine/archive");
+		$type_and_term = trim(str_replace("''", '', "$type '$term'"));
+		$archive_ctrl = new Template("$template_engine/archive", ['{TYPE_AND_TERM}' => $type_and_term]);
 
 		if ($template_engine === 'timber') {
 			$archive_ctrl->fill('{VIEW_FILENAME}', $filename);
@@ -60,7 +61,7 @@ class ArchiveFactory implements Factory
 		}
 
 		$archive_ctrl->save("$theme_path/$filename.php");
-		Dialog::write('Archive template for ' . trim(str_replace("''", '', "$type '$term'")) . ' added!', 'green');
+		Dialog::write("Archive template for $type_and_term added!", 'green');
 	}
 
 	/**
