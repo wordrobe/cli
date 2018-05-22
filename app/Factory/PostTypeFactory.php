@@ -8,10 +8,10 @@ use Wordrobe\Helper\StringsManager;
 use Wordrobe\Entity\Template;
 
 
-class CustomPostTypeFactory extends TemplateFactory implements Factory
+class PostTypeFactory extends TemplateFactory implements Factory
 {
 	/**
-	 * Handles custom post type creation wizard
+	 * Handles post type creation wizard
 	 */
 	public static function startWizard()
 	{
@@ -28,14 +28,14 @@ class CustomPostTypeFactory extends TemplateFactory implements Factory
 	}
 
 	/**
-	 * Creates custom post type
+	 * Creates post type
 	 * @param mixed ...$args
 	 * @example CustomPostTypeFactory::create($key, $general_name, $singular_name, $text_domain, $capability_type, $taxonomies, $icon, $description, $theme);
 	 */
 	public static function create(...$args)
 	{
 		if (func_num_args() < 9) {
-			Dialog::write("Error: unable to create custom post type because of missing parameters");
+			Dialog::write("Error: unable to create post type because of missing parameters");
 			exit;
 		}
 
@@ -50,7 +50,7 @@ class CustomPostTypeFactory extends TemplateFactory implements Factory
 		$theme = func_get_arg(8);
 
 		$theme_path = PROJECT_ROOT . '/' . Config::get('themes_path') . '/' . $theme;
-		$custom_post_type = new Template('custom-post-type', [
+		$post_type = new Template('post-type', [
 			'{POST_TYPE}' => $key,
 			'{KEY}' => $key,
 			'{GENERAL_NAME}' => $general_name,
@@ -61,18 +61,18 @@ class CustomPostTypeFactory extends TemplateFactory implements Factory
 			'{ICON}' => $icon,
 			'{DESCRIPTION}' => $description
 		]);
-		$custom_post_type->save("$theme_path/includes/custom-post-types/$key.php");
-		Dialog::write("Custom post type '$key' added!", 'green');
+		$post_type->save("$theme_path/includes/post-types/$key.php");
+		Dialog::write("Post type '$key' added!", 'green');
 		SingleFactory::create($key, $theme);
 	}
 
 	/**
-	 * Asks for custom post type key
+	 * Asks for post type key
 	 * @return mixed
 	 */
 	private function askForKey()
 	{
-		$key = Dialog::getAnswer('Custom post type key (e.g. event):');
+		$key = Dialog::getAnswer('Post type key (e.g. event):');
 
 		if (!$key) {
 			return self::askForKey();

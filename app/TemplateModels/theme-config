@@ -1,3 +1,6 @@
 {
-	"template_engine": "{TEMPLATE_ENGINE}"
+	"template_engine": "{TEMPLATE_ENGINE}",
+	"post_types": [],
+	"taxonomies": [],
+	"terms": []
 }

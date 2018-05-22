@@ -16,14 +16,15 @@ use Wordrobe\Helper\StringsManager;
  */
 class AddCommand extends BaseCommand
 {
-	const FEATURES = [
+	const CONTENT_TYPES = [
 		'theme',
 		'child-theme',
 		'page',
 		'single',
 		'archive',
-		'custom-post-type',
-		'custom-taxonomy',
+		'post-type',
+		'taxonomy',
+		'term',
 		'ajax-service',
 		'shortcode',
 		'widget'
@@ -32,8 +33,8 @@ class AddCommand extends BaseCommand
 	protected function configure()
 	{
 		$this->setName('add');
-		$this->setDescription("Adds a new project's feature");
-		$this->addArgument('feature', InputArgument::OPTIONAL, 'The feature name');
+		$this->setDescription("Adds a new content to your project");
+		$this->addArgument('content-type', InputArgument::OPTIONAL, 'The content type');
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output)
@@ -51,11 +52,11 @@ class AddCommand extends BaseCommand
 			return self::execute($input, $output);
 		}
 
-		if (!$feature = Dialog::read('feature')) {
-			$feature = Dialog::getChoice('What kind of content do you want to add?', self::FEATURES, null);
+		if (!$content_type = Dialog::read('content-type')) {
+			$content_type = Dialog::getChoice('What kind of content do you want to add?', self::CONTENT_TYPES, null);
 		}
 
-		if (in_array($feature, self::FEATURES) && $factory = self::getFactory($feature)) {
+		if (in_array($content_type, self::CONTENT_TYPES) && $factory = self::getFactory($content_type)) {
 			$factory::startWizard();
 		}
 	}

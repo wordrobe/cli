@@ -3,10 +3,10 @@
 namespace Wordrobe\ThemeEntity;
 
 /**
- * Class CustomPostType
+ * Class PostType
  * @package Wordrobe\ThemeEntity
  */
-class CustomPostType implements ThemeEntity {
+class PostType implements ThemeEntity {
 
 	private $key;
 	private $general_name;
@@ -18,7 +18,7 @@ class CustomPostType implements ThemeEntity {
 	private $description;
 
 	/**
-	 * CustomPostType constructor
+	 * PostType constructor
 	 * @param $key
 	 * @param $general_name
 	 * @param $singular_name

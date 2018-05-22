@@ -3,10 +3,10 @@
 namespace Wordrobe\ThemeEntity;
 
 /**
- * Class CustomTaxonomy
+ * Class Taxonomy
  * @package Wordrobe\ThemeEntity
  */
-class CustomTaxonomy implements ThemeEntity {
+class Taxonomy implements ThemeEntity {
 
 	private $key;
 	private $general_name;
@@ -16,7 +16,7 @@ class CustomTaxonomy implements ThemeEntity {
 	private $hierarchical;
 
 	/**
-	 * CustomTaxonomy constructor
+	 * Taxonomy constructor
 	 * @param $key
 	 * @param $general_name
 	 * @param $singular_name

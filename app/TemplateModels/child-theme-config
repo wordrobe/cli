@@ -1,4 +1,7 @@
  {
  	"template_engine": "{TEMPLATE_ENGINE}",
- 	"parent_theme": "{PARENT_THEME}"
+ 	"parent_theme": "{PARENT_THEME}",
+ 	"post_types": [],
+	"taxonomies": [],
+	"terms": []
  }

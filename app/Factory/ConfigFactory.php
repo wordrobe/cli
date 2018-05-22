@@ -4,7 +4,6 @@ namespace Wordrobe\Factory;
 
 use Wordrobe\Config;
 use Wordrobe\Helper\Dialog;
-use Wordrobe\Helper\FilesManager;
 
 /**
  * Class ConfigFactory
