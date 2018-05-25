@@ -16,7 +16,7 @@ class PageBuilder extends TemplateBuilder implements Builder
 	{
 		$theme = self::askForTheme(['template_engine']);
 		$name = self::askForName();
-		self::create([
+		self::build([
 			'name' => $name,
 			'theme' => $theme
 		]);

@@ -17,7 +17,7 @@ class ConfigBuilder implements Builder
 	public static function startWizard()
 	{
 		$themes_path = self::askForThemesPath();
-		self::create([
+		self::build([
 			'themes_path' => $themes_path
 		]);
 	}

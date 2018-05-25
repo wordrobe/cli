@@ -28,7 +28,7 @@ class ArchiveBuilder extends TemplateBuilder implements Builder
 		$theme = self::askForTheme(['template_engine']);
 		$type = self::askForType();
 		$term = $type === 'post-type' ? self::askForPostType() : self::askForTerm();
-		self::create([
+		self::build([
 			'type' => $type,
 			'term' => $term,
 			'theme' => $theme

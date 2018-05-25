@@ -16,7 +16,7 @@ class SingleBuilder extends TemplateBuilder implements Builder
 	{
 		$theme = self::askForTheme(['template_engine']);
 		$post_type = self::askForPostType();
-		self::create([
+		self::build([
 			'post_type' => $post_type,
 			'theme' => $theme
 		]);

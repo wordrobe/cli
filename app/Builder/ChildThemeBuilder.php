@@ -31,7 +31,7 @@ class ChildThemeBuilder extends ThemeBuilder
 		$tags = parent::askForTags();
 		$folder_name = parent::askForFolderName($theme_name);
 		$parent = self::askForParentTheme();
-		self::create([
+		self::build([
 			'theme_name' => $theme_name,
 			'theme_uri' => $theme_uri,
 			'author' => $author,

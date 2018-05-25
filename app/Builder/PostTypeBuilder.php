@@ -24,7 +24,7 @@ class PostTypeBuilder extends TemplateBuilder implements Builder
 		$taxonomies = self::askForTaxonomies();
 		$icon = self::askForIcon();
 		$description = self::askForDescription();
-		self::create([
+		self::build([
 			'key' => $key,
 			'general_name' => $general_name,
 			'singular_name' => $singular_name,

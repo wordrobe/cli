@@ -31,7 +31,7 @@ class ThemeBuilder implements Builder
 		$tags = self::askForTags();
 		$folder_name = self::askForFolderName($theme_name);
 		$template_engine = self::askForTemplateEngine();
-		self::create([
+		self::build([
 			'theme_name' => $theme_name,
 			'theme_uri' => $theme_uri,
 			'author' => $author,
