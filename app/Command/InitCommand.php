@@ -12,15 +12,15 @@ use Wordrobe\Builder\ConfigBuilder;
  */
 class InitCommand extends BaseCommand
 {
-	protected function configure()
-	{
-		$this->setName('init');
-		$this->setDescription('Initializes Wordrobe');
-	}
+    protected function configure()
+    {
+        $this->setName('init');
+        $this->setDescription('Initializes Wordrobe');
+    }
 
-	protected function execute(InputInterface $input, OutputInterface $output)
-	{
-		parent::execute($input, $output);
-		ConfigBuilder::startWizard();
-	}
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        parent::execute($input, $output);
+        ConfigBuilder::startWizard();
+    }
 }

@@ -6,15 +6,14 @@ namespace Wordrobe\ThemeEntity;
  * Class Shortcode
  * @package Wordrobe\ThemeEntity
  */
-class Shortcode implements ThemeEntity {
+class Shortcode implements ThemeEntity
+{
+    public function __construct()
+    {
+    }
 
-	function __construct()
-	{
-
-	}
-
-	public function register()
-	{
-		// Logic here
-	}
+    public function register()
+    {
+        // Logic here
+    }
 }

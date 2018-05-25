@@ -13,8 +13,8 @@ use Wordrobe\Helper\Dialog;
  */
 abstract class BaseCommand extends Command
 {
-	protected function execute(InputInterface $input, OutputInterface $output)
-	{
-		Dialog::init($this->getHelper('question'), $input, $output);
-	}
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        Dialog::init($this->getHelper('question'), $input, $output);
+    }
 }

@@ -19,35 +19,35 @@ class Dialog
     public static $input;
     public static $output;
 
-	/**
-	 * Initializes Dialog
-	 *
-	 * @param QuestionHelper $questionHelper
-	 * @param InputInterface $input
-	 * @param OutputInterface $output
-	 */
+    /**
+     * Initializes Dialog
+     *
+     * @param QuestionHelper $questionHelper
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     */
     public static function init(QuestionHelper $questionHelper, InputInterface $input, OutputInterface $output)
-	{
-		self::$questionHelper = $questionHelper;
-		self::$input = $input;
-		self::$output = $output;
-	}
+    {
+        self::$questionHelper = $questionHelper;
+        self::$input = $input;
+        self::$output = $output;
+    }
 
-	/**
-	 * Provides an open-ended question
-	 * @param $text
-	 * @param string $default
-	 * @param string $color
-	 * @param array $autocomplete
-	 * @return mixed
-	 */
+    /**
+     * Provides an open-ended question
+     * @param $text
+     * @param string $default
+     * @param string $color
+     * @param array $autocomplete
+     * @return mixed
+     */
     public static function getAnswer($text, $default = '', $color = 'blue', $autocomplete = null)
     {
         $question = new Question('<fg=' . $color . '>' . $text . ' </>', $default);
 
-		if ($autocomplete) {
-			$question->setAutocompleterValues($autocomplete);
-		}
+        if ($autocomplete) {
+            $question->setAutocompleterValues($autocomplete);
+        }
 
         $answer = self::ask($question);
         return $answer;
@@ -114,15 +114,15 @@ class Dialog
         return self::$input->getArgument($argument);
     }
 
-	/**
-	 * A QuestionHelper's "ask" method wrapper
-	 *
-	 * @param Question $question
-	 * @return mixed
-	 */
-	private static function ask(Question $question)
-	{
-		$answer = self::$questionHelper->ask(self::$input, self::$output, $question);
-		return $answer;
-	}
+    /**
+     * A QuestionHelper's "ask" method wrapper
+     *
+     * @param Question $question
+     * @return mixed
+     */
+    private static function ask(Question $question)
+    {
+        $answer = self::$questionHelper->ask(self::$input, self::$output, $question);
+        return $answer;
+    }
 }

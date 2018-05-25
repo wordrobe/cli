@@ -6,15 +6,14 @@ namespace Wordrobe\ThemeEntity;
  * Class Term
  * @package Wordrobe\ThemeEntity
  */
-class Term implements ThemeEntity {
+class Term implements ThemeEntity
+{
+    public function __construct()
+    {
+    }
 
-	function __construct()
-	{
-
-	}
-
-	public function register()
-	{
-		// Logic here
-	}
+    public function register()
+    {
+        // Logic here
+    }
 }

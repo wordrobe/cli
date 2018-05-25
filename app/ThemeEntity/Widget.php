@@ -6,15 +6,14 @@ namespace Wordrobe\ThemeEntity;
  * Class Widget
  * @package Wordrobe\ThemeEntity
  */
-class Widget implements ThemeEntity {
+class Widget implements ThemeEntity
+{
+    public function __construct()
+    {
+    }
 
-	function __construct()
-	{
-
-	}
-
-	public function register()
-	{
-		// Logic here
-	}
+    public function register()
+    {
+        // Logic here
+    }
 }

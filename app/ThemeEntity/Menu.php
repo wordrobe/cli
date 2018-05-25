@@ -6,15 +6,14 @@ namespace Wordrobe\ThemeEntity;
  * Class Menu
  * @package Wordrobe\ThemeEntity
  */
-class Menu implements ThemeEntity {
+class Menu implements ThemeEntity
+{
+    public function __construct()
+    {
+    }
 
-	function __construct()
-	{
-
-	}
-
-	public function register()
-	{
-		// Logic here
-	}
+    public function register()
+    {
+        // Logic here
+    }
 }

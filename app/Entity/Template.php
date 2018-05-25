@@ -11,83 +11,83 @@ use Wordrobe\Helper\FilesManager;
  */
 class Template
 {
-	protected $content;
+    protected $content;
 
-	/**
-	 * Template constructor.
-	 * @param $model
-	 * @param $replacements
-	 */
-	function __construct($model, $replacements = null)
-	{
-		$this->content = self::getModelContent($model);
-		// auto-fill
-		if (is_array($replacements)) {
-			foreach ($replacements as $placeholder => $replacement) {
-				$this->fill($placeholder, $replacement);
-			}
-		}
-	}
+    /**
+     * Template constructor.
+     * @param $model
+     * @param $replacements
+     */
+    public function __construct($model, $replacements = null)
+    {
+        $this->content = self::getModelContent($model);
+        // auto-fill
+        if (is_array($replacements)) {
+            foreach ($replacements as $placeholder => $replacement) {
+                $this->fill($placeholder, $replacement);
+            }
+        }
+    }
 
-	/**
-	 * Content getter
-	 * @return string
-	 */
-	public function getContent()
-	{
-		return $this->content;
-	}
+    /**
+     * Content getter
+     * @return string
+     */
+    public function getContent()
+    {
+        return $this->content;
+    }
 
-	/**
-	 * Content setter
-	 * @param $content
-	 */
-	public function setContent($content)
-	{
-		$this->content = $content;
-	}
+    /**
+     * Content setter
+     * @param $content
+     */
+    public function setContent($content)
+    {
+        $this->content = $content;
+    }
 
-	/**
-	 * Replaces template placeholder
-	 * @param $placeholder
-	 * @param $value
-	 */
-	public function fill($placeholder, $value)
-	{
-		$this->content = str_replace($placeholder, $value, $this->content);
-	}
+    /**
+     * Replaces template placeholder
+     * @param $placeholder
+     * @param $value
+     */
+    public function fill($placeholder, $value)
+    {
+        $this->content = str_replace($placeholder, $value, $this->content);
+    }
 
-	/**
-	 * Saves template in a file
-	 * @param $filepath
-	 */
-	public function save($filepath)
-	{
-		try {
-			FilesManager::writeFile($filepath, $this->content);
-		} catch (\Exception $e) {
-			Dialog::write($e->getMessage(), 'red');
-			exit();
-		}
+    /**
+     * Saves template in a file
+     * @param $filepath
+     */
+    public function save($filepath)
+    {
+        try {
+            FilesManager::writeFile($filepath, $this->content);
+        } catch (\Exception $e) {
+            Dialog::write($e->getMessage(), 'red');
+            exit();
+        }
 
-		Dialog::write("$filepath written!", 'cyan');
-	}
+        Dialog::write("$filepath written!", 'cyan');
+    }
 
-	/**
-	 * Model content getter
-	 * @param $model
-	 * @return string
-	 * @throws \Exception
-	 */
-	private static function getModelContent($model)
-	{
-		$templateFile = TEMPLATES_MODELS_PATH . '/' . $model;
-		try {
-			$content = FilesManager::readFile($templateFile);
-		} catch (\Exception $e) {
-			Dialog::write($e->getMessage(), 'red');
-			exit();
-		}
-		return $content;
-	}
+    /**
+     * Model content getter
+     * @param $model
+     * @return string
+     * @throws \Exception
+     */
+    private static function getModelContent($model)
+    {
+        $templateFile = TEMPLATES_MODELS_PATH . '/' . $model;
+        try {
+            $content = FilesManager::readFile($templateFile);
+        } catch (\Exception $e) {
+            Dialog::write($e->getMessage(), 'red');
+            exit();
+        }
+        return $content;
+    }
 }
