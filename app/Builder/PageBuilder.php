@@ -1,42 +1,48 @@
 <?php
 
-namespace Wordrobe\Factory;
+namespace Wordrobe\Builder;
 
 use Wordrobe\Config;
 use Wordrobe\Helper\Dialog;
 use Wordrobe\Helper\StringsManager;
 use Wordrobe\Entity\Template;
 
-class PageFactory extends TemplateFactory implements Factory
+class PageBuilder extends TemplateBuilder implements Builder
 {
 	/**
 	 * Handles page template creation wizard
 	 */
 	public static function startWizard()
 	{
-		$theme = self::askForTheme();
+		$theme = self::askForTheme(['template_engine']);
 		$name = self::askForName();
-		self::create($name, $theme);
+		self::create([
+			'name' => $name,
+			'theme' => $theme
+		]);
 	}
 
 	/**
-	 * Creates page template
-	 * @param mixed ...$args
-	 * @example PageFactory::create($name, $theme);
+	 * Builds page template
+	 * @param array $params
+	 * @example PageBuilder::create([
+	 * 	'name' => $name,
+	 *	'theme' => $theme
+	 * ]);
 	 */
-	public static function create(...$args)
+	public static function build($params)
 	{
-		if (func_num_args() < 2) {
-			Dialog::write("Error: unable to create page template because of missing parameters");
+		$name = $params['name'];
+		$theme = $params['theme'];
+
+		if (!$name || !$theme) {
+			Dialog::write('Error: unable to create page template because of missing parameters', 'red');
 			exit;
 		}
 
-		$name = func_get_arg(0);
-		$theme = func_get_arg(1);
-
 		$filename = StringsManager::toKebabCase($name);
-		$template_engine = Config::get('template_engine', ['themes', $theme]);
-		$theme_path = PROJECT_ROOT . '/' . Config::get('themes_path') . '/' . $theme;
+		$template_engine = Config::expect("themes.$theme.template_engine");
+		$theme_path = PROJECT_ROOT . '/' . Config::expect('themes_path') . '/' . $theme;
 		$page_ctrl = new Template("$template_engine/page", ['{TEMPLATE_NAME}' => $name]);
 
 		if ($template_engine === 'timber') {

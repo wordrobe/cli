@@ -15,6 +15,8 @@ class Config
 	const FILENAME = 'wordrobe.json';
 	const FILEPATH = PROJECT_ROOT . '/' . self::FILENAME;
 
+	private static $params = null;
+
 	/**
 	 * Checks Config existence
 	 * @return bool
@@ -30,119 +32,137 @@ class Config
 	 */
 	public static function init($params = null)
 	{
-		if (!self::exists()) {
-			$template = new Template('project-config', $params);
-			$template->save(self::FILEPATH);
-		}
+		$template = new Template('project-config', $params);
+		$template->save(self::FILEPATH);
 	}
 
 	/**
 	 * Gets Config param
-	 * @param $key
-	 * @param null|string|array $ancestors
-	 * @return mixed
+	 * @param $path
+	 * @return mixed|null
 	 */
-	public static function get($key, $ancestors = null)
+	public static function get($path)
 	{
-		if ($config = self::getContent()) {
+		self::getContent();
 
-			if ($ancestors) {
-				return self::getSubsetParam($config, $ancestors, $key);
+		if (self::$params) {
+			$keys = explode('.', $path);
+			$param = self::$params;
+
+			foreach ($keys as $key) {
+
+				if (is_null($param[$key]) || (gettype($param[$key]) === 'string' && empty($param[$key]))) {
+					return null;
+				}
+
+				$param = $param[$key];
 			}
 
-			return $config[$key];
+			return $param;
 		}
+
 		return null;
 	}
 
 	/**
-	 * Set Config param
-	 * @param $key
-	 * @param $value
-	 * @param null|string|array $ancestors
+	 * Gets Config param strictly
+	 * @param $path
+	 * @param null $type
+	 * @return mixed|null
 	 */
-	public static function set($key, $value, $ancestors = null)
+	public static function expect($path, $type = null)
 	{
-		if ($config = self::getContent()) {
+		$param = self::get($path);
 
-			if ($ancestors) {
-				self::setSubsetParam($config, $ancestors, $key, $value);
-			} else {
-				$config[$key] = $value;
+		if (($type && gettype($param) !== $type) || is_null($param) || (gettype($param) === 'string' && empty($param))) {
+			Dialog::write("Error: the required param '$path' is missing or invalid in " . self::FILEPATH . ". Please fix your configuration file in order to continue.", 'red');
+			exit;
+		}
+
+		return $param;
+	}
+
+	/**
+	 * Sets Config param
+	 * @param $path
+	 * @param $value
+	 */
+	public static function set($path, $value)
+	{
+		self::getContent();
+
+		if (self::$params) {
+			$keys = explode('.', $path);
+			$param = &self::$params;
+			$size = count($keys);
+
+			for ($i = 0; $i < $size - 1; $i++) {
+
+				if (!in_array($keys[$i], $param)) {
+					$param[$keys[$i]] = [];
+				}
+
+				$param = $param[$keys[$i]];
 			}
 
-			self::setContent($config);
+			$param[$keys[$size - 1]] = $value;
+
+			self::updateContent();
 		}
 	}
 
 	/**
-	 * Config subset params getter
-	 * @param $config
-	 * @param $ancestors
-	 * @param $key
-	 * @return mixed
-	 */
-	private static function getSubsetParam(&$config, $ancestors, $key)
-	{
-		if (is_array($ancestors)) {
-			$subset = $config;
-
-			foreach ($ancestors as $param) {
-				$subset = $subset[$param];
-			}
-
-			return $subset[$key];
-		}
-
-		return $config[$ancestors][$key];
-	}
-
-	/**
-	 * Config subset param setter
-	 * @param $config
-	 * @param $ancestors
-	 * @param $key
+	 * Adds Config param
+	 * @param $path
 	 * @param $value
-	 * @return mixed
 	 */
-	private static function setSubsetParam(&$config, $ancestors, $key, $value)
+	public static function add($path, $value)
 	{
-		if (is_array($ancestors)) {
-			$subset = $config;
+		self::getContent();
 
-			foreach ($ancestors as $param) {
-				$subset = $subset[$param];
+		if (self::$params) {
+			$keys = explode('.', $path);
+			$param = &self::$params;
+
+			foreach ($keys as $key) {
+
+				if (!in_array($key, $param)) {
+					$param[$key] = [];
+				}
+
+				$param = $param[$key];
 			}
 
-			$subset[$key] = $value;
-		} else {
-			$config[$ancestors][$key] = $value;
+			$param[] = $value;
+
+			self::updateContent();
 		}
 	}
 
 	/**
 	 * Gets Config file contents
-	 * @return mixed|null
 	 */
 	private static function getContent()
 	{
-		$config = FilesManager::readFile(self::FILEPATH);
-
-		if ($config) {
-			return json_decode($config, true);
+		try {
+			$content = FilesManager::readFile(self::FILEPATH);
+			if ($content) {
+				self::$params = json_decode($content, true);
+			} else {
+				self::$params = null;
+			}
+		} catch (\Exception $e) {
+			// continue
 		}
-
-		return null;
 	}
 
 	/**
-	 * Sets Config file content
-	 * @param $content
+	 * Updates Config file content
 	 */
-	private static function setContent($content)
+	private static function updateContent()
 	{
 		try {
-			FilesManager::writeFile(self::FILEPATH, json_encode($content, JSON_PRETTY_PRINT), true);
+			FilesManager::writeFile(self::FILEPATH, json_encode(self::$params, JSON_PRETTY_PRINT), true);
 		} catch (\Exception $e) {
 			Dialog::write($e->getMessage(), 'red');
 			exit();

@@ -1,6 +1,6 @@
 <?php
 
-namespace Wordrobe\Factory;
+namespace Wordrobe\Builder;
 
 use Wordrobe\Config;
 use Wordrobe\Helper\Dialog;
@@ -8,7 +8,7 @@ use Wordrobe\Helper\StringsManager;
 use Wordrobe\Entity\Template;
 
 
-class PostTypeFactory extends TemplateFactory implements Factory
+class PostTypeBuilder extends TemplateBuilder implements Builder
 {
 	/**
 	 * Handles post type creation wizard
@@ -24,32 +24,52 @@ class PostTypeFactory extends TemplateFactory implements Factory
 		$taxonomies = self::askForTaxonomies();
 		$icon = self::askForIcon();
 		$description = self::askForDescription();
-		self::create($key, $general_name, $singular_name, $text_domain, $capability_type, $taxonomies, $icon, $description, $theme);
+		self::create([
+			'key' => $key,
+			'general_name' => $general_name,
+			'singular_name' => $singular_name,
+			'text_domain' => $text_domain,
+			'capability_type' => $capability_type,
+			'taxonomies' => $taxonomies,
+			'icon' => $icon,
+			'description' => $description,
+			'theme' => $theme
+		]);
 	}
 
 	/**
-	 * Creates post type
-	 * @param mixed ...$args
-	 * @example CustomPostTypeFactory::create($key, $general_name, $singular_name, $text_domain, $capability_type, $taxonomies, $icon, $description, $theme);
+	 * Builds post type
+	 * @param array $params
+	 * @example CustomPostTypeBuilder::create([
+	 * 	'key' => $key,
+	 *	'general_name' => $general_name,
+	 *	'singular_name' => $singular_name,
+	 *	'text_domain' => $text_domain,
+	 *	'capability_type' => $capability_type,
+	 *	'taxonomies' => $taxonomies,
+	 *	'icon' => $icon,
+	 *	'description' => $description,
+	 *	'theme' => $theme
+	 * ]);
 	 */
-	public static function create(...$args)
+	public static function build($params)
 	{
-		if (func_num_args() < 9) {
-			Dialog::write("Error: unable to create post type because of missing parameters");
+		$key = $params['key'];
+		$general_name = $params['general_name'];
+		$singular_name = $params['singular_name'];
+		$text_domain = $params['text_domain'];
+		$capability_type = $params['capability_type'];
+		$taxonomies = $params['taxonomies'];
+		$icon = $params['icon'];
+		$description = $params['description'];
+		$theme = $params['theme'];
+
+		if (!$key || !$general_name || !$singular_name || !$text_domain || !$capability_type || !$theme) {
+			Dialog::write('Error: unable to create post type because of missing parameters.', 'red');
 			exit;
 		}
 
-		$key = func_get_arg(0);
-		$general_name = func_get_arg(1);
-		$singular_name = func_get_arg(2);
-		$text_domain = func_get_arg(3);
-		$capability_type = func_get_arg(4);
-		$taxonomies = func_get_arg(5);
-		$icon = func_get_arg(6);
-		$description = func_get_arg(7);
-		$theme = func_get_arg(8);
-
-		$theme_path = PROJECT_ROOT . '/' . Config::get('themes_path') . '/' . $theme;
+		$theme_path = PROJECT_ROOT . '/' . Config::expect('themes_path') . '/' . $theme;
 		$post_type = new Template('post-type', [
 			'{POST_TYPE}' => $key,
 			'{KEY}' => $key,
@@ -62,8 +82,12 @@ class PostTypeFactory extends TemplateFactory implements Factory
 			'{DESCRIPTION}' => $description
 		]);
 		$post_type->save("$theme_path/includes/post-types/$key.php");
+		Config::add("themes.$theme.post_types", $key);
 		Dialog::write("Post type '$key' added!", 'green');
-		SingleFactory::create($key, $theme);
+		SingleBuilder::build([
+			'key' => $key,
+			'theme' => $theme
+		]);
 	}
 
 	/**

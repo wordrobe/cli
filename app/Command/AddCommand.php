@@ -56,28 +56,28 @@ class AddCommand extends BaseCommand
 			$content_type = Dialog::getChoice('What kind of content do you want to add?', self::CONTENT_TYPES, null);
 		}
 
-		if (in_array($content_type, self::CONTENT_TYPES) && $factory = self::getFactory($content_type)) {
-			$factory::startWizard();
+		if (in_array($content_type, self::CONTENT_TYPES) && $builder = self::getBuilder($content_type)) {
+			$builder::startWizard();
 		} else {
-			Dialog::write("Content type '$content_type' not found", 'red');
+			Dialog::write("Error: content type '$content_type' not found.", 'red');
 			$blank_add_command = $this->getApplication()->find('add');
 			$blank_add_command->run(new ArrayInput([]), $output);
 		}
 	}
 
 	/**
-	 * Entity factory getter
+	 * Entity builder getter
 	 *
 	 * @param $name
 	 * @return string
 	 */
-	protected function getFactory($name)
+	protected function getBuilder($name)
 	{
-		$factory = 'Wordrobe\Factory\\' . StringsManager::toPascalCase($name) . 'Factory';
-		if (!class_exists($factory)) {
-			Dialog::write('Error: ' . $factory . ' is not defined.', 'red');
+		$builder = 'Wordrobe\Builder\\' . StringsManager::toPascalCase($name) . 'Builder';
+		if (!class_exists($builder)) {
+			Dialog::write('Error: ' . $builder . ' is not defined.', 'red');
 			return null;
 		}
-		return $factory;
+		return $builder;
 	}
 }

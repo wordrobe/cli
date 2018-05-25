@@ -1,15 +1,15 @@
 <?php
 
-namespace Wordrobe\Factory;
+namespace Wordrobe\Builder;
 
 use Wordrobe\Config;
 use Wordrobe\Helper\Dialog;
 
 /**
- * Class ConfigFactory
- * @package Wordrobe\Factory
+ * Class ConfigBuilder
+ * @package Wordrobe\Builder
  */
-class ConfigFactory implements Factory
+class ConfigBuilder implements Builder
 {
 	/**
 	 * Handles config creation wizard
@@ -17,22 +17,26 @@ class ConfigFactory implements Factory
 	public static function startWizard()
 	{
 		$themes_path = self::askForThemesPath();
-		self::create($themes_path);
+		self::create([
+			'themes_path' => $themes_path
+		]);
 	}
 
 	/**
-	 * Creates config
-	 * @param mixed ...$args
-	 * @example ConfigFactory::create($themes_path);
+	 * Builds config
+	 * @param array $params
+	 * @example ConfigBuilder::create([
+	 * 	'themes_path' => $themes_path
+	 * ]);
 	 */
-	public static function create(...$args)
+	public static function build($params)
 	{
-		if (func_num_args() < 1) {
-			Dialog::write("Error: unable to create config because of missing parameters");
+		$themes_path = $params['themes_path'];
+
+		if (!$themes_path) {
+			Dialog::write('Error: unable to create config because of missing parameters.', 'red');
 			exit;
 		}
-
-		$themes_path = func_get_arg(0);
 
 		Config::init(['{THEMES_PATH}' => $themes_path]);
 		Dialog::write('Configuration completed!', 'green');

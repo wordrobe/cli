@@ -52,7 +52,7 @@ class FilesManager {
 			$dir = mkdir($path, $mode, $recursive);
 
 			if (!$dir) {
-				throw new \Exception("Error: unable to create $path");
+				throw new \Exception("Error: unable to create $path.");
 			}
 		}
 	}
@@ -75,8 +75,8 @@ class FilesManager {
 			$written = fwrite($file, $content);
 			fclose($file);
 
-			if (!$written) {
-				throw new \Exception("Error: unable to write $filepath");
+			if ($written === false) {
+				throw new \Exception("Error: unable to write $filepath.");
 			}
 		}
 	}
@@ -90,7 +90,7 @@ class FilesManager {
 	public static function readFile($filepath)
 	{
 		if (!self::fileExists($filepath)) {
-			throw new \Exception("Error: $filepath doesn't exist");
+			throw new \Exception("Error: $filepath doesn't exist.");
 		}
 
 		return file_get_contents($filepath);
@@ -105,7 +105,7 @@ class FilesManager {
 	public static function setPermissions($path, $mode)
 	{
 		if (!chmod($path, $mode)) {
-			throw new \Exception("Error: unable to change $path permissions");
+			throw new \Exception("Error: unable to change $path permissions.");
 		}
 	}
 
@@ -119,7 +119,7 @@ class FilesManager {
 	public static function copyFiles($source, $destination, $errors = [])
 	{
 		if (!self::directoryExists($source)) {
-			throw new \Exception("Error: $source doesn't exist");
+			throw new \Exception("Error: $source doesn't exist.");
 		}
 
 		$files = scandir($source);
@@ -144,7 +144,7 @@ class FilesManager {
 
 		if (count($errors)) {
 			$error_files = implode(', ', $errors);
-			throw new \Exception("Error: unable to copy following files [$error_files]");
+			throw new \Exception("Error: unable to copy following files [$error_files].");
 		}
 	}
 }

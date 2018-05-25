@@ -30,7 +30,7 @@ class ChildTheme extends Theme
 	function __construct($theme_name, $theme_uri, $author, $author_uri, $description, $version, $license, $license_uri, $text_domain, $tags, $folder_name, $parent)
 	{
 		$this->parent = $parent;
-		$template_engine = Config::get('template_engine', ['themes', $this->parent]);
+		$template_engine = Config::get("themes.$this->parent.template_engine");
 		parent::__construct($theme_name, $theme_uri, $author, $author_uri, $description, $version, $license, $license_uri, $text_domain, $tags, $folder_name, $template_engine);
 	}
 
@@ -52,7 +52,7 @@ class ChildTheme extends Theme
 			'{TAGS}' => $this->tags,
 			'{PARENT_THEME}' => $this->parent
 		]);
-		$stylesheet->save($this->path . '/style.css');
+		$stylesheet->save("$this->path/style.css");
 	}
 
 	/**
@@ -64,6 +64,6 @@ class ChildTheme extends Theme
 			'{TEMPLATE_ENGINE}' => $this->template_engine,
 			'{PARENT_THEME}' => $this->parent
 		]);
-		Config::set($this->folder_name, json_decode($themeConfig->getContent(), true), 'themes');
+		Config::set("themes.$this->folder_name", json_decode($themeConfig->getContent(), true));
 	}
 }

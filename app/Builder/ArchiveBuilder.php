@@ -1,6 +1,6 @@
 <?php
 
-namespace Wordrobe\Factory;
+namespace Wordrobe\Builder;
 
 use Wordrobe\Config;
 use Wordrobe\Helper\Dialog;
@@ -8,10 +8,10 @@ use Wordrobe\Entity\Template;
 use Wordrobe\Helper\StringsManager;
 
 /**
- * Class ConfigFactory
- * @package Wordrobe\Factory
+ * Class ConfigBuilder
+ * @package Wordrobe\Builder
  */
-class ArchiveFactory extends TemplateFactory implements Factory
+class ArchiveBuilder extends TemplateBuilder implements Builder
 {
 	const TYPES = [
 		'post-type',
@@ -25,32 +25,40 @@ class ArchiveFactory extends TemplateFactory implements Factory
 	 */
 	public static function startWizard()
 	{
-		$theme = self::askForTheme();
+		$theme = self::askForTheme(['template_engine']);
 		$type = self::askForType();
 		$term = $type === 'post-type' ? self::askForPostType() : self::askForTerm();
-		self::create($type, $term, $theme);
+		self::create([
+			'type' => $type,
+			'term' => $term,
+			'theme' => $theme
+		]);
 	}
 
 	/**
-	 * Creates archive
-	 * @param mixed ...$args
-	 * @example ArchiveFactory::create($type, $term, $theme);
+	 * Builds archive
+	 * @param array $params
+	 * @example ArchiveBuilder::create([
+	 *	'type' => $type,
+	 *	'term' => $term,
+	 *	'theme' => $theme
+	 * ]);
 	 */
-	public static function create(...$args)
+	public static function build($params)
 	{
-		if (func_num_args() < 3) {
-			Dialog::write("Error: unable to create archive because of missing parameters");
+		$type = $params['type'];
+		$term = $params['term'];
+		$theme = $params['theme'];
+
+		if (!$type || !$term || !$theme) {
+			Dialog::write('Error: unable to create archive because of missing parameters.', 'red');
 			exit;
 		}
 
-		$type = func_get_arg(0);
-		$term = func_get_arg(1);
-		$theme = func_get_arg(2);
-
 		$basename = $type === 'post-type' ? 'archive' : $type;
 		$filename = $term ? "$basename-$term" : $basename;
-		$template_engine = Config::get('template_engine', ['themes', $theme]);
-		$theme_path = PROJECT_ROOT . '/' . Config::get('themes_path') . '/' . $theme;
+		$template_engine = Config::expect("themes.$theme.template_engine");
+		$theme_path = PROJECT_ROOT . '/' . Config::expect('themes_path') . '/' . $theme;
 		$type_and_term = trim(str_replace("''", '', "$type '$term'"));
 		$archive_ctrl = new Template("$template_engine/archive", ['{TYPE_AND_TERM}' => $type_and_term]);
 

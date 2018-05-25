@@ -1,22 +1,24 @@
 <?php
 
-namespace Wordrobe\Factory;
+namespace Wordrobe\Builder;
 
+use Wordrobe\Config;
 use Wordrobe\Helper\Dialog;
 use Wordrobe\Entity\Theme;
 use Wordrobe\Helper\StringsManager;
 
 /**
- * Class ThemeFactory
- * @package Wordrobe\Factory
+ * Class ThemeBuilder
+ * @package Wordrobe\Builder
  */
-class ThemeFactory implements Factory
+class ThemeBuilder implements Builder
 {
 	/**
 	 * Handles theme creation wizard
 	 */
 	public static function startWizard()
 	{
+		Config::expect('themes_path');
 		$theme_name = self::askForThemeName();
 		$theme_uri = self::askForThemeURI();
 		$author = self::askForAuthor();
@@ -29,33 +31,59 @@ class ThemeFactory implements Factory
 		$tags = self::askForTags();
 		$folder_name = self::askForFolderName($theme_name);
 		$template_engine = self::askForTemplateEngine();
-		self::create($theme_name, $theme_uri, $author, $author_uri, $description, $version, $license, $license_uri, $text_domain, $tags, $folder_name, $template_engine);
+		self::create([
+			'theme_name' => $theme_name,
+			'theme_uri' => $theme_uri,
+			'author' => $author,
+			'author_uri' => $author_uri,
+			'description' => $description,
+			'version' => $version,
+			'license' => $license,
+			'license_uri' => $license_uri,
+			'text_domain' => $text_domain,
+			'tags' => $tags,
+			'folder_name' => $folder_name,
+			'template_engine' => $template_engine
+		]);
 	}
 
 	/**
-	 * Create theme
-	 * @param mixed ...$args
-	 * @example ThemeFactory::create($theme_name, $theme_uri, $author, $author_uri, $description, $version, $license, $license_uri, $text_domain, $tags, $folder_name, $template_engine);
+	 * Builds theme
+	 * @param array $params
+	 * @example ThemeBuilder::create([
+	 *	'theme_name' => $theme_name,
+	 *	'theme_uri' => $theme_uri,
+	 *	'author' => $author,
+	 *	'author_uri' => $author_uri,
+	 *	'description' => $description,
+	 *	'version' => $version,
+	 *	'license' => $license,
+	 *	'license_uri' => $license_uri,
+	 *	'text_domain' => $text_domain,
+	 *	'tags' => $tags,
+	 *	'folder_name' => $folder_name,
+	 *	'template_engine' => $template_engine
+	 * ]);
 	 */
-	public static function create(...$args)
+	public static function build($params)
 	{
-		if (func_num_args() < 12) {
-			Dialog::write("Error: unable to create theme because of missing parameters");
+		$theme_name = $params['theme_name'];
+		$theme_uri = $params['theme_uri'];
+		$author = $params['author'];
+		$author_uri = $params['author_uri'];
+		$description = $params['description'];
+		$version = $params['version'];
+		$license = $params['license'];
+		$license_uri = $params['license_uri'];
+		$text_domain = $params['text_domain'];
+		$tags = $params['tags'];
+		$folder_name = $params['folder_name'];
+		$template_engine = $params['template_engine'];
+
+		if (!$theme_name || !$text_domain || !$folder_name || !$template_engine) {
+			Dialog::write('Error: unable to create archive because of missing parameters.', 'red');
 			exit;
 		}
-
-		$theme_name = func_get_arg(0);
-		$theme_uri = func_get_arg(1);
-		$author = func_get_arg(2);
-		$author_uri = func_get_arg(3);
-		$description = func_get_arg(4);
-		$version = func_get_arg(5);
-		$license = func_get_arg(6);
-		$license_uri = func_get_arg(7);
-		$text_domain = func_get_arg(8);
-		$tags = func_get_arg(9);
-		$folder_name = func_get_arg(10);
-		$template_engine = func_get_arg(11);
 
 		$theme = new Theme($theme_name, $theme_uri, $author, $author_uri, $description, $version, $license, $license_uri, $text_domain, $tags, $folder_name, $template_engine);
 		$theme->install();

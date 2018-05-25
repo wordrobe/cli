@@ -43,6 +43,7 @@ class Theme
 	 */
 	function __construct($theme_name, $theme_uri, $author, $author_uri, $description, $version, $license, $license_uri, $text_domain, $tags, $folder_name, $template_engine)
 	{
+		$themes_path = Config::expect('themes_path');
 		$this->theme_name = $theme_name;
 		$this->theme_uri = $theme_uri;
 		$this->author = $author;
@@ -55,7 +56,7 @@ class Theme
 		$this->tags = $tags;
 		$this->folder_name = $folder_name;
 		$this->template_engine = $template_engine;
-		$this->path = PROJECT_ROOT . '/' . Config::get('themes_path') . '/' . $this->folder_name;
+		$this->path = PROJECT_ROOT . "/$themes_path/$this->folder_name";
 	}
 
 	/**
@@ -91,7 +92,7 @@ class Theme
 			'{TEXT_DOMAIN}' => $this->text_domain,
 			'{TAGS}' => $this->tags
 		]);
-		$stylesheet->save($this->path . '/style.css');
+		$stylesheet->save("$this->path/style.css");
 	}
 
 	/**
@@ -100,7 +101,7 @@ class Theme
 	protected function updateConfig()
 	{
 		$themeConfig = new Template('theme-config', ['{TEMPLATE_ENGINE}' => $this->template_engine]);
-		Config::set($this->folder_name, json_decode($themeConfig->getContent(), true), 'themes');
+		Config::set("themes.$this->folder_name", json_decode($themeConfig->getContent(), true));
 	}
 
 	/**

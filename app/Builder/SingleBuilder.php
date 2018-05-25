@@ -1,42 +1,48 @@
 <?php
 
-namespace Wordrobe\Factory;
+namespace Wordrobe\Builder;
 
 use Wordrobe\Config;
 use Wordrobe\Helper\Dialog;
 use Wordrobe\Helper\StringsManager;
 use Wordrobe\Entity\Template;
 
-class SingleFactory extends TemplateFactory implements Factory
+class SingleBuilder extends TemplateBuilder implements Builder
 {
 	/**
 	 * Handles single template creation wizard
 	 */
 	public static function startWizard()
 	{
-		$theme = self::askForTheme();
+		$theme = self::askForTheme(['template_engine']);
 		$post_type = self::askForPostType();
-		self::create($post_type, $theme);
+		self::create([
+			'post_type' => $post_type,
+			'theme' => $theme
+		]);
 	}
 
 	/**
-	 * Creates single template
-	 * @param mixed ...$args
-	 * @example SingleFactory::create($post_type, $theme);
+	 * Builds single template
+	 * @param array $params
+	 * @example SingleBuilder::create([
+	 * 	'post_type' => $post_type,
+	 *	'theme' => $theme
+	 * ]);
 	 */
-	public static function create(...$args)
+	public static function build($params)
 	{
-		if (func_num_args() < 2) {
-			Dialog::write("Error: unable to create single template because of missing parameters");
+		$post_type = $params['post_type'];
+		$theme = $params['theme'];
+
+		if (!$post_type || !$theme) {
+			Dialog::write('Error: unable to create single template because of missing parameters.', 'red');
 			exit;
 		}
 
-		$post_type = func_get_arg(0);
-		$theme = func_get_arg(1);
-
 		$filename = "single-$post_type";
-		$template_engine = Config::get('template_engine', ['themes', $theme]);
-		$theme_path = PROJECT_ROOT . '/' . Config::get('themes_path') . '/' . $theme;
+		$template_engine = Config::expect("themes.$theme.template_engine");
+		$theme_path = PROJECT_ROOT . '/' . Config::expect('themes_path') . '/' . $theme;
 		$single_ctrl = new Template("$template_engine/single", ['{POST_TYPE}' => $post_type]);
 
 		if ($template_engine === 'timber') {
