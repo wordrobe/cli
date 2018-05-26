@@ -40,13 +40,14 @@ class FilesManager
         return Dialog::getConfirmation('Attention: ' . $filepath . ' already exists! Do you want to override it?', false, 'red');
     }
 
-    /**
-     * Handles directory creation
-     * @param $path
-     * @param int $mode
-     * @param bool $recursive
-     * @throws \Exception
-     */
+	/**
+	 * Handles directory creation
+	 * @param $path
+	 * @param int $mode
+	 * @param bool $recursive
+	 * @return bool
+	 * @throws \Exception
+	 */
     public static function createDirectory($path, $mode = 0755, $recursive = true)
     {
         if (!self::directoryExists($path)) {
@@ -56,15 +57,18 @@ class FilesManager
                 throw new \Exception("Error: unable to create $path.");
             }
         }
+
+        return true;
     }
 
-    /**
-     * Handles file write
-     * @param $filepath
-     * @param $content
-     * @param bool $force_override
-     * @throws \Exception
-     */
+	/**
+	 * Handles file write
+	 * @param $filepath
+	 * @param $content
+	 * @param bool $force_override
+	 * @return bool
+	 * @throws \Exception
+	 */
     public static function writeFile($filepath, $content, $force_override = false)
     {
         $file_exists = self::fileExists($filepath);
@@ -79,7 +83,11 @@ class FilesManager
             if ($written === false) {
                 throw new \Exception("Error: unable to write $filepath.");
             }
+
+            return true;
         }
+
+        return false;
     }
 
     /**
@@ -110,13 +118,14 @@ class FilesManager
         }
     }
 
-    /**
-     * Handles files copy
-     * @param $source
-     * @param $destination
-     * @param array $errors
-     * @throws \Exception
-     */
+	/**
+	 * Handles files copy
+	 * @param $source
+	 * @param $destination
+	 * @param array $errors
+	 * @return bool
+	 * @throws \Exception
+	 */
     public static function copyFiles($source, $destination, $errors = [])
     {
         if (!self::directoryExists($source)) {
@@ -147,5 +156,7 @@ class FilesManager
             $error_files = implode(', ', $errors);
             throw new \Exception("Error: unable to copy following files [$error_files].");
         }
+
+        return true;
     }
 }

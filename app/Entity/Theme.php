@@ -65,19 +65,22 @@ class Theme
     public function install()
     {
         try {
-            FilesManager::createDirectory($this->path);
-            $this->copyBoilerplate();
-            $this->addStylesheet();
-            $this->updateConfig();
+            $directory_created = FilesManager::createDirectory($this->path);
+            $boilerplate_copied = $this->copyBoilerplate();
+            $stylesheet_added = $this->addStylesheet();
+            $config_updated = $this->updateConfig();
         } catch (\Exception $e) {
             Dialog::write($e->getMessage(), 'red');
             exit();
         }
+
+		return $directory_created && $boilerplate_copied && $stylesheet_added && $config_updated;
     }
 
-    /**
-     * Adds style.css to theme
-     */
+	/**
+	 * Adds style.css to theme
+	 * @return bool
+	 */
     protected function addStylesheet()
     {
         $stylesheet = new Template('theme-stylesheet', [
@@ -92,16 +95,17 @@ class Theme
             '{TEXT_DOMAIN}' => $this->text_domain,
             '{TAGS}' => $this->tags
         ]);
-        $stylesheet->save("$this->path/style.css");
+        return $stylesheet->save("$this->path/style.css");
     }
 
-    /**
-     * Adds theme params to Config
-     */
+	/**
+	 * Adds theme params to Config
+	 * @return array
+	 */
     protected function updateConfig()
     {
         $themeConfig = new Template('theme-config', ['{TEMPLATE_ENGINE}' => $this->template_engine]);
-        Config::set("themes.$this->folder_name", json_decode($themeConfig->getContent()));
+        return Config::set("themes.$this->folder_name", json_decode($themeConfig->getContent()));
     }
 
     /**
@@ -111,7 +115,8 @@ class Theme
     {
         $commonsFilesPath = BOILERPLATES_PATH . '/commons';
         $specificFilesPath = BOILERPLATES_PATH . '/' . $this->template_engine;
-        FilesManager::copyFiles($commonsFilesPath, $this->path);
-        FilesManager::copyFiles($specificFilesPath, $this->path);
+        $copied = FilesManager::copyFiles($commonsFilesPath, $this->path);
+        $copied = $copied && FilesManager::copyFiles($specificFilesPath, $this->path);
+		return $copied;
     }
 }

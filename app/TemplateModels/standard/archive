@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Archive template for {TYPE_AND_TERM}
+ * Archive template for {TYPE_AND_KEY}
  */
 
 // Logic here

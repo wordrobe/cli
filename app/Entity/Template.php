@@ -57,20 +57,25 @@ class Template
         $this->content = str_replace($placeholder, $value, $this->content);
     }
 
-    /**
-     * Saves template in a file
-     * @param $filepath
-     */
+	/**
+	 * Saves template in a file
+	 * @param $filepath
+	 * @return bool
+	 */
     public function save($filepath)
     {
         try {
-            FilesManager::writeFile($filepath, $this->content);
+            $written = FilesManager::writeFile($filepath, $this->content);
         } catch (\Exception $e) {
             Dialog::write($e->getMessage(), 'red');
             exit();
         }
 
-        Dialog::write("$filepath written!", 'cyan');
+		if ($written) {
+			Dialog::write("$filepath written!", 'cyan');
+		}
+
+		return $written;
     }
 
     /**

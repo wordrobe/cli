@@ -27,14 +27,15 @@ class Config
         return FilesManager::fileExists(self::FILEPATH);
     }
 
-    /**
-     * Initializes Config
-     * @param null $params
-     */
+	/**
+	 * Initializes Config
+	 * @param null $params
+	 * @return bool
+	 */
     public static function init($params = null)
     {
         $template = new Template('project-config', $params);
-        $template->save(self::FILEPATH);
+        return $template->save(self::FILEPATH);
     }
 
     /**
@@ -117,7 +118,7 @@ class Config
     private static function updateContent()
     {
         try {
-            FilesManager::writeFile(self::FILEPATH, json_encode(self::$params, JSON_PRETTY_PRINT), true);
+            FilesManager::writeFile(self::FILEPATH, json_encode(self::$params, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES), true);
         } catch (\Exception $e) {
             Dialog::write($e->getMessage(), 'red');
             exit();

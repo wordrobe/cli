@@ -2,6 +2,8 @@
 
 namespace Wordrobe\ThemeEntity;
 
+use Wordrobe\Helper\StringsManager;
+
 /**
  * Class PostType
  * @package Wordrobe\ThemeEntity
@@ -35,7 +37,7 @@ class PostType implements ThemeEntity
         $this->singular_name = $singular_name;
         $this->text_domain = $text_domain;
         $this->capability_type = $capability_type;
-        $this->taxonomies = ($capability_type === 'post') ? explode(',', $taxonomies) : null;
+        $this->taxonomies = ($capability_type === 'post') ? explode(',', StringsManager::removeSpaces($taxonomies)) : null;
         $this->icon = $icon;
         $this->description = $description;
         add_action('init', [$this, 'register'], 0);
@@ -49,6 +51,22 @@ class PostType implements ThemeEntity
         $settings = $this->getSettings();
         register_post_type($this->key, $settings);
     }
+
+	/**
+	 * Post type key getter
+	 * @return mixed
+	 */
+    public function getKey() {
+    	return $this->key;
+	}
+
+	/**
+	 * Post type taxonomies getter
+	 * @return array|null
+	 */
+	public function getTaxonomies() {
+		return $this->taxonomies;
+	}
 
     /**
      * Returns all post type's supportable features according to capability type

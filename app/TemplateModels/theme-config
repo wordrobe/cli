@@ -1,6 +1,5 @@
 {
 	"template_engine": "{TEMPLATE_ENGINE}",
-	"post_types": [],
-	"taxonomies": [],
-	"terms": []
+	"post_types": ["post"],
+	"taxonomies": ["category", "tag"]
 }

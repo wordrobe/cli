@@ -59,12 +59,14 @@ class Dialog
      * @param $text
      * @param array $choices
      * @param int $default
+	 * @param bool $allow_multiple
      * @param string $color
      * @return mixed
      */
-    public static function getChoice($text, $choices, $default = 0, $color = 'blue')
+    public static function getChoice($text, $choices, $default = 0, $allow_multiple = false, $color = 'blue')
     {
         $question = new ChoiceQuestion('<fg=' . $color . '>' . $text . ' </>', $choices, $default);
+		$question->setMultiselect($allow_multiple);
         $answer = self::ask($question);
         return $answer;
     }

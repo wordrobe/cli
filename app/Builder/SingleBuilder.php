@@ -44,15 +44,19 @@ class SingleBuilder extends TemplateBuilder implements Builder
         $template_engine = Config::expect("themes.$theme.template_engine");
         $theme_path = PROJECT_ROOT . '/' . Config::expect('themes_path') . '/' . $theme;
         $single_ctrl = new Template("$template_engine/single", ['{POST_TYPE}' => $post_type]);
+		$saved = true;
 
         if ($template_engine === 'timber') {
             $single_ctrl->fill('{VIEW_FILENAME}', $filename);
             $single_view = new Template('timber/view');
-            $single_view->save("$theme_path/views/default/$filename.html.twig");
+            $saved = $single_view->save("$theme_path/views/default/$filename.html.twig");
         }
 
-        $single_ctrl->save("$theme_path/$filename.php");
-        Dialog::write("Single template for post type '$post_type' added!", 'green');
+        $saved = $saved && $single_ctrl->save("$theme_path/$filename.php");
+
+		if ($saved) {
+			Dialog::write("Single template for post type '$post_type' added!", 'green');
+		}
     }
 
     /**

@@ -1,6 +1,7 @@
 <?php
 
 namespace Wordrobe\ThemeEntity;
+use Wordrobe\Helper\StringsManager;
 
 /**
  * Class Taxonomy
@@ -14,6 +15,7 @@ class Taxonomy implements ThemeEntity
     private $text_domain;
     private $post_types;
     private $hierarchical;
+	private $terms;
 
     /**
      * Taxonomy constructor
@@ -30,7 +32,7 @@ class Taxonomy implements ThemeEntity
         $this->general_name = $general_name;
         $this->singular_name = $singular_name;
         $this->text_domain = $text_domain;
-        $this->post_types = $post_types;
+        $this->post_types = explode(',', StringsManager::removeSpaces($post_types));
         $this->hierarchical = $hierarchical;
         add_action('init', [$this, 'register'], 0);
     }
@@ -43,6 +45,22 @@ class Taxonomy implements ThemeEntity
         $settings = $this->getSettings();
         register_taxonomy($this->key, $this->post_types, $settings);
     }
+
+	/**
+	 * Taxonomy key getter
+	 * @return string
+	 */
+	public function getKey() {
+		return $this->key;
+	}
+
+	/**
+	 * Taxonomy post types getter
+	 * @return string
+	 */
+	public function getPostTypes() {
+		return $this->post_types;
+	}
 
     /**
      * Returns taxonomy's admin labels

@@ -39,7 +39,7 @@ class PostTypeBuilder extends TemplateBuilder implements Builder
     /**
      * Builds post type
      * @param array $params
-     * @example CustomPostTypeBuilder::create([
+     * @example PostTypeBuilder::create([
      * 	'key' => $key,
      *	'general_name' => $general_name,
      *	'singular_name' => $singular_name,
@@ -70,7 +70,6 @@ class PostTypeBuilder extends TemplateBuilder implements Builder
 
         $theme_path = PROJECT_ROOT . '/' . Config::expect('themes_path') . '/' . $theme;
         $post_type = new Template('post-type', [
-            '{POST_TYPE}' => $key,
             '{KEY}' => $key,
             '{GENERAL_NAME}' => $general_name,
             '{SINGULAR_NAME}' => $singular_name,
@@ -80,9 +79,13 @@ class PostTypeBuilder extends TemplateBuilder implements Builder
             '{ICON}' => $icon,
             '{DESCRIPTION}' => $description
         ]);
-        $post_type->save("$theme_path/includes/post-types/$key.php");
+		$saved = $post_type->save("$theme_path/includes/post-types/$key.php");
         Config::add("themes.$theme.post_types", $key);
-        Dialog::write("Post type '$key' added!", 'green');
+
+		if ($saved) {
+			Dialog::write("Post type '$key' added!", 'green');
+		}
+
         SingleBuilder::build([
             'post_type' => $key,
             'theme' => $theme

@@ -38,8 +38,11 @@ class ConfigBuilder implements Builder
             exit;
         }
 
-        Config::init(['{THEMES_PATH}' => $themes_path]);
-        Dialog::write('Configuration completed!', 'green');
+        $completed = Config::init(['{THEMES_PATH}' => $themes_path]);
+
+		if ($completed) {
+			Dialog::write('Configuration completed!', 'green');
+		}
     }
 
     /**
@@ -48,7 +51,7 @@ class ConfigBuilder implements Builder
      */
     private static function askForThemesPath()
     {
-        $themes_path = Dialog::getAnswer('Please provide themes directory path (e.g. wp-content/themes):');
+        $themes_path = Dialog::getAnswer('Please provide themes directory path [wp-content/themes]:', 'wp-content/themes');
 
         if (!$themes_path) {
             return self::askForThemesPath();

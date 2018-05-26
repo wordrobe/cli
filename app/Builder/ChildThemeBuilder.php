@@ -86,8 +86,11 @@ class ChildThemeBuilder extends ThemeBuilder
         }
 
         $theme = new ChildTheme($theme_name, $theme_uri, $author, $author_uri, $description, $version, $license, $license_uri, $text_domain, $tags, $folder_name, $parent);
-        $theme->install();
-        Dialog::write('Child theme installed!', 'green');
+		$installed = $theme->install();
+
+		if ($installed) {
+			Dialog::write('Child theme installed!', 'green');
+		}
     }
 
     /**

@@ -27,10 +27,22 @@ class ArchiveBuilder extends TemplateBuilder implements Builder
     {
         $theme = self::askForTheme(['template_engine']);
         $type = self::askForType();
-        $term = $type === 'post-type' ? self::askForPostType() : self::askForTerm();
+
+		switch ($type) {
+			case 'post-type':
+				$key = self::askForPostType($theme);
+				break;
+			case 'taxonomy':
+				$key = self::askForTaxonomy($theme);
+				break;
+			default:
+				$key = self::askForTerm();
+				break;
+		}
+
         self::build([
             'type' => $type,
-            'term' => $term,
+            'key' => $key,
             'theme' => $theme
         ]);
     }
@@ -40,27 +52,27 @@ class ArchiveBuilder extends TemplateBuilder implements Builder
      * @param array $params
      * @example ArchiveBuilder::create([
      *	'type' => $type,
-     *	'term' => $term,
+     *	'key' => $key,
      *	'theme' => $theme
      * ]);
      */
     public static function build($params)
     {
         $type = $params['type'];
-        $term = $params['term'];
+        $key = $params['key'];
         $theme = $params['theme'];
 
-        if (!$type || !$term || !$theme) {
+        if (!$type || !$key || !$theme) {
             Dialog::write('Error: unable to create archive because of missing parameters.', 'red');
             exit;
         }
 
         $basename = $type === 'post-type' ? 'archive' : $type;
-        $filename = $term ? "$basename-$term" : $basename;
+        $filename = $key ? "$basename-$key" : $basename;
         $template_engine = Config::expect("themes.$theme.template_engine");
         $theme_path = PROJECT_ROOT . '/' . Config::expect('themes_path') . '/' . $theme;
-        $type_and_term = trim(str_replace("''", '', "$type '$term'"));
-        $archive_ctrl = new Template("$template_engine/archive", ['{TYPE_AND_TERM}' => $type_and_term]);
+        $type_and_key = trim(str_replace("''", '', "$type '$key'"));
+        $archive_ctrl = new Template("$template_engine/archive", ['{TYPE_AND_KEY}' => $type_and_key]);
 
         if ($template_engine === 'timber') {
             $archive_ctrl->fill('{VIEW_FILENAME}', $filename);
@@ -68,8 +80,11 @@ class ArchiveBuilder extends TemplateBuilder implements Builder
             $archive_view->save("$theme_path/views/default/$filename.html.twig");
         }
 
-        $archive_ctrl->save("$theme_path/$filename.php");
-        Dialog::write("Archive template for $type_and_term added!", 'green');
+        $saved = $archive_ctrl->save("$theme_path/$filename.php");
+
+		if ($saved) {
+			Dialog::write("Archive template for $type_and_key added!", 'green');
+		}
     }
 
     /**
@@ -83,18 +98,39 @@ class ArchiveBuilder extends TemplateBuilder implements Builder
 
     /**
      * Asks for post type
+	 * @param $theme
      * @return mixed
      */
-    private static function askForPostType()
+    private static function askForPostType($theme)
     {
-        $post_type = Dialog::getAnswer('Post type:');
+    	$post_types = Config::expect("themes.$theme.post_types", 'array');
+		$post_types = array_diff($post_types, ['post']);
 
-        if (!$post_type) {
-            return self::askForPostType();
-        }
+		if (!empty($post_types)) {
+			return Dialog::getChoice('Post type:', $post_types, null);
+		}
 
-        return StringsManager::toKebabCase($post_type);
+		Dialog::write('Error: before creating a post-type based archive, you need to define a custom post type.', 'red');
+		exit;
     }
+
+	/**
+	 * Asks for taxonomy
+	 * @param $theme
+	 * @return mixed
+	 */
+	private static function askForTaxonomy($theme)
+	{
+		$taxonomies = Config::expect("themes.$theme.taxonomies", 'array');
+		$taxonomies = array_diff($taxonomies, ['category', 'tag']);
+
+		if (!empty($taxonomies)) {
+			return Dialog::getChoice('Taxonomy:', $taxonomies, null);
+		}
+
+		Dialog::write('Error: before creating a taxonomy based archive, you need to define a custom taxonomy.', 'red');
+		exit;
+	}
 
     /**
      * Asks for term
@@ -102,7 +138,12 @@ class ArchiveBuilder extends TemplateBuilder implements Builder
      */
     private static function askForTerm()
     {
-        $term = Dialog::getAnswer('Term:');
-        return StringsManager::toKebabCase($term);
+		$term = Dialog::getAnswer('Term:');
+
+		if (!$term) {
+			return self::askForTerm();
+		}
+
+		return StringsManager::toKebabCase($term);
     }
 }

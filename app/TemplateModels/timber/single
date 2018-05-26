@@ -10,4 +10,4 @@ use Timber\Post;
 $context = Timber::get_context();
 $context['post'] = new Post();
 
-Timber::render('views/default/{VIEW_NAME}.html.twig', $context);
+Timber::render('views/default/{VIEW_FILENAME}.html.twig', $context);

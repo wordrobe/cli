@@ -44,15 +44,19 @@ class PageBuilder extends TemplateBuilder implements Builder
         $template_engine = Config::expect("themes.$theme.template_engine");
         $theme_path = PROJECT_ROOT . '/' . Config::expect('themes_path') . '/' . $theme;
         $page_ctrl = new Template("$template_engine/page", ['{TEMPLATE_NAME}' => $name]);
+		$saved = true;
 
         if ($template_engine === 'timber') {
             $page_ctrl->fill('{VIEW_FILENAME}', $filename);
             $page_view = new Template('timber/view');
-            $page_view->save("$theme_path/views/pages/$filename.html.twig");
+            $saved = $page_view->save("$theme_path/views/pages/$filename.html.twig");
         }
 
-        $page_ctrl->save("$theme_path/pages/$filename.php");
-        Dialog::write("Page template '$name' added!", 'green');
+        $saved = $saved && $page_ctrl->save("$theme_path/pages/$filename.php");
+
+		if ($saved) {
+			Dialog::write("Page template '$name' added!", 'green');
+		}
     }
 
     /**
