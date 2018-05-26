@@ -22,6 +22,7 @@ class AddCommand extends BaseCommand
         'page',
         'single',
         'archive',
+		'partial',
         'post-type',
         'taxonomy',
         'term',
