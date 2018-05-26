@@ -25,7 +25,7 @@ class ArchiveBuilder extends TemplateBuilder implements Builder
      */
     public static function startWizard()
     {
-        $theme = self::askForTheme(['template_engine']);
+        $theme = self::askForTheme(['template-engine']);
         $type = self::askForType();
 
 		switch ($type) {
@@ -69,8 +69,8 @@ class ArchiveBuilder extends TemplateBuilder implements Builder
 
         $basename = $type === 'post-type' ? 'archive' : $type;
         $filename = $key ? "$basename-$key" : $basename;
-        $template_engine = Config::expect("themes.$theme.template_engine");
-        $theme_path = PROJECT_ROOT . '/' . Config::expect('themes_path') . '/' . $theme;
+        $template_engine = Config::expect("themes.$theme.template-engine");
+        $theme_path = PROJECT_ROOT . '/' . Config::expect('themes-path') . '/' . $theme;
         $type_and_key = trim(str_replace("''", '', "$type '$key'"));
         $archive_ctrl = new Template("$template_engine/archive", ['{TYPE_AND_KEY}' => $type_and_key]);
 
@@ -103,7 +103,7 @@ class ArchiveBuilder extends TemplateBuilder implements Builder
      */
     private static function askForPostType($theme)
     {
-    	$post_types = Config::expect("themes.$theme.post_types", 'array');
+    	$post_types = Config::expect("themes.$theme.post-types", 'array');
 		$post_types = array_diff($post_types, ['post']);
 
 		if (!empty($post_types)) {

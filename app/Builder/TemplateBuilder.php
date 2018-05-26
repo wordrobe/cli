@@ -28,7 +28,7 @@ abstract class TemplateBuilder
                 break;
         }
 
-        Config::expect('themes_path');
+        Config::expect('themes-path');
         Config::expect("themes.$theme");
 
         if ($requirements) {

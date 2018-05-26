@@ -18,7 +18,7 @@ class ChildThemeBuilder extends ThemeBuilder
      */
     public static function startWizard()
     {
-        Config::expect('themes_path');
+        Config::expect('themes-path');
         $theme_name = parent::askForThemeName();
         $theme_uri = parent::askForThemeURI();
         $author = parent::askForAuthor();
@@ -32,17 +32,17 @@ class ChildThemeBuilder extends ThemeBuilder
         $folder_name = parent::askForFolderName($theme_name);
         $parent = self::askForParentTheme();
         self::build([
-            'theme_name' => $theme_name,
-            'theme_uri' => $theme_uri,
+            'theme-name' => $theme_name,
+            'theme-uri' => $theme_uri,
             'author' => $author,
-            'author_uri' => $author_uri,
+            'author-uri' => $author_uri,
             'description' => $description,
             'version' => $version,
             'license' => $license,
-            'license_uri' => $license_uri,
-            'text_domain' => $text_domain,
+            'license-uri' => $license_uri,
+            'text-domain' => $text_domain,
             'tags' => $tags,
-            'folder_name' => $folder_name,
+            'folder-name' => $folder_name,
             'parent' => $parent
         ]);
     }
@@ -51,33 +51,33 @@ class ChildThemeBuilder extends ThemeBuilder
      * Builds child theme
      * @param array $params
      * @example ChildThemeBuilder::create([
-     *	'theme_name' => $theme_name,
-     *	'theme_uri' => $theme_uri,
+     *	'theme-name' => $theme_name,
+     *	'theme-uri' => $theme_uri,
      *	'author' => $author,
-     *	'author_uri' => $author_uri,
+     *	'author-uri' => $author_uri,
      *	'description' => $description,
      *	'version' => $version,
      *	'license' => $license,
-     *	'license_uri' => $license_uri,
-     *	'text_domain' => $text_domain,
+     *	'license-uri' => $license_uri,
+     *	'text-domain' => $text_domain,
      *	'tags' => $tags,
-     *	'folder_name' => $folder_name,
+     *	'folder-name' => $folder_name,
      *	'parent' => $parent
      * ]);
      */
     public static function build($params)
     {
-        $theme_name = $params['theme_name'];
-        $theme_uri = $params['theme_uri'];
+        $theme_name = $params['theme-name'];
+        $theme_uri = $params['theme-uri'];
         $author = $params['author'];
-        $author_uri = $params['author_uri'];
+        $author_uri = $params['author-uri'];
         $description = $params['description'];
         $version = $params['version'];
         $license = $params['license'];
-        $license_uri = $params['license_uri'];
-        $text_domain = $params['text_domain'];
+        $license_uri = $params['license-uri'];
+        $text_domain = $params['text-domain'];
         $tags = $params['tags'];
-        $folder_name = $params['folder_name'];
+        $folder_name = $params['folder-name'];
         $parent = $params['parent'];
 
         if (!$theme_name || !$text_domain || !$folder_name || !$parent) {

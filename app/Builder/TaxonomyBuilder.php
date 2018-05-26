@@ -26,11 +26,11 @@ class TaxonomyBuilder extends TemplateBuilder implements Builder
 			'key' => $key,
 			'general_name' => $general_name,
 			'singular_name' => $singular_name,
-			'text_domain' => $text_domain,
-			'post_types' => $post_types,
+			'text-domain' => $text_domain,
+			'post-types' => $post_types,
 			'hierarchical' => $hierarchical,
 			'theme' => $theme,
-			'build_archive' => $build_archive
+			'build-archive' => $build_archive
 		]);
 	}
 
@@ -41,11 +41,11 @@ class TaxonomyBuilder extends TemplateBuilder implements Builder
 	 * 	'key' => $key,
 	 *	'general_name' => $general_name,
 	 *	'singular_name' => $singular_name,
-	 *	'text_domain' => $text_domain,
-	 *	'post_types' => $post_types,
+	 *	'text-domain' => $text_domain,
+	 *	'post-types' => $post_types,
 	 *	'hierarchical' => $hierarchical,
 	 *	'theme' => $theme,
-	 * 	'build_archive' => $build_archive
+	 * 	'build-archive' => $build_archive
 	 * ]);
 	 */
 	public static function build($params)
@@ -53,18 +53,18 @@ class TaxonomyBuilder extends TemplateBuilder implements Builder
 		$key = $params['key'];
 		$general_name = $params['general_name'];
 		$singular_name = $params['singular_name'];
-		$text_domain = $params['text_domain'];
-		$post_types = $params['post_types'];
+		$text_domain = $params['text-domain'];
+		$post_types = $params['post-types'];
 		$hierarchical = $params['hierarchical'];
 		$theme = $params['theme'];
-		$build_archive = $params['build_archive'] || false;
+		$build_archive = $params['build-archive'] || false;
 
 		if (!$key || !$general_name || !$singular_name || !$text_domain || !$post_types || !$theme) {
 			Dialog::write('Error: unable to create taxonomy because of missing parameters.', 'red');
 			exit;
 		}
 
-		$theme_path = PROJECT_ROOT . '/' . Config::expect('themes_path') . '/' . $theme;
+		$theme_path = PROJECT_ROOT . '/' . Config::expect('themes-path') . '/' . $theme;
 		$taxonomy = new Template('taxonomy', [
 			'{KEY}' => $key,
 			'{GENERAL_NAME}' => $general_name,
@@ -161,7 +161,7 @@ class TaxonomyBuilder extends TemplateBuilder implements Builder
 	 */
 	private static function askForPostTypes($theme)
 	{
-		$post_types = Dialog::getChoice('Post types:', Config::expect("themes.$theme.post_types", 'array'), null, true);
+		$post_types = Dialog::getChoice('Post types:', Config::expect("themes.$theme.post-types", 'array'), null, true);
 		return implode(',', $post_types);
 
 	}

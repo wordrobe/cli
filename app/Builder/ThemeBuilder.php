@@ -18,7 +18,7 @@ class ThemeBuilder implements Builder
      */
     public static function startWizard()
     {
-        Config::expect('themes_path');
+        Config::expect('themes-path');
         $theme_name = self::askForThemeName();
         $theme_uri = self::askForThemeURI();
         $author = self::askForAuthor();
@@ -32,18 +32,18 @@ class ThemeBuilder implements Builder
         $folder_name = self::askForFolderName($theme_name);
         $template_engine = self::askForTemplateEngine();
         self::build([
-            'theme_name' => $theme_name,
-            'theme_uri' => $theme_uri,
+            'theme-name' => $theme_name,
+            'theme-uri' => $theme_uri,
             'author' => $author,
-            'author_uri' => $author_uri,
+            'author-uri' => $author_uri,
             'description' => $description,
             'version' => $version,
             'license' => $license,
-            'license_uri' => $license_uri,
-            'text_domain' => $text_domain,
+            'license-uri' => $license_uri,
+            'text-domain' => $text_domain,
             'tags' => $tags,
-            'folder_name' => $folder_name,
-            'template_engine' => $template_engine
+            'folder-name' => $folder_name,
+            'template-engine' => $template_engine
         ]);
     }
 
@@ -51,34 +51,34 @@ class ThemeBuilder implements Builder
      * Builds theme
      * @param array $params
      * @example ThemeBuilder::create([
-     *	'theme_name' => $theme_name,
-     *	'theme_uri' => $theme_uri,
+     *	'theme-name' => $theme_name,
+     *	'theme-uri' => $theme_uri,
      *	'author' => $author,
-     *	'author_uri' => $author_uri,
+     *	'author-uri' => $author_uri,
      *	'description' => $description,
      *	'version' => $version,
      *	'license' => $license,
-     *	'license_uri' => $license_uri,
-     *	'text_domain' => $text_domain,
+     *	'license-uri' => $license_uri,
+     *	'text-domain' => $text_domain,
      *	'tags' => $tags,
-     *	'folder_name' => $folder_name,
-     *	'template_engine' => $template_engine
+     *	'folder-name' => $folder_name,
+     *	'template-engine' => $template_engine
      * ]);
      */
     public static function build($params)
     {
-        $theme_name = $params['theme_name'];
-        $theme_uri = $params['theme_uri'];
+        $theme_name = $params['theme-name'];
+        $theme_uri = $params['theme-uri'];
         $author = $params['author'];
-        $author_uri = $params['author_uri'];
+        $author_uri = $params['author-uri'];
         $description = $params['description'];
         $version = $params['version'];
         $license = $params['license'];
-        $license_uri = $params['license_uri'];
-        $text_domain = $params['text_domain'];
+        $license_uri = $params['license-uri'];
+        $text_domain = $params['text-domain'];
         $tags = $params['tags'];
-        $folder_name = $params['folder_name'];
-        $template_engine = $params['template_engine'];
+        $folder_name = $params['folder-name'];
+        $template_engine = $params['template-engine'];
 
         if (!$theme_name || !$text_domain || !$folder_name || !$template_engine) {
             Dialog::write('Error: unable to create archive because of missing parameters.', 'red');

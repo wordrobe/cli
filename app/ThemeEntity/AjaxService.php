@@ -2,6 +2,8 @@
 
 namespace Wordrobe\ThemeEntity;
 
+use Wordrobe\Helper\StringsManager;
+
 /**
  * Class AjaxService
  * @package Wordrobe\ThemeEntity
@@ -16,9 +18,9 @@ class AjaxService implements ThemeEntity
      */
     public function __construct($name)
     {
-        $this->name = $name;
-        add_action("wp_ajax_nopriv_$name", [$this, 'register']);
-        add_action("wp_ajax_$name", [$this, 'register']);
+        $this->name = StringsManager::toSnakeCase($name);
+        add_action("wp_ajax_nopriv_$this->name", [$this, 'register']);
+        add_action("wp_ajax_$this->name", [$this, 'register']);
     }
 
     public function register()

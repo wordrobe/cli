@@ -26,6 +26,7 @@ class AddCommand extends BaseCommand
         'post-type',
         'taxonomy',
         'term',
+		'menu',
         'ajax-service',
         'shortcode',
         'widget'

@@ -1,6 +1,6 @@
 {
-	"template_engine": "{TEMPLATE_ENGINE}",
-	"parent_theme": "{PARENT_THEME}",
-	"post_types": ["post"],
+	"template-engine": "{TEMPLATE_ENGINE}",
+	"parent-theme": "{PARENT_THEME}",
+	"post-types": ["post"],
 	"taxonomies": ["category", "tag"]
 }

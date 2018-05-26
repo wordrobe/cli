@@ -14,7 +14,7 @@ class PageBuilder extends TemplateBuilder implements Builder
      */
     public static function startWizard()
     {
-        $theme = self::askForTheme(['template_engine']);
+        $theme = self::askForTheme(['template-engine']);
         $name = self::askForName();
         self::build([
             'name' => $name,
@@ -41,8 +41,8 @@ class PageBuilder extends TemplateBuilder implements Builder
         }
 
         $filename = StringsManager::toKebabCase($name);
-        $template_engine = Config::expect("themes.$theme.template_engine");
-        $theme_path = PROJECT_ROOT . '/' . Config::expect('themes_path') . '/' . $theme;
+        $template_engine = Config::expect("themes.$theme.template-engine");
+        $theme_path = PROJECT_ROOT . '/' . Config::expect('themes-path') . '/' . $theme;
         $page_ctrl = new Template("$template_engine/page", ['{TEMPLATE_NAME}' => $name]);
 		$saved = true;
 

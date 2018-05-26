@@ -14,7 +14,7 @@ class PartialBuilder extends TemplateBuilder implements Builder
 	 */
 	public static function startWizard()
 	{
-		$theme = self::askForTheme(['template_engine']);
+		$theme = self::askForTheme(['template-engine']);
 		$class_name = self::askForClassName();
 		self::build([
 			'class_name' => $class_name,
@@ -41,8 +41,8 @@ class PartialBuilder extends TemplateBuilder implements Builder
 		}
 
 		$filename = StringsManager::toKebabCase($class_name);
-		$template_engine = Config::expect("themes.$theme.template_engine");
-		$theme_path = PROJECT_ROOT . '/' . Config::expect('themes_path') . '/' . $theme;
+		$template_engine = Config::expect("themes.$theme.template-engine");
+		$theme_path = PROJECT_ROOT . '/' . Config::expect('themes-path') . '/' . $theme;
 		$partial = new Template('partial', ['{CLASS_NAME}' => $class_name]);
 
 		if ($template_engine === 'timber') {

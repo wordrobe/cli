@@ -29,14 +29,14 @@ class PostTypeBuilder extends TemplateBuilder implements Builder
             'key' => $key,
             'general_name' => $general_name,
             'singular_name' => $singular_name,
-            'text_domain' => $text_domain,
+            'text-domain' => $text_domain,
             'capability_type' => $capability_type,
             'taxonomies' => $taxonomies,
             'icon' => $icon,
             'description' => $description,
             'theme' => $theme,
-			'build_single' => $build_single,
-			'build_archive' => $build_archive
+			'build-single' => $build_single,
+			'build-archive' => $build_archive
         ]);
     }
 
@@ -47,14 +47,14 @@ class PostTypeBuilder extends TemplateBuilder implements Builder
      * 	'key' => $key,
      *	'general_name' => $general_name,
      *	'singular_name' => $singular_name,
-     *	'text_domain' => $text_domain,
+     *	'text-domain' => $text_domain,
      *	'capability_type' => $capability_type,
      *	'taxonomies' => $taxonomies,
      *	'icon' => $icon,
      *	'description' => $description,
      *	'theme' => $theme,
-	 *	'build_single' => $build_single,
-	 *	'build_archive' => $build_archive
+	 *	'build-single' => $build_single,
+	 *	'build-archive' => $build_archive
      * ]);
      */
     public static function build($params)
@@ -62,21 +62,21 @@ class PostTypeBuilder extends TemplateBuilder implements Builder
         $key = $params['key'];
         $general_name = $params['general_name'];
         $singular_name = $params['singular_name'];
-        $text_domain = $params['text_domain'];
+        $text_domain = $params['text-domain'];
         $capability_type = $params['capability_type'];
         $taxonomies = $params['taxonomies'];
         $icon = $params['icon'];
         $description = $params['description'];
         $theme = $params['theme'];
-		$build_single = $params['build_single'] || false;
-		$build_archive = $params['build_archive'] || false;
+		$build_single = $params['build-single'] || false;
+		$build_archive = $params['build-archive'] || false;
 
         if (!$key || !$general_name || !$singular_name || !$text_domain || !$capability_type || !$theme) {
             Dialog::write('Error: unable to create post type because of missing parameters.', 'red');
             exit;
         }
 
-        $theme_path = PROJECT_ROOT . '/' . Config::expect('themes_path') . '/' . $theme;
+        $theme_path = PROJECT_ROOT . '/' . Config::expect('themes-path') . '/' . $theme;
         $post_type = new Template('post-type', [
             '{KEY}' => $key,
             '{GENERAL_NAME}' => $general_name,
@@ -88,7 +88,7 @@ class PostTypeBuilder extends TemplateBuilder implements Builder
             '{DESCRIPTION}' => $description
         ]);
 		$saved = $post_type->save("$theme_path/includes/post-types/$key.php");
-        Config::add("themes.$theme.post_types", $key);
+        Config::add("themes.$theme.post-types", $key);
 
 		if ($saved) {
 			Dialog::write("Post type '$key' added!", 'green');

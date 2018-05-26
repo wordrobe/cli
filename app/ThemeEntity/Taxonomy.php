@@ -15,7 +15,6 @@ class Taxonomy implements ThemeEntity
     private $text_domain;
     private $post_types;
     private $hierarchical;
-	private $terms;
 
     /**
      * Taxonomy constructor
