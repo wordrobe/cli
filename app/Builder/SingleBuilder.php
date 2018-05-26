@@ -15,7 +15,7 @@ class SingleBuilder extends TemplateBuilder implements Builder
     public static function startWizard()
     {
         $theme = self::askForTheme(['template_engine']);
-        $post_type = self::askForPostType();
+        $post_type = self::askForPostType($theme);
         self::build([
             'post_type' => $post_type,
             'theme' => $theme
@@ -61,16 +61,19 @@ class SingleBuilder extends TemplateBuilder implements Builder
 
     /**
      * Asks for post type
+	 * @param $theme
      * @return string
      */
-    private static function askForPostType()
+    private static function askForPostType($theme)
     {
-        $post_type = Dialog::getAnswer('Post type (e.g. event):');
+		$post_types = Config::expect("themes.$theme.post_types", 'array');
+		$post_types = array_diff($post_types, ['post']);
 
-        if (!$post_type) {
-            return self::askForPostType();
-        }
+		if (!empty($post_types)) {
+			return Dialog::getChoice('Post type:', $post_types, null);
+		}
 
-        return StringsManager::toKebabCase($post_type);
+		Dialog::write('Error: before creating a single, you need to define a custom post type.', 'red');
+		exit;
     }
 }

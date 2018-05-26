@@ -23,6 +23,8 @@ class PostTypeBuilder extends TemplateBuilder implements Builder
         $taxonomies = self::askForTaxonomies();
         $icon = self::askForIcon();
         $description = self::askForDescription();
+		$build_single = self::askForSingleTemplateBuild($key);
+		$build_archive = self::askForArchiveTemplateBuild($key);
         self::build([
             'key' => $key,
             'general_name' => $general_name,
@@ -32,7 +34,9 @@ class PostTypeBuilder extends TemplateBuilder implements Builder
             'taxonomies' => $taxonomies,
             'icon' => $icon,
             'description' => $description,
-            'theme' => $theme
+            'theme' => $theme,
+			'build_single' => $build_single,
+			'build_archive' => $build_archive
         ]);
     }
 
@@ -48,7 +52,9 @@ class PostTypeBuilder extends TemplateBuilder implements Builder
      *	'taxonomies' => $taxonomies,
      *	'icon' => $icon,
      *	'description' => $description,
-     *	'theme' => $theme
+     *	'theme' => $theme,
+	 *	'build_single' => $build_single,
+	 *	'build_archive' => $build_archive
      * ]);
      */
     public static function build($params)
@@ -62,6 +68,8 @@ class PostTypeBuilder extends TemplateBuilder implements Builder
         $icon = $params['icon'];
         $description = $params['description'];
         $theme = $params['theme'];
+		$build_single = $params['build_single'] || false;
+		$build_archive = $params['build_archive'] || false;
 
         if (!$key || !$general_name || !$singular_name || !$text_domain || !$capability_type || !$theme) {
             Dialog::write('Error: unable to create post type because of missing parameters.', 'red');
@@ -86,10 +94,20 @@ class PostTypeBuilder extends TemplateBuilder implements Builder
 			Dialog::write("Post type '$key' added!", 'green');
 		}
 
-        SingleBuilder::build([
-            'post_type' => $key,
-            'theme' => $theme
-        ]);
+		if ($build_single) {
+			SingleBuilder::build([
+				'post_type' => $key,
+				'theme' => $theme
+			]);
+		}
+
+		if ($build_archive) {
+			ArchiveBuilder::build([
+				'type' => 'post-type',
+				'key' => $key,
+				'theme' => $theme
+			]);
+		}
     }
 
     /**
@@ -204,4 +222,24 @@ class PostTypeBuilder extends TemplateBuilder implements Builder
         $description = Dialog::getAnswer('Description:');
         return ucfirst($description);
     }
+
+	/**
+	 * Asks for single template auto-build confirmation
+	 * @param $key
+	 * @return mixed
+	 */
+    private static function askForSingleTemplateBuild($key)
+	{
+		return Dialog::getConfirmation("Do you want to automatically create a single template for '$key' post type?", true);
+	}
+
+	/**
+	 * Asks for archive template auto-build confirmation
+	 * @param $key
+	 * @return mixed
+	 */
+	private static function askForArchiveTemplateBuild($key)
+	{
+		return Dialog::getConfirmation("Do you want to automatically create an archive template for '$key' post type?", true);
+	}
 }

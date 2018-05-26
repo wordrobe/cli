@@ -21,6 +21,7 @@ class TaxonomyBuilder extends TemplateBuilder implements Builder
 		$text_domain = self::askForTextDomain($theme);
 		$post_types = self::askForPostTypes($theme);
 		$hierarchical = self::askForHierarchy();
+		$build_archive = self::askForArchiveTemplateBuild($key);
 		self::build([
 			'key' => $key,
 			'general_name' => $general_name,
@@ -28,7 +29,8 @@ class TaxonomyBuilder extends TemplateBuilder implements Builder
 			'text_domain' => $text_domain,
 			'post_types' => $post_types,
 			'hierarchical' => $hierarchical,
-			'theme' => $theme
+			'theme' => $theme,
+			'build_archive' => $build_archive
 		]);
 	}
 
@@ -42,7 +44,8 @@ class TaxonomyBuilder extends TemplateBuilder implements Builder
 	 *	'text_domain' => $text_domain,
 	 *	'post_types' => $post_types,
 	 *	'hierarchical' => $hierarchical,
-	 *	'theme' => $theme
+	 *	'theme' => $theme,
+	 * 	'build_archive' => $build_archive
 	 * ]);
 	 */
 	public static function build($params)
@@ -54,6 +57,7 @@ class TaxonomyBuilder extends TemplateBuilder implements Builder
 		$post_types = $params['post_types'];
 		$hierarchical = $params['hierarchical'];
 		$theme = $params['theme'];
+		$build_archive = $params['build_archive'] || false;
 
 		if (!$key || !$general_name || !$singular_name || !$text_domain || !$post_types || !$theme) {
 			Dialog::write('Error: unable to create taxonomy because of missing parameters.', 'red');
@@ -76,11 +80,13 @@ class TaxonomyBuilder extends TemplateBuilder implements Builder
 			Dialog::write("Taxonomy '$key' added!", 'green');
 		}
 
-		ArchiveBuilder::build([
-			'type' => 'taxonomy',
-			'key' => $key,
-			'theme' => $theme
-		]);
+		if ($build_archive) {
+			ArchiveBuilder::build([
+				'type' => 'taxonomy',
+				'key' => $key,
+				'theme' => $theme
+			]);
+		}
 	}
 
 	/**
@@ -166,5 +172,15 @@ class TaxonomyBuilder extends TemplateBuilder implements Builder
 	private static function askForHierarchy()
 	{
 		return Dialog::getConfirmation('Is hierarchical?', true, 'blue');
+	}
+
+	/**
+	 * Asks for archive template auto-build confirmation
+	 * @param $key
+	 * @return mixed
+	 */
+	private static function askForArchiveTemplateBuild($key)
+	{
+		return Dialog::getConfirmation("Do you want to automatically create an archive template for '$key' taxonomy?", true);
 	}
 }
