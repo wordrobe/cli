@@ -181,6 +181,6 @@ class TaxonomyBuilder extends TemplateBuilder implements Builder
 	 */
 	private static function askForArchiveTemplateBuild($key)
 	{
-		return Dialog::getConfirmation("Do you want to automatically create an archive template for '$key' taxonomy?", true);
+		return Dialog::getConfirmation("Do you want to automatically create an archive template for '$key' taxonomy?", true, 'yellow');
 	}
 }

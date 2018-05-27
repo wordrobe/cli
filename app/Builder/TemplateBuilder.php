@@ -24,7 +24,7 @@ abstract class TemplateBuilder
                 $theme = array_keys($themes)[0];
                 break;
             default:
-                $theme = Dialog::getChoice('Please choose the theme you want to add the content to:', array_keys($themes), null, 'yellow');
+                $theme = Dialog::getChoice('Please choose the theme you want to add the content to:', array_keys($themes), null, false, 'yellow');
                 break;
         }
 

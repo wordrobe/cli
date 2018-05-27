@@ -70,7 +70,7 @@ class SingleBuilder extends TemplateBuilder implements Builder
 		$post_types = array_diff($post_types, ['post']);
 
 		if (!empty($post_types)) {
-			return Dialog::getChoice('Post type:', $post_types, null);
+			return Dialog::getChoice('Post type:', array_values($post_types), null);
 		}
 
 		Dialog::write('Error: before creating a single, you need to define a custom post type.', 'red');

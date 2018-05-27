@@ -230,7 +230,7 @@ class PostTypeBuilder extends TemplateBuilder implements Builder
 	 */
     private static function askForSingleTemplateBuild($key)
 	{
-		return Dialog::getConfirmation("Do you want to automatically create a single template for '$key' post type?", true);
+		return Dialog::getConfirmation("Do you want to automatically create a single template for '$key' post type?", true, 'yellow');
 	}
 
 	/**
@@ -240,6 +240,6 @@ class PostTypeBuilder extends TemplateBuilder implements Builder
 	 */
 	private static function askForArchiveTemplateBuild($key)
 	{
-		return Dialog::getConfirmation("Do you want to automatically create an archive template for '$key' post type?", true);
+		return Dialog::getConfirmation("Do you want to automatically create an archive template for '$key' post type?", true, 'yellow');
 	}
 }

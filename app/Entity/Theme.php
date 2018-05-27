@@ -43,7 +43,7 @@ class Theme
      */
     public function __construct($theme_name, $theme_uri, $author, $author_uri, $description, $version, $license, $license_uri, $text_domain, $tags, $folder_name, $template_engine)
     {
-        $themes-path = Config::expect('themes-path');
+        $themes_path = Config::expect('themes-path');
         $this->theme_name = $theme_name;
         $this->theme_uri = $theme_uri;
         $this->author = $author;
@@ -56,7 +56,7 @@ class Theme
         $this->tags = $tags;
         $this->folder_name = $folder_name;
         $this->template_engine = $template_engine;
-        $this->path = PROJECT_ROOT . "/$themes-path/$this->folder_name";
+        $this->path = PROJECT_ROOT . "/$themes_path/$this->folder_name";
     }
 
     /**

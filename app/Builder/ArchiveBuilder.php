@@ -125,7 +125,7 @@ class ArchiveBuilder extends TemplateBuilder implements Builder
 		$taxonomies = array_diff($taxonomies, ['category', 'tag']);
 
 		if (!empty($taxonomies)) {
-			return Dialog::getChoice('Taxonomy:', $taxonomies, null);
+			return Dialog::getChoice('Taxonomy:', array_values($taxonomies), null);
 		}
 
 		Dialog::write('Error: before creating a taxonomy based archive, you need to define a custom taxonomy.', 'red');

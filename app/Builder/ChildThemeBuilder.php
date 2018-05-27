@@ -19,6 +19,7 @@ class ChildThemeBuilder extends ThemeBuilder
     public static function startWizard()
     {
         Config::expect('themes-path');
+		Config::expect('themes', 'array');
         $theme_name = parent::askForThemeName();
         $theme_uri = parent::askForThemeURI();
         $author = parent::askForAuthor();
@@ -99,12 +100,7 @@ class ChildThemeBuilder extends ThemeBuilder
      */
     protected static function askForParentTheme()
     {
-        $parent_theme = Dialog::getAnswer('Parent theme:');
-
-        if (!$parent_theme) {
-            return self::askForParentTheme();
-        }
-
-        return StringsManager::toKebabCase($parent_theme);
+    	$themes = Config::get('themes');
+        return Dialog::getChoice('Parent theme:', array_keys($themes), null);
     }
 }

@@ -16,9 +16,9 @@ class ConfigBuilder implements Builder
      */
     public static function startWizard()
     {
-        $themes-path = self::askForThemesPath();
+        $themes_path = self::askForThemesPath();
         self::build([
-            'themes-path' => $themes-path
+            'themes-path' => $themes_path
         ]);
     }
 
@@ -26,19 +26,19 @@ class ConfigBuilder implements Builder
      * Builds config
      * @param array $params
      * @example ConfigBuilder::create([
-     * 	'themes-path' => $themes-path
+     * 	'themes-path' => $themes_path
      * ]);
      */
     public static function build($params)
     {
-        $themes-path = $params['themes-path'];
+        $themes_path = $params['themes-path'];
 
-        if (!$themes-path) {
+        if (!$themes_path) {
             Dialog::write('Error: unable to create config because of missing parameters.', 'red');
             exit;
         }
 
-        $completed = Config::init(['{THEMES_PATH}' => $themes-path]);
+        $completed = Config::init(['{THEMES_PATH}' => $themes_path]);
 
 		if ($completed) {
 			Dialog::write('Configuration completed!', 'green');
@@ -51,12 +51,12 @@ class ConfigBuilder implements Builder
      */
     private static function askForThemesPath()
     {
-        $themes-path = Dialog::getAnswer('Please provide themes directory path [wp-content/themes]:', 'wp-content/themes');
+        $themes_path = Dialog::getAnswer('Please provide themes directory path [wp-content/themes]:', 'wp-content/themes');
 
-        if (!$themes-path) {
+        if (!$themes_path) {
             return self::askForThemesPath();
         }
 
-        return $themes-path;
+        return $themes_path;
     }
 }
