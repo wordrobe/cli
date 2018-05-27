@@ -23,6 +23,9 @@ class Menu implements ThemeEntity
 		add_action('init', [$this, 'register']);
     }
 
+	/**
+	 * Handles menu registration
+	 */
     public function register()
     {
 		register_nav_menu($this->location, $this->description);

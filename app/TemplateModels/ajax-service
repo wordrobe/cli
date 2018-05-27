@@ -1,0 +1,5 @@
+<?php
+
+use Wordrobe\ThemeEntity\AjaxService;
+
+$ajax_services['{KEY}'] = new AjaxService('{ACTION}');
