@@ -1,6 +1,7 @@
 <?php
 
 namespace Wordrobe\ThemeEntity;
+
 use Wordrobe\Helper\StringsManager;
 
 /**
@@ -27,10 +28,10 @@ class Taxonomy implements ThemeEntity
      */
     public function __construct($key, $general_name, $singular_name, $text_domain, $post_types, $hierarchical = true)
     {
-        $this->key = $key;
-        $this->general_name = $general_name;
-        $this->singular_name = $singular_name;
-        $this->text_domain = $text_domain;
+        $this->key = StringsManager::toKebabCase($key);
+        $this->general_name = ucwords($general_name);
+        $this->singular_name = ucwords($singular_name);
+        $this->text_domain = StringsManager::toKebabCase($text_domain);
         $this->post_types = explode(',', StringsManager::removeSpaces($post_types));
         $this->hierarchical = $hierarchical;
         add_action('init', [$this, 'register'], 0);

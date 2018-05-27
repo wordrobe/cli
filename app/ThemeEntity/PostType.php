@@ -32,14 +32,14 @@ class PostType implements ThemeEntity
      */
     public function __construct($key, $general_name, $singular_name, $text_domain, $capability_type = 'post', $taxonomies = '', $icon = 'dashicons-admin-post', $description = '')
     {
-        $this->key = $key;
-        $this->general_name = $general_name;
-        $this->singular_name = $singular_name;
-        $this->text_domain = $text_domain;
-        $this->capability_type = $capability_type;
+        $this->key = StringsManager::toKebabCase($key);
+        $this->general_name = ucwords($general_name);
+        $this->singular_name = ucwords($singular_name);
+        $this->text_domain = StringsManager::toKebabCase($text_domain);
+        $this->capability_type = ($capability_type === 'post' || $capability_type === 'page') ? $capability_type : 'post';
         $this->taxonomies = ($capability_type === 'post') ? explode(',', StringsManager::removeSpaces($taxonomies)) : null;
-        $this->icon = $icon;
-        $this->description = $description;
+        $this->icon = StringsManager::toKebabCase($icon);
+        $this->description = ucfirst($description);
         add_action('init', [$this, 'register'], 0);
     }
 

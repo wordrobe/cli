@@ -19,7 +19,7 @@ class Menu implements ThemeEntity
     {
     	$this->location = StringsManager::toKebabCase($location);
 		$this->name = ucwords($name);
-		$this->description = $description;
+		$this->description = ucfirst($description);
 		add_action('init', [$this, 'register']);
     }
 

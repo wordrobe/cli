@@ -1,0 +1,5 @@
+<?php
+
+use Wordrobe\ThemeEntity\Term;
+
+$terms['{TAXONOMY}']['{SLUG}'] = new Term('{NAME}', '{TAXONOMY}', '{SLUG}', '{DESCRIPTION}', '{PARENT}');
