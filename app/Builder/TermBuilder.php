@@ -47,47 +47,35 @@ class TermBuilder extends TemplateBuilder implements Builder
 	 */
 	public static function build($params)
 	{
-		$name = $params['name'];
-		$taxonomy = $params['taxonomy'];
-		$slug = $params['slug'];
-		$description = $params['description'];
-		$parent = $params['parent'];
-		$theme = $params['theme'];
-		$build_archive = $params['build-archive'] || false;
-
-		if (!$name || !$taxonomy || !$theme) {
-			Dialog::write('Error: unable to create term because of missing parameters.', 'red');
-			exit;
-		}
-
-		$theme_path = PROJECT_ROOT . '/' . Config::expect('themes-path') . '/' . $theme;
+		$params = self::checkParams($params);
+		$theme_path = PROJECT_ROOT . '/' . Config::expect('themes-path') . '/' . $params['theme'];
 		$term = new Template('term', [
-			'{NAME}' => $name,
-			'{TAXONOMY}' => $taxonomy,
-			'{SLUG}' => $slug,
-			'{DESCRIPTION}' => $description,
-			'{PARENT}' => $parent
+			'{NAME}' => $params['name'],
+			'{TAXONOMY}' => $params['taxonomy'],
+			'{SLUG}' => $params['slug'],
+			'{DESCRIPTION}' => $params['description'],
+			'{PARENT}' => $params['parent']
 		]);
-		$saved = $term->save("$theme_path/includes/terms/$taxonomy/$slug.php");
+		$saved = $term->save("$theme_path/includes/terms/" . $params['taxonomy'] . "/" . $params['slug'] . ".php");
 
 		if ($saved) {
-			Dialog::write("Term '$name' added!", 'green');
+			Dialog::write("Term '" . $params['name'] . "' added!", 'green');
 		}
 
-		if ($build_archive) {
+		if ($params['build_archive']) {
 
-			if ($taxonomy === 'category' || $taxonomy === 'tag') {
-				$type = $taxonomy;
-				$key = $slug;
+			if ($params['taxonomy'] === 'category' || $params['taxonomy'] === 'tag') {
+				$type = $params['taxonomy'];
+				$key = $params['slug'];
 			} else {
 				$type = 'taxonomy';
-				$key = "$taxonomy-$slug";
+				$key = $params['taxonomy'] . '-' . $params['slug'];
 			}
 
 			ArchiveBuilder::build([
 				'type' => $type,
 				'key' => $key,
-				'theme' => $theme
+				'theme' => $params['theme']
 			]);
 		}
 	}
@@ -163,5 +151,38 @@ class TermBuilder extends TemplateBuilder implements Builder
 	private static function askForArchiveTemplateBuild($slug)
 	{
 		return Dialog::getConfirmation("Do you want to automatically create an archive template for '$slug' term?", true, 'yellow');
+	}
+
+	/**
+	 * Checks params existence and normalizes them
+	 * @param $params
+	 * @return array
+	 */
+	private static function checkParams($params)
+	{
+		// checking existence
+		if (!$params['name'] || !$params['taxonomy'] || !$params['theme']) {
+			Dialog::write('Error: unable to create term because of missing parameters.', 'red');
+			exit;
+		}
+
+		// normalizing
+		$name = ucwords($params['name']);
+		$taxonomy = StringsManager::toKebabCase($params['taxonomy']);
+		$slug = StringsManager::toKebabCase($params['slug']);
+		$description = ucfrist($params['description']);
+		$parent = StringsManager::toKebabCase($params['parent']);
+		$theme = StringsManager::toKebabCase($params['theme']);
+		$build_archive = $params['build-archive'] || false;
+
+		return [
+			'name' => $name,
+			'taxonomy' => $taxonomy,
+			'slug' => $slug,
+			'description' => $description,
+			'parent' => $parent,
+			'theme' => $theme,
+			'build-archive' => $build_archive
+		];
 	}
 }

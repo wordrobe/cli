@@ -50,41 +50,28 @@ class TaxonomyBuilder extends TemplateBuilder implements Builder
 	 */
 	public static function build($params)
 	{
-		$key = $params['key'];
-		$general_name = $params['general_name'];
-		$singular_name = $params['singular_name'];
-		$text_domain = $params['text-domain'];
-		$post_types = $params['post-types'];
-		$hierarchical = $params['hierarchical'];
-		$theme = $params['theme'];
-		$build_archive = $params['build-archive'] || false;
-
-		if (!$key || !$general_name || !$singular_name || !$text_domain || !$post_types || !$theme) {
-			Dialog::write('Error: unable to create taxonomy because of missing parameters.', 'red');
-			exit;
-		}
-
-		$theme_path = PROJECT_ROOT . '/' . Config::expect('themes-path') . '/' . $theme;
+		$params = self::checkParams($params);
+		$theme_path = PROJECT_ROOT . '/' . Config::expect('themes-path') . '/' . $params['theme'];
 		$taxonomy = new Template('taxonomy', [
-			'{KEY}' => $key,
-			'{GENERAL_NAME}' => $general_name,
-			'{SINGULAR_NAME}' => $singular_name,
-			'{TEXT_DOMAIN}' => $text_domain,
-			'{POST_TYPES}' => $post_types,
-			'{HIERARCHICAL}' => $hierarchical
+			'{KEY}' => $params['key'],
+			'{GENERAL_NAME}' => $params['general_name'],
+			'{SINGULAR_NAME}' => $params['singular_name'],
+			'{TEXT_DOMAIN}' => $params['text_domain'],
+			'{POST_TYPES}' => $params['post_types'],
+			'{HIERARCHICAL}' => $params['hierarchical']
 		]);
-		$saved = $taxonomy->save("$theme_path/includes/taxonomies/$key.php");
-		Config::add("themes.$theme.taxonomies", $key);
+		$saved = $taxonomy->save("$theme_path/includes/taxonomies/" . $params['key'] . ".php");
+		Config::add('themes.' . $params['theme'] . '.taxonomies', $params['key']);
 
 		if ($saved) {
-			Dialog::write("Taxonomy '$key' added!", 'green');
+			Dialog::write("Taxonomy '" . $params['key'] . "' added!", 'green');
 		}
 
-		if ($build_archive) {
+		if ($params['build_archive']) {
 			ArchiveBuilder::build([
 				'type' => 'taxonomy',
-				'key' => $key,
-				'theme' => $theme
+				'key' => $params['key'],
+				'theme' => $params['theme']
 			]);
 		}
 	}
@@ -182,5 +169,40 @@ class TaxonomyBuilder extends TemplateBuilder implements Builder
 	private static function askForArchiveTemplateBuild($key)
 	{
 		return Dialog::getConfirmation("Do you want to automatically create an archive template for '$key' taxonomy?", true, 'yellow');
+	}
+
+	/**
+	 * Checks params existence and normalizes them
+	 * @param $params
+	 * @return array
+	 */
+	private static function checkParams($params)
+	{
+		// checking existence
+		if (!$params['key'] || !$params['general_name'] || !$params['singular_name'] || !$params['text_domain'] || !$params['post_types'] || !$params['theme']) {
+			Dialog::write('Error: unable to create taxonomy because of missing parameters.', 'red');
+			exit;
+		}
+
+		// normalizing
+		$key = StringsManager::toKebabCase($params['key']);
+		$general_name = ucwords($params['general_name']);
+		$singular_name = ucwords($params['singular_name']);
+		$text_domain = StringsManager::toKebabCase($params['text-domain']);
+		$post_types = strtolower(StringsManager::removeSpaces($params['post-types']));
+		$hierarchical = $params['hierarchical'];
+		$theme = StringsManager::toKebabCase($params['theme']);
+		$build_archive = $params['build-archive'] || false;
+
+		return [
+			'key' => $key,
+			'general_name' => $general_name,
+			'singular_name' => $singular_name,
+			'text-domain' => $text_domain,
+			'post-types' => $post_types,
+			'hierarchical' => $hierarchical,
+			'theme' => $theme,
+			'build-archive' => $build_archive
+		];
 	}
 }

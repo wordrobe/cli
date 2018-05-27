@@ -68,17 +68,19 @@ class AjaxServiceBuilder extends TemplateBuilder implements Builder
 	 */
 	private static function checkParams($params)
 	{
-		$action = $params['action'];
-		$theme = $params['theme'];
-
-		if (!$action || !$theme) {
+		// checking existence
+		if (!$params['action'] || !$params['theme']) {
 			Dialog::write('Error: unable to create ajax service because of missing parameters', 'red');
 			exit;
 		}
 
+		// normalizing
+		$action = StringsManager::toSnakeCase($params['action']);
+		$theme = StringsManager::toKebabCase($params['theme']);
+
 		return [
-			'action' => StringsManager::toSnakeCase($action),
-			'theme' => StringsManager::toSnakeCase($theme)
+			'action' => $action,
+			'theme' => $theme
 		];
 	}
 }

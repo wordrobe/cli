@@ -13,6 +13,11 @@ use Wordrobe\Helper\StringsManager;
  */
 class ThemeBuilder implements Builder
 {
+	const TEMPLATE_ENGINES = [
+		'timber',
+		'standard'
+	];
+
     /**
      * Handles theme creation wizard
      */
@@ -67,25 +72,21 @@ class ThemeBuilder implements Builder
      */
     public static function build($params)
     {
-        $theme_name = $params['theme-name'];
-        $theme_uri = $params['theme-uri'];
-        $author = $params['author'];
-        $author_uri = $params['author-uri'];
-        $description = $params['description'];
-        $version = $params['version'];
-        $license = $params['license'];
-        $license_uri = $params['license-uri'];
-        $text_domain = $params['text-domain'];
-        $tags = $params['tags'];
-        $folder_name = $params['folder-name'];
-        $template_engine = $params['template-engine'];
-
-        if (!$theme_name || !$text_domain || !$folder_name || !$template_engine) {
-            Dialog::write('Error: unable to create archive because of missing parameters.', 'red');
-            exit;
-        }
-
-        $theme = new Theme($theme_name, $theme_uri, $author, $author_uri, $description, $version, $license, $license_uri, $text_domain, $tags, $folder_name, $template_engine);
+        $params = self::checkParams($params);
+		$theme = new Theme(
+			$params['theme_name'],
+			$params['theme_uri'],
+			$params['author'],
+			$params['author_uri'],
+			$params['description'],
+			$params['version'],
+			$params['license'],
+			$params['license_uri'],
+			$params['text_domain'],
+			$params['tags'],
+			$params['folder_name'],
+			$params['template-engine']
+		);
         $installed = $theme->install();
 
 		if ($installed) {
@@ -218,4 +219,52 @@ class ThemeBuilder implements Builder
         $choice = Dialog::getChoice('Template engine:', array_keys($template_engines), null);
         return $template_engines[$choice];
     }
+
+	/**
+	 * Checks params existence and normalizes them
+	 * @param $params
+	 * @return array
+	 * @throws \Exception
+	 */
+	private static function checkParams($params)
+	{
+		// checking existence
+		if (!$params['theme-name'] || !$params['text-domain'] || !$params['folder-name'] || !$params['template-engine']) {
+			Dialog::write('Error: unable to create theme because of missing parameters.', 'red');
+			exit;
+		}
+
+		// normalizing
+		$theme_name = ucwords($params['theme-name']);
+		$theme_uri = $params['theme-uri'];
+		$author = ucwords($params['author']);
+		$author_uri = $params['author-uri'];
+		$description = ucfirst($params['description']);
+		$version = $params['version'];
+		$license = $params['license'];
+		$license_uri = $params['license-uri'];
+		$text_domain = StringsManager::toKebabCase($params['text-domain']);
+		$tags = strtolower(StringsManager::removeMultipleSpaces($params['tags']));
+		$folder_name = StringsManager::toKebabCase($params['folder-name']);
+		$template_engine = strtolower($params['template-engine']);
+
+		if (!in_array($template_engine, self::TEMPLATE_ENGINES)) {
+			throw new \Exception("Error: template engine '$template_engine' is not defined.");
+		}
+
+		return [
+			'theme-name' => $theme_name,
+			'theme-uri' => $theme_uri,
+			'author' => $author,
+			'author-uri' => $author_uri,
+			'description' => $description,
+			'version' => $version,
+			'license' => $license,
+			'license-uri' => $license_uri,
+			'text-domain' => $text_domain,
+			'tags' => $tags,
+			'folder-name' => $folder_name,
+			'template-engine' => $template_engine
+		];
+	}
 }

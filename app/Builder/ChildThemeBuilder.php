@@ -68,25 +68,21 @@ class ChildThemeBuilder extends ThemeBuilder
      */
     public static function build($params)
     {
-        $theme_name = $params['theme-name'];
-        $theme_uri = $params['theme-uri'];
-        $author = $params['author'];
-        $author_uri = $params['author-uri'];
-        $description = $params['description'];
-        $version = $params['version'];
-        $license = $params['license'];
-        $license_uri = $params['license-uri'];
-        $text_domain = $params['text-domain'];
-        $tags = $params['tags'];
-        $folder_name = $params['folder-name'];
-        $parent = $params['parent'];
-
-        if (!$theme_name || !$text_domain || !$folder_name || !$parent) {
-            Dialog::write('Error: unable to create archive because of missing parameters.', 'red');
-            exit;
-        }
-
-        $theme = new ChildTheme($theme_name, $theme_uri, $author, $author_uri, $description, $version, $license, $license_uri, $text_domain, $tags, $folder_name, $parent);
+        $params = self::checkParams($params);
+        $theme = new ChildTheme(
+        	$params['theme_name'],
+			$params['theme_uri'],
+			$params['author'],
+			$params['author_uri'],
+			$params['description'],
+			$params['version'],
+			$params['license'],
+			$params['license_uri'],
+			$params['text_domain'],
+			$params['tags'],
+			$params['folder_name'],
+			$params['parent']
+		);
 		$installed = $theme->install();
 
 		if ($installed) {
@@ -103,4 +99,52 @@ class ChildThemeBuilder extends ThemeBuilder
     	$themes = Config::get('themes');
         return Dialog::getChoice('Parent theme:', array_keys($themes), null);
     }
+
+	/**
+	 * Checks params existence and normalizes them
+	 * @param $params
+	 * @return array
+	 * @throws \Exception
+	 */
+	private static function checkParams($params)
+	{
+		// checking existence
+		if (!$params['theme-name'] || !$params['text-domain'] || !$params['folder-name'] || !$params['parent']) {
+			Dialog::write('Error: unable to create child theme because of missing parameters.', 'red');
+			exit;
+		}
+
+		// normalizing
+		$theme_name = ucwords($params['theme-name']);
+		$theme_uri = $params['theme-uri'];
+		$author = ucwords($params['author']);
+		$author_uri = $params['author-uri'];
+		$description = ucfirst($params['description']);
+		$version = $params['version'];
+		$license = $params['license'];
+		$license_uri = $params['license-uri'];
+		$text_domain = StringsManager::toKebabCase($params['text-domain']);
+		$tags = strtolower(StringsManager::removeMultipleSpaces($params['tags']));
+		$folder_name = StringsManager::toKebabCase($params['folder-name']);
+		$parent = StringsManager::toKebabCase($params['parent']);
+
+		if (!Config::get("themes.$parent")) {
+			throw new \Exception("Error: parent theme '$parent' not found.");
+		}
+
+		return [
+			'theme-name' => $theme_name,
+			'theme-uri' => $theme_uri,
+			'author' => $author,
+			'author-uri' => $author_uri,
+			'description' => $description,
+			'version' => $version,
+			'license' => $license,
+			'license-uri' => $license_uri,
+			'text-domain' => $text_domain,
+			'tags' => $tags,
+			'folder-name' => $folder_name,
+			'parent' => $parent
+		];
+	}
 }

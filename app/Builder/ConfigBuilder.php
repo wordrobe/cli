@@ -31,14 +31,8 @@ class ConfigBuilder implements Builder
      */
     public static function build($params)
     {
-        $themes_path = $params['themes-path'];
-
-        if (!$themes_path) {
-            Dialog::write('Error: unable to create config because of missing parameters.', 'red');
-            exit;
-        }
-
-        $completed = Config::init(['{THEMES_PATH}' => $themes_path]);
+		$params = self::checkParams($params);
+        $completed = Config::init(['{THEMES_PATH}' => $params['themes_path']]);
 
 		if ($completed) {
 			Dialog::write('Configuration completed!', 'green');
@@ -59,4 +53,20 @@ class ConfigBuilder implements Builder
 
         return $themes_path;
     }
+
+	/**
+	 * Checks params existence
+	 * @param $params
+	 * @return mixed
+	 */
+    private static function checkParams($params)
+	{
+		// checking existence
+		if (!$params['themes-path']) {
+			Dialog::write('Error: unable to create config because of missing parameters.', 'red');
+			exit;
+		}
+
+		return $params;
+	}
 }

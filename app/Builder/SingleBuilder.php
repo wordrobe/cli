@@ -32,18 +32,11 @@ class SingleBuilder extends TemplateBuilder implements Builder
      */
     public static function build($params)
     {
-        $post_type = $params['post_type'];
-        $theme = $params['theme'];
-
-        if (!$post_type || !$theme) {
-            Dialog::write('Error: unable to create single template because of missing parameters.', 'red');
-            exit;
-        }
-
-        $filename = "single-$post_type";
-        $template_engine = Config::expect("themes.$theme.template-engine");
-        $theme_path = PROJECT_ROOT . '/' . Config::expect('themes-path') . '/' . $theme;
-        $single_ctrl = new Template("$template_engine/single", ['{POST_TYPE}' => $post_type]);
+		$params = self::checkParams($params);
+        $filename = 'single-' . $params['post_type'];
+        $template_engine = Config::expect('themes.' . $params['theme'] . '.template-engine');
+        $theme_path = PROJECT_ROOT . '/' . Config::expect('themes-path') . '/' . $params['theme'];
+        $single_ctrl = new Template("$template_engine/single", ['{POST_TYPE}' => $params['post_type']]);
 		$saved = true;
 
         if ($template_engine === 'timber') {
@@ -55,7 +48,7 @@ class SingleBuilder extends TemplateBuilder implements Builder
         $saved = $saved && $single_ctrl->save("$theme_path/$filename.php");
 
 		if ($saved) {
-			Dialog::write("Single template for post type '$post_type' added!", 'green');
+			Dialog::write("Single template for post type '" . $params['post_type'] . "' added!", 'green');
 		}
     }
 
@@ -76,4 +69,27 @@ class SingleBuilder extends TemplateBuilder implements Builder
 		Dialog::write('Error: before creating a single, you need to define a custom post type.', 'red');
 		exit;
     }
+
+	/**
+	 * Checks params existence and normalizes them
+	 * @param $params
+	 * @return array
+	 */
+	private static function checkParams($params)
+	{
+		// checking existence
+		if (!$params['post_type'] || !$params['theme']) {
+			Dialog::write('Error: unable to create single template because of missing parameters.', 'red');
+			exit;
+		}
+
+		// normalizing
+		$post_type = StringsManager::toKebabCase($params['post_type']);
+		$theme = StringsManager::toKebabCase($params['theme']);
+
+		return [
+			'post_type' => $post_type,
+			'theme' => $theme
+		];
+	}
 }

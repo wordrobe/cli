@@ -59,53 +59,37 @@ class PostTypeBuilder extends TemplateBuilder implements Builder
      */
     public static function build($params)
     {
-        $key = $params['key'];
-        $general_name = $params['general_name'];
-        $singular_name = $params['singular_name'];
-        $text_domain = $params['text-domain'];
-        $capability_type = $params['capability_type'];
-        $taxonomies = $params['taxonomies'];
-        $icon = $params['icon'];
-        $description = $params['description'];
-        $theme = $params['theme'];
-		$build_single = $params['build-single'] || false;
-		$build_archive = $params['build-archive'] || false;
-
-        if (!$key || !$general_name || !$singular_name || !$text_domain || !$capability_type || !$theme) {
-            Dialog::write('Error: unable to create post type because of missing parameters.', 'red');
-            exit;
-        }
-
-        $theme_path = PROJECT_ROOT . '/' . Config::expect('themes-path') . '/' . $theme;
+		$params = self::checkParams($params);
+        $theme_path = PROJECT_ROOT . '/' . Config::expect('themes-path') . '/' . $params['theme'];
         $post_type = new Template('post-type', [
-            '{KEY}' => $key,
-            '{GENERAL_NAME}' => $general_name,
-            '{SINGULAR_NAME}' => $singular_name,
-            '{TEXT_DOMAIN}' => $text_domain,
-            '{CAPABILITY_TYPE}' => $capability_type,
-            '{TAXONOMIES}' => $taxonomies,
-            '{ICON}' => $icon,
-            '{DESCRIPTION}' => $description
+            '{KEY}' => $params['key'],
+            '{GENERAL_NAME}' => $params['general_name'],
+            '{SINGULAR_NAME}' => $params['singular_name'],
+            '{TEXT_DOMAIN}' => $params['text_domain'],
+            '{CAPABILITY_TYPE}' => $params['capability_type'],
+            '{TAXONOMIES}' => $params['taxonomies'],
+            '{ICON}' => $params['icon'],
+            '{DESCRIPTION}' => $params['description']
         ]);
-		$saved = $post_type->save("$theme_path/includes/post-types/$key.php");
-        Config::add("themes.$theme.post-types", $key);
+		$saved = $post_type->save("$theme_path/includes/post-types/" . $params['key'] . ".php");
+        Config::add('themes.' . $params['theme'] . '.post-types', $params['key']);
 
 		if ($saved) {
-			Dialog::write("Post type '$key' added!", 'green');
+			Dialog::write("Post type '" . $params['key'] . "' added!", 'green');
 		}
 
-		if ($build_single) {
+		if ($params['build_single']) {
 			SingleBuilder::build([
-				'post_type' => $key,
-				'theme' => $theme
+				'post_type' => $params['key'],
+				'theme' => $params['theme']
 			]);
 		}
 
-		if ($build_archive) {
+		if ($params['build_archive']) {
 			ArchiveBuilder::build([
 				'type' => 'post-type',
-				'key' => $key,
-				'theme' => $theme
+				'key' => $params['key'],
+				'theme' => $params['theme']
 			]);
 		}
     }
@@ -241,5 +225,46 @@ class PostTypeBuilder extends TemplateBuilder implements Builder
 	private static function askForArchiveTemplateBuild($key)
 	{
 		return Dialog::getConfirmation("Do you want to automatically create an archive template for '$key' post type?", true, 'yellow');
+	}
+
+	/**
+	 * Checks params existence and normalizes them
+	 * @param $params
+	 * @return array
+	 */
+	private static function checkParams($params)
+	{
+		// checking existence
+		if (!$params['key'] || !$params['general_name'] || !$params['singular_name'] || !$params['text_domain'] || !$params['capability_type'] || !$params['theme']) {
+			Dialog::write('Error: unable to create post type because of missing parameters.', 'red');
+			exit;
+		}
+
+		// normalizing
+		$key = StringsManager::toKebabCase($params['key']);
+		$general_name = ucwords($params['general_name']);
+		$singular_name = ucwords($params['singular_name']);
+		$text_domain = StringsManager::toKebabCase($params['text-domain']);
+		$capability_type = strtolower($params['capability_type']);
+		$taxonomies = strtolower(StringsManager::removeSpaces($params['taxonomies']));
+		$icon = StringsManager::toKebabCase($params['icon']);
+		$description = ucfirst($params['description']);
+		$theme = StringsManager::toKebabCase($params['theme']);
+		$build_single = $params['build-single'] || false;
+		$build_archive = $params['build-archive'] || false;
+
+		return [
+			'key' => $key,
+			'general_name' => $general_name,
+			'singular_name' => $singular_name,
+			'text-domain' => $text_domain,
+			'capability_type' => $capability_type,
+			'taxonomies' => $taxonomies,
+			'icon' => $icon,
+			'description' => $description,
+			'theme' => $theme,
+			'build-single' => $build_single,
+			'build-archive' => $build_archive
+		];
 	}
 }

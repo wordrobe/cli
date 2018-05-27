@@ -32,18 +32,11 @@ class PartialBuilder extends TemplateBuilder implements Builder
 	 */
 	public static function build($params)
 	{
-		$class_name = $params['class_name'];
-		$theme = $params['theme'];
-
-		if (!$class_name || !$theme) {
-			Dialog::write('Error: unable to create partial template because of missing parameters', 'red');
-			exit;
-		}
-
-		$filename = StringsManager::toKebabCase($class_name);
-		$template_engine = Config::expect("themes.$theme.template-engine");
-		$theme_path = PROJECT_ROOT . '/' . Config::expect('themes-path') . '/' . $theme;
-		$partial = new Template('partial', ['{CLASS_NAME}' => $class_name]);
+		$params = self::checkParams($params);
+		$filename = StringsManager::toKebabCase($params['class_name']);
+		$template_engine = Config::expect('themes.' . $params['theme'] . '.template-engine');
+		$theme_path = PROJECT_ROOT . '/' . Config::expect('themes-path') . '/' . $params['theme'];
+		$partial = new Template('partial', ['{CLASS_NAME}' => $params['class_name']]);
 
 		if ($template_engine === 'timber') {
 			$file_type = 'html.twig';
@@ -73,5 +66,27 @@ class PartialBuilder extends TemplateBuilder implements Builder
 		}
 
 		return $class_name;
+	}
+
+	/**
+	 * Checks params existence and normalizes them
+	 * @param $params
+	 * @return array
+	 */
+	private static function checkParams($params)
+	{
+		// checking existence
+		if (!$params['class_name'] || !$params['theme']) {
+			Dialog::write('Error: unable to create partial template because of missing parameters', 'red');
+			exit;
+		}
+
+		// normalizing
+		$theme = StringsManager::toKebabCase($params['theme']);
+
+		return [
+			'class-name' => $params['class_name'],
+			'theme' => $theme
+		];
 	}
 }

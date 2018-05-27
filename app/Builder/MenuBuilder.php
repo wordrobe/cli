@@ -38,22 +38,13 @@ class MenuBuilder extends TemplateBuilder implements Builder
 	 */
 	public static function build($params)
 	{
-		$location = StringsManager::toSnakeCase($params['location']);
-		$name = ucwords($params['name']);
-		$description = $params['description'] || '';
-		$theme = $params['theme'];
-
-		if (!$location || !$name || !$theme) {
-			Dialog::write('Error: unable to create menu because of missing parameters', 'red');
-			exit;
-		}
-
-		$filename = StringsManager::toKebabCase($location);
-		$theme_path = PROJECT_ROOT . '/' . Config::expect('themes-path') . '/' . $theme;
+		$params = self::checkParams($params);
+		$filename = StringsManager::toKebabCase($params['location']);
+		$theme_path = PROJECT_ROOT . '/' . Config::expect('themes-path') . '/' . $params['theme'];
 		$menu = new Template('menu', [
-			'{LOCATION}' => $location,
-			'{NAME}' => $name,
-			'{DESCRIPTION}' => $description
+			'{LOCATION}' => $params['location'],
+			'{NAME}' => $params['name'],
+			'{DESCRIPTION}' => $params['description']
 		]);
 
 		$saved = $menu->save("$theme_path/includes/menus/$filename.php");
@@ -90,5 +81,32 @@ class MenuBuilder extends TemplateBuilder implements Builder
 	private static function askForDescription()
 	{
 		return Dialog::getAnswer('Description:');
+	}
+
+	/**
+	 * Checks params existence and normalizes them
+	 * @param $params
+	 * @return array
+	 */
+	private static function checkParams($params)
+	{
+		// checking existence
+		if (!$params['location'] || !$params['name'] || !$params['theme']) {
+			Dialog::write('Error: unable to create menu because of missing parameters', 'red');
+			exit;
+		}
+
+		// normalizing
+		$location = StringsManager::toSnakeCase($params['location']);
+		$name = ucwords($params['name']);
+		$description = ucfirst($params['description']);
+		$theme = StringsManager::toKebabCase($params['theme']);
+
+		return [
+			'location' => $location,
+			'name' => $name,
+			'$description' => $description,
+			'theme' => $theme
+		];
 	}
 }

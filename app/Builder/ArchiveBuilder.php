@@ -2,6 +2,7 @@
 
 namespace Wordrobe\Builder;
 
+use Nette\Neon\Exception;
 use Wordrobe\Config;
 use Wordrobe\Helper\Dialog;
 use Wordrobe\Entity\Template;
@@ -58,20 +59,12 @@ class ArchiveBuilder extends TemplateBuilder implements Builder
      */
     public static function build($params)
     {
-        $type = $params['type'];
-        $key = $params['key'];
-        $theme = $params['theme'];
-
-        if (!$type || !$key || !$theme) {
-            Dialog::write('Error: unable to create archive because of missing parameters.', 'red');
-            exit;
-        }
-
-        $basename = $type === 'post-type' ? 'archive' : $type;
-        $filename = $key ? "$basename-$key" : $basename;
-        $template_engine = Config::expect("themes.$theme.template-engine");
-        $theme_path = PROJECT_ROOT . '/' . Config::expect('themes-path') . '/' . $theme;
-        $type_and_key = trim(str_replace("''", '', "$type '$key'"));
+        $params = self::checkParams($params);
+        $basename = $params['type'] === 'post-type' ? 'archive' : $params['type'];
+        $filename = $params['key'] ? $basename . '-' . $params['key'] : $basename;
+        $template_engine = Config::expect('themes.' . $params['theme'] . '.template-engine');
+        $theme_path = PROJECT_ROOT . '/' . Config::expect('themes-path') . '/' . $params['theme'];
+        $type_and_key = trim(str_replace("''", '', $params['type'] . "' " . $params['key'] . "'"));
         $archive_ctrl = new Template("$template_engine/archive", ['{TYPE_AND_KEY}' => $type_and_key]);
 
         if ($template_engine === 'timber') {
@@ -146,4 +139,34 @@ class ArchiveBuilder extends TemplateBuilder implements Builder
 
 		return StringsManager::toKebabCase($term);
     }
+
+	/**
+	 * Checks params existence and normalizes them
+	 * @param $params
+	 * @return array
+	 * @throws \Exception
+	 */
+	private static function checkParams($params)
+	{
+		// checking existence
+		if (!$params['type'] || !$params['key'] || !$params['theme']) {
+			Dialog::write('Error: unable to create archive because of missing parameters.', 'red');
+			exit;
+		}
+
+		// normalizing
+		$type = StringsManager::toKebabCase($params['type']);
+		$key = StringsManager::toKebabCase($params['key']);
+		$theme = StringsManager::toKebabCase($params['theme']);
+
+		if (!in_array($type, self::TYPES)) {
+			throw new \Exception("Error: archive type '$type' not found.");
+		}
+
+		return [
+			'type' => $type,
+			'key' => $key,
+			'theme' => $theme
+		];
+	}
 }

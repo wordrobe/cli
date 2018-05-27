@@ -32,18 +32,11 @@ class PageBuilder extends TemplateBuilder implements Builder
      */
     public static function build($params)
     {
-        $name = $params['name'];
-        $theme = $params['theme'];
-
-        if (!$name || !$theme) {
-            Dialog::write('Error: unable to create page template because of missing parameters', 'red');
-            exit;
-        }
-
-        $filename = StringsManager::toKebabCase($name);
-        $template_engine = Config::expect("themes.$theme.template-engine");
-        $theme_path = PROJECT_ROOT . '/' . Config::expect('themes-path') . '/' . $theme;
-        $page_ctrl = new Template("$template_engine/page", ['{TEMPLATE_NAME}' => $name]);
+		$params = self::checkParams($params);
+        $filename = StringsManager::toKebabCase($params['name']);
+        $template_engine = Config::expect('themes.' . $params['theme'] . '.template-engine');
+        $theme_path = PROJECT_ROOT . '/' . Config::expect('themes-path') . '/' . $params['theme'];
+        $page_ctrl = new Template("$template_engine/page", ['{TEMPLATE_NAME}' => $params['name']]);
 		$saved = true;
 
         if ($template_engine === 'timber') {
@@ -55,7 +48,7 @@ class PageBuilder extends TemplateBuilder implements Builder
         $saved = $saved && $page_ctrl->save("$theme_path/pages/$filename.php");
 
 		if ($saved) {
-			Dialog::write("Page template '$name' added!", 'green');
+			Dialog::write("Page template '" . $params['name'] . "' added!", 'green');
 		}
     }
 
@@ -73,4 +66,27 @@ class PageBuilder extends TemplateBuilder implements Builder
 
         return ucwords($name);
     }
+
+	/**
+	 * Checks params existence and normalizes them
+	 * @param $params
+	 * @return array
+	 */
+	private static function checkParams($params)
+	{
+		// checking existence
+		if (!$params['name'] || !$params['theme']) {
+			Dialog::write('Error: unable to create page template because of missing parameters', 'red');
+			exit;
+		}
+
+		// normalizing
+		$name = ucwords($params['name']);
+		$theme = StringsManager::toKebabCase($params['theme']);
+
+		return [
+			'name' => $name,
+			'theme' => $theme
+		];
+	}
 }
