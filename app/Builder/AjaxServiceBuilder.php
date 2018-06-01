@@ -16,10 +16,18 @@ class AjaxServiceBuilder extends TemplateBuilder implements Builder
 	{
 		$theme = self::askForTheme();
 		$action = self::askForAction();
-		self::build([
-			'action' => $action,
-			'theme' => $theme
-		]);
+    
+    try {
+      self::build([
+        'action' => $action,
+        'theme' => $theme
+      ]);
+    } catch (\Exception $e) {
+      Dialog::write($e->getMessage(), 'red');
+      exit;
+    }
+    
+    Dialog::write('Ajax service added!', 'green');
 	}
 
 	/**
@@ -34,16 +42,12 @@ class AjaxServiceBuilder extends TemplateBuilder implements Builder
 	{
 		$params = self::checkParams($params);
 		$filename = StringsManager::toKebabCase($params['action']);
-		$theme_path = PROJECT_ROOT . '/' . Config::expect('themes-path') . '/' . $params['theme'];
+		$theme_path = PROJECT_ROOT . '/' . Config::get('themes-path') . '/' . $params['theme'];
 		$ajax_service = new Template('ajax-service', [
 			'{KEY}' => $filename,
 			'{ACTION}' => $params['action']
 		]);
-		$saved = $ajax_service->save("$theme_path/includes/services/ajax/$filename.php");
-
-		if ($saved) {
-			Dialog::write("Service 'wp_ajax_" . $params['action'] . "' added!", 'green');
-		}
+		$ajax_service->save("$theme_path/includes/services/ajax/$filename.php");
 	}
 
 	/**
@@ -53,18 +57,14 @@ class AjaxServiceBuilder extends TemplateBuilder implements Builder
 	private static function askForAction()
 	{
 		$action = Dialog::getAnswer('Action (e.g. send_email):');
-
-		if (!$action) {
-			return self::askForAction();
-		}
-
-		return StringsManager::toSnakeCase($action);
+		return $action ? $action : self::askForAction();
 	}
 
 	/**
 	 * Checks params existence and normalizes them
 	 * @param $params
 	 * @return array
+	 * @throws \Exception
 	 */
 	private static function checkParams($params)
 	{
@@ -77,6 +77,10 @@ class AjaxServiceBuilder extends TemplateBuilder implements Builder
 		// normalizing
 		$action = StringsManager::toSnakeCase($params['action']);
 		$theme = StringsManager::toKebabCase($params['theme']);
+
+		if (!Config::get("themes.$theme")) {
+			throw new \Exception("Error: theme '$theme' doesn't exist.");
+		}
 
 		return [
 			'action' => $action,

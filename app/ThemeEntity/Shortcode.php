@@ -8,12 +8,12 @@ namespace Wordrobe\ThemeEntity;
  */
 class Shortcode implements ThemeEntity
 {
-    public function __construct()
-    {
-    }
-
-    public function register()
-    {
-        // Logic here
-    }
+  public function __construct()
+  {
+  }
+  
+  public function register()
+  {
+    // Logic here
+  }
 }

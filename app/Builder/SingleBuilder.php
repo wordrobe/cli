@@ -9,87 +9,104 @@ use Wordrobe\Entity\Template;
 
 class SingleBuilder extends TemplateBuilder implements Builder
 {
-    /**
-     * Handles single template creation wizard
-     */
-    public static function startWizard()
-    {
-        $theme = self::askForTheme(['template-engine']);
-        $post_type = self::askForPostType($theme);
-        self::build([
-            'post_type' => $post_type,
-            'theme' => $theme
-        ]);
+  /**
+   * Handles single template creation wizard
+   */
+  public static function startWizard()
+  {
+    $theme = self::askForTheme(['template-engine']);
+    $post_type = self::askForPostType($theme);
+  
+    try {
+      self::build([
+        'post_type' => $post_type,
+        'theme' => $theme
+      ]);
+    } catch (\Exception $e) {
+      Dialog::write($e->getMessage(), 'red');
+      exit;
     }
-
-    /**
-     * Builds single template
-     * @param array $params
-     * @example SingleBuilder::create([
-     * 	'post_type' => $post_type,
-     *	'theme' => $theme
-     * ]);
-     */
-    public static function build($params)
-    {
-		$params = self::checkParams($params);
-        $filename = 'single-' . $params['post_type'];
-        $template_engine = Config::expect('themes.' . $params['theme'] . '.template-engine');
-        $theme_path = PROJECT_ROOT . '/' . Config::expect('themes-path') . '/' . $params['theme'];
-        $single_ctrl = new Template("$template_engine/single", ['{POST_TYPE}' => $params['post_type']]);
-		$saved = true;
-
-        if ($template_engine === 'timber') {
-            $single_ctrl->fill('{VIEW_FILENAME}', $filename);
-            $single_view = new Template('timber/view');
-            $saved = $single_view->save("$theme_path/views/default/$filename.html.twig");
-        }
-
-        $saved = $saved && $single_ctrl->save("$theme_path/$filename.php");
-
-		if ($saved) {
-			Dialog::write("Single template for post type '" . $params['post_type'] . "' added!", 'green');
-		}
+  
+    Dialog::write('Single template added!', 'green');
+  }
+  
+  /**
+   * Builds single template
+   * @param array $params
+   * @example SingleBuilder::create([
+   *  'post_type' => $post_type,
+   *  'theme' => $theme
+   * ]);
+   */
+  public static function build($params)
+  {
+    $params = self::checkParams($params);
+    $filename = 'single-' . $params['post_type'];
+    $template_engine = Config::get('themes.' . $params['theme'] . '.template-engine');
+    $theme_path = PROJECT_ROOT . '/' . Config::get('themes-path') . '/' . $params['theme'];
+    $single_ctrl = new Template("$template_engine/single", ['{POST_TYPE}' => $params['post_type']]);
+    $single_ctrl->save("$theme_path/$filename.php");
+    
+    if ($template_engine === 'timber') {
+      self::buildView($single_ctrl, $filename, $theme_path);
     }
-
-    /**
-     * Asks for post type
-	 * @param $theme
-     * @return string
-     */
-    private static function askForPostType($theme)
-    {
-		$post_types = Config::expect("themes.$theme.post-types", 'array');
-		$post_types = array_diff($post_types, ['post']);
-
-		if (!empty($post_types)) {
-			return Dialog::getChoice('Post type:', array_values($post_types), null);
-		}
-
-		Dialog::write('Error: before creating a single, you need to define a custom post type.', 'red');
-		exit;
+  }
+  
+  /**
+   * Builds single view
+   * @param Template $controller
+   * @param string $filename
+   * @param string $theme_path
+   */
+  private static function buildView($controller, $filename, $theme_path)
+  {
+    $controller->fill('{VIEW_FILENAME}', $filename);
+    $view = new Template('timber/view');
+    $view->save("$theme_path/views/default/$filename.html.twig");
+  }
+  
+  /**
+   * Asks for post type
+   * @param $theme
+   * @return string
+   */
+  private static function askForPostType($theme)
+  {
+    $post_types = Config::expect("themes.$theme.post-types", 'array');
+    $post_types = array_diff($post_types, ['post']);
+    
+    if (!empty($post_types)) {
+      return Dialog::getChoice('Post type:', array_values($post_types), null);
     }
-
-	/**
-	 * Checks params existence and normalizes them
-	 * @param $params
-	 * @return array
-	 */
-	private static function checkParams($params)
-	{
-		// checking existence
-		if (!$params['post_type'] || !$params['theme']) {
-			Dialog::write('Error: unable to create single template because of missing parameters.', 'red');
-			exit;
-		}
-
-		// normalizing
-		$post_type = StringsManager::toKebabCase($params['post_type']);
-		$theme = StringsManager::toKebabCase($params['theme']);
-
-		return [
-			'post_type' => $post_type,
-			'theme' => $theme
-		];
-	}
+    
+    Dialog::write('Error: before creating a single, you need to define a custom post type.', 'red');
+    exit;
+  }
+  
+  /**
+   * Checks params existence and normalizes them
+   * @param $params
+   * @return mixed
+   * @throws \Exception
+   */
+  private static function checkParams($params)
+  {
+    // checking existence
+    if (!$params['post_type'] || !$params['theme']) {
+      throw new \Exception('Error: unable to create single template because of missing parameters.');
+    }
+    
+    // normalizing
+    $post_type = StringsManager::toKebabCase($params['post_type']);
+    $theme = StringsManager::toKebabCase($params['theme']);
+    
+    if (!Config::get("themes.$theme")) {
+      throw new \Exception("Error: theme '$theme' doesn't exist.");
+    }
+    
+    return [
+      'post_type' => $post_type,
+      'theme' => $theme
+    ];
+  }
 }

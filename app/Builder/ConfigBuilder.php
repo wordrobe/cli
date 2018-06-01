@@ -11,62 +11,77 @@ use Wordrobe\Helper\Dialog;
  */
 class ConfigBuilder implements Builder
 {
-    /**
-     * Handles config creation wizard
-     */
-    public static function startWizard()
-    {
-        $themes_path = self::askForThemesPath();
-        self::build([
-            'themes-path' => $themes_path
-        ]);
+  /**
+   * Handles config creation wizard
+   */
+  public static function startWizard()
+  {
+    $themes_path = self::askForThemesPath();
+    $plugins_path = self::askForPluginsPath();
+  
+    try {
+      self::build([
+        'themes-path' => $themes_path,
+        'plugins-path' => $plugins_path
+      ]);
+    } catch (\Exception $e) {
+      Dialog::write($e->getMessage(), 'red');
+      exit;
     }
-
-    /**
-     * Builds config
-     * @param array $params
-     * @example ConfigBuilder::create([
-     * 	'themes-path' => $themes_path
-     * ]);
-     */
-    public static function build($params)
-    {
-		$params = self::checkParams($params);
-        $completed = Config::init(['{THEMES_PATH}' => $params['themes_path']]);
-
-		if ($completed) {
-			Dialog::write('Configuration completed!', 'green');
-		}
+    
+    Dialog::write('Configuration completed!', 'green');
+  }
+  
+  /**
+   * Builds config
+   * @param array $params
+   * @example ConfigBuilder::create([
+   *  'themes-path' => $themes_path
+   *  'plugins-path' => $plugins_path
+   * ]);
+   */
+  public static function build($params)
+  {
+    $params = self::checkParams($params);
+    Config::init([
+      '{THEMES_PATH}' => $params['themes_path'],
+      '{PLUGINS_PATH}' => $params['plugins_path']
+    ]);
+  }
+  
+  /**
+   * Asks for themes path
+   * @return mixed
+   */
+  private static function askForThemesPath()
+  {
+    $themes_path = Dialog::getAnswer('Please provide themes directory path [wp-content/themes]:', 'wp-content/themes');
+    return $themes_path ? $themes_path : self::askForThemesPath();
+  }
+  
+  /**
+   * Asks for plugin path
+   * @return mixed
+   */
+  private static function askForPluginsPath()
+  {
+    $plugins_path = Dialog::getAnswer('Please provide plugins directory path [wp-content/plugins]:', 'wp-content/plugins');
+    return $plugins_path ? $plugins_path : self::askForPluginsPath();
+  }
+  
+  /**
+   * Checks params existence and normalizes them
+   * @param $params
+   * @return mixed
+   * @throws \Exception
+   */
+  private static function checkParams($params)
+  {
+    // checking existence
+    if (!$params['themes-path']) {
+      throw new \Exception('Error: unable to create config template because of missing parameters.');
     }
-
-    /**
-     * Asks for themes path
-     * @return mixed
-     */
-    private static function askForThemesPath()
-    {
-        $themes_path = Dialog::getAnswer('Please provide themes directory path [wp-content/themes]:', 'wp-content/themes');
-
-        if (!$themes_path) {
-            return self::askForThemesPath();
-        }
-
-        return $themes_path;
-    }
-
-	/**
-	 * Checks params existence
-	 * @param $params
-	 * @return mixed
-	 */
-    private static function checkParams($params)
-	{
-		// checking existence
-		if (!$params['themes-path']) {
-			Dialog::write('Error: unable to create config because of missing parameters.', 'red');
-			exit;
-		}
-
-		return $params;
-	}
+    
+    return $params;
+  }
 }

@@ -8,14 +8,14 @@ namespace Wordrobe\Builder;
  */
 interface Builder
 {
-    /**
-     * Handles entity creation wizard
-     */
-    public static function startWizard();
-
-    /**
-     * Builds entity
-     * @param array $params
-     */
-    public static function build($params);
+  /**
+   * Handles entity creation wizard
+   */
+  public static function startWizard();
+  
+  /**
+   * Builds entity
+   * @param array $params
+   */
+  public static function build($params);
 }

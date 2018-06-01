@@ -8,9 +8,9 @@ namespace Wordrobe\ThemeEntity;
  */
 interface ThemeEntity
 {
-
-    /**
-     * Handles entity registration/definition
-     */
-    public function register();
+  
+  /**
+   * Handles entity registration/definition
+   */
+  public function register();
 }

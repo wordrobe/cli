@@ -8,12 +8,12 @@ namespace Wordrobe\ThemeEntity;
  */
 class Widget implements ThemeEntity
 {
-    public function __construct()
-    {
-    }
-
-    public function register()
-    {
-        // Logic here
-    }
+  public function __construct()
+  {
+  }
+  
+  public function register()
+  {
+    // Logic here
+  }
 }
