@@ -20,7 +20,8 @@ class AjaxServiceBuilder extends TemplateBuilder implements Builder
     try {
       self::build([
         'action' => $action,
-        'theme' => $theme
+        'theme' => $theme,
+        'override' => 'ask'
       ]);
     } catch (\Exception $e) {
       Dialog::write($e->getMessage(), 'red');
@@ -35,7 +36,8 @@ class AjaxServiceBuilder extends TemplateBuilder implements Builder
 	 * @param array $params
 	 * @example AjaxServiceBuilder::create([
 	 * 	'action' => $action,
-	 *	'theme' => $theme
+	 *	'theme' => $theme,
+   *  'override' => 'ask'|'force'|false
 	 * ]);
 	 */
 	public static function build($params)
@@ -47,7 +49,7 @@ class AjaxServiceBuilder extends TemplateBuilder implements Builder
 			'{KEY}' => $filename,
 			'{ACTION}' => $params['action']
 		]);
-		$ajax_service->save("$theme_path/includes/services/ajax/$filename.php");
+		$ajax_service->save("$theme_path/includes/services/ajax/$filename.php", $params['override']);
 	}
 
 	/**
@@ -77,6 +79,7 @@ class AjaxServiceBuilder extends TemplateBuilder implements Builder
 		// normalizing
 		$action = StringsManager::toSnakeCase($params['action']);
 		$theme = StringsManager::toKebabCase($params['theme']);
+    $override = ($params['override'] === 'ask' || $params['override'] === 'force') ? $params['override'] : false;
 
 		if (!Config::get("themes.$theme")) {
 			throw new \Exception("Error: theme '$theme' doesn't exist.");
@@ -84,7 +87,8 @@ class AjaxServiceBuilder extends TemplateBuilder implements Builder
 
 		return [
 			'action' => $action,
-			'theme' => $theme
+			'theme' => $theme,
+      'override' => $override
 		];
 	}
 }

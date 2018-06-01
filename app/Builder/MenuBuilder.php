@@ -24,7 +24,8 @@ class MenuBuilder extends TemplateBuilder implements Builder
         'location' => $location,
         'name' => $name,
         '$description' => $description,
-        'theme' => $theme
+        'theme' => $theme,
+        'override' => 'ask'
       ]);
     } catch (\Exception $e) {
       Dialog::write($e->getMessage(), 'red');
@@ -41,7 +42,8 @@ class MenuBuilder extends TemplateBuilder implements Builder
    *  'location' => $location,
    *  'name' => $name,
    *  '$description' => $description,
-   *  'theme' => $theme
+   *  'theme' => $theme,
+   *  'override' => 'ask'|'force'|false
    * ]);
    */
   public static function build($params)
@@ -55,7 +57,7 @@ class MenuBuilder extends TemplateBuilder implements Builder
       '{DESCRIPTION}' => $params['description']
     ]);
     
-    $menu->save("$theme_path/includes/menus/$filename.php");
+    $menu->save("$theme_path/includes/menus/$filename.php", $params['override']);
   }
   
   /**
@@ -105,6 +107,7 @@ class MenuBuilder extends TemplateBuilder implements Builder
     $name = ucwords($params['name']);
     $description = ucfirst($params['description']);
     $theme = StringsManager::toKebabCase($params['theme']);
+    $override = ($params['override'] === 'ask' || $params['override'] === 'force') ? $params['override'] : false;
     
     if (!Config::get("themes.$theme")) {
       throw new \Exception("Error: theme '$theme' doesn't exist.");
@@ -114,7 +117,8 @@ class MenuBuilder extends TemplateBuilder implements Builder
       'location' => $location,
       'name' => $name,
       '$description' => $description,
-      'theme' => $theme
+      'theme' => $theme,
+      'override' => $override
     ];
   }
 }

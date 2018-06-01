@@ -63,11 +63,10 @@ class Theme
    */
   public function install()
   {
-    $directory_created = FilesManager::createDirectory($this->path);
-    $boilerplate_copied = $this->copyBoilerplate();
-    $stylesheet_added = $this->addStylesheet();
-    $config_updated = $this->updateConfig();
-    return $directory_created && $boilerplate_copied && $stylesheet_added && $config_updated;
+    FilesManager::createDirectory($this->path);
+    $this->copyBoilerplate();
+    $this->addStylesheet();
+    $this->updateConfig();
   }
   
   /**
@@ -109,8 +108,7 @@ class Theme
   {
     $commonsFilesPath = BOILERPLATES_PATH . '/commons';
     $specificFilesPath = BOILERPLATES_PATH . '/' . $this->template_engine;
-    $copied = FilesManager::copyFiles($commonsFilesPath, $this->path);
-    $copied = $copied && FilesManager::copyFiles($specificFilesPath, $this->path);
-    return $copied;
+    FilesManager::copyFiles($commonsFilesPath, $this->path);
+    FilesManager::copyFiles($specificFilesPath, $this->path);
   }
 }

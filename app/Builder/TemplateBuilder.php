@@ -39,14 +39,4 @@ abstract class TemplateBuilder
     
     return $theme;
   }
-  
-  /**
-   * Asks for override confirmation
-   * @param $filepath
-   * @return mixed
-   */
-  protected static function askForOverrideConfirmation($filepath)
-  {
-    return Dialog::getConfirmation('Attention: ' . $filepath . ' already exists! Do you want to override it?', false, 'red');
-  }
 }

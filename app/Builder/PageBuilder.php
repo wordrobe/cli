@@ -20,7 +20,8 @@ class PageBuilder extends TemplateBuilder implements Builder
     try {
       self::build([
         'name' => $name,
-        'theme' => $theme
+        'theme' => $theme,
+        'override' => 'ask'
       ]);
     } catch (\Exception $e) {
       Dialog::write($e->getMessage(), 'red');
@@ -35,7 +36,8 @@ class PageBuilder extends TemplateBuilder implements Builder
    * @param array $params
    * @example PageBuilder::create([
    *  'name' => $name,
-   *  'theme' => $theme
+   *  'theme' => $theme,
+   *  'override' => 'ask'|'force'|false
    * ]);
    */
   public static function build($params)
@@ -45,10 +47,10 @@ class PageBuilder extends TemplateBuilder implements Builder
     $template_engine = Config::get('themes.' . $params['theme'] . '.template-engine');
     $theme_path = PROJECT_ROOT . '/' . Config::get('themes-path') . '/' . $params['theme'];
     $page_ctrl = new Template("$template_engine/page", ['{TEMPLATE_NAME}' => $params['name']]);
-    $page_ctrl->save("$theme_path/pages/$filename.php");
+    $page_ctrl->save("$theme_path/pages/$filename.php", $params['override']);
     
     if ($template_engine === 'timber') {
-      self::buildView($page_ctrl, $filename, $theme_path);
+      self::buildView($page_ctrl, $filename, $theme_path, $params['override']);
     }
   }
   
@@ -57,12 +59,13 @@ class PageBuilder extends TemplateBuilder implements Builder
    * @param Template $controller
    * @param string $filename
    * @param string $theme_path
+   * @param mixed $override
    */
-  private static function buildView($controller, $filename, $theme_path)
+  private static function buildView($controller, $filename, $theme_path, $override)
   {
     $controller->fill('{VIEW_FILENAME}', $filename);
     $view = new Template('timber/view');
-    $view->save("$theme_path/views/pages/$filename.html.twig");
+    $view->save("$theme_path/views/pages/$filename.html.twig", $override);
   }
   
   /**
@@ -91,6 +94,7 @@ class PageBuilder extends TemplateBuilder implements Builder
     // normalizing
     $name = ucwords($params['name']);
     $theme = StringsManager::toKebabCase($params['theme']);
+    $override = ($params['override'] === 'ask' || $params['override'] === 'force') ? $params['override'] : false;
     
     if (!Config::get("themes.$theme")) {
       throw new \Exception("Error: theme '$theme' doesn't exist.");
@@ -98,7 +102,8 @@ class PageBuilder extends TemplateBuilder implements Builder
     
     return [
       'name' => $name,
-      'theme' => $theme
+      'theme' => $theme,
+      'override' => $override
     ];
   }
 }

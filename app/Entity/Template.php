@@ -3,6 +3,7 @@
 namespace Wordrobe\Entity;
 
 use Wordrobe\Helper\FilesManager;
+use Wordrobe\Helper\Dialog;
 
 /**
  * Class Template
@@ -59,12 +60,26 @@ class Template
   /**
    * Saves template in a file
    * @param $filepath
-   * @param bool $force_override
-   * @return bool
+   * @param mixed $override
    */
-  public function save($filepath, $force_override = false)
+  public function save($filepath, $override = false)
   {
-    return FilesManager::writeFile($filepath, $this->content, $force_override);
+    $force_override = false;
+    
+    switch ($override) {
+      case 'force':
+        $force_override = true;
+        break;
+      case 'ask':
+        if (FilesManager::fileExists($filepath)) {
+          $force_override = Dialog::getConfirmation('Attention: ' . $filepath . ' already exists! Do you want to override it?', false, 'red');
+        }
+        break;
+      default:
+        break;
+    }
+  
+    FilesManager::writeFile($filepath, $this->content, $force_override);
   }
   
   /**

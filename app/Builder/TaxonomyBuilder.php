@@ -32,7 +32,8 @@ class TaxonomyBuilder extends TemplateBuilder implements Builder
         'post-types' => $post_types,
         'hierarchical' => $hierarchical,
         'theme' => $theme,
-        'build-archive' => $build_archive
+        'build-archive' => $build_archive,
+        'override' => 'ask'
       ]);
     } catch (\Exception $e) {
       Dialog::write($e->getMessage(), 'red');
@@ -53,7 +54,8 @@ class TaxonomyBuilder extends TemplateBuilder implements Builder
    *  'post-types' => $post_types,
    *  'hierarchical' => $hierarchical,
    *  'theme' => $theme,
-   *  'build-archive' => $build_archive
+   *  'build-archive' => $build_archive,
+   *  'override' => 'ask'|'force'|false
    * ]);
    */
   public static function build($params)
@@ -68,14 +70,15 @@ class TaxonomyBuilder extends TemplateBuilder implements Builder
       '{POST_TYPES}' => $params['post-types'],
       '{HIERARCHICAL}' => $params['hierarchical']
     ]);
-    $taxonomy->save("$theme_path/includes/taxonomies/" . $params['key'] . ".php");
+    $taxonomy->save("$theme_path/includes/taxonomies/" . $params['key'] . ".php", $params['override']);
     Config::add('themes.' . $params['theme'] . '.taxonomies', $params['key']);
     
     if ($params['build-archive']) {
       ArchiveBuilder::build([
         'type' => 'taxonomy',
         'key' => $params['key'],
-        'theme' => $params['theme']
+        'theme' => $params['theme'],
+        'override' => $params['override']
       ]);
     }
   }
@@ -177,6 +180,7 @@ class TaxonomyBuilder extends TemplateBuilder implements Builder
     $hierarchical = $params['hierarchical'];
     $theme = StringsManager::toKebabCase($params['theme']);
     $build_archive = $params['build-archive'] || false;
+    $override = ($params['override'] === 'ask' || $params['override'] === 'force') ? $params['override'] : false;
     
     if (!Config::get("themes.$theme")) {
       throw new \Exception("Error: theme '$theme' doesn't exist.");

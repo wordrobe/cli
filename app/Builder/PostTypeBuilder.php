@@ -38,7 +38,8 @@ class PostTypeBuilder extends TemplateBuilder implements Builder
         'description' => $description,
         'theme' => $theme,
         'build-single' => $build_single,
-        'build-archive' => $build_archive
+        'build-archive' => $build_archive,
+        'override' => 'ask'
       ]);
     } catch (\Exception $e) {
       Dialog::write($e->getMessage(), 'red');
@@ -62,7 +63,8 @@ class PostTypeBuilder extends TemplateBuilder implements Builder
    *  'description' => $description,
    *  'theme' => $theme,
    *  'build-single' => $build_single,
-   *  'build-archive' => $build_archive
+   *  'build-archive' => $build_archive,
+   *  'override' => 'ask'|'force'|false
    * ]);
    */
   public static function build($params)
@@ -79,13 +81,14 @@ class PostTypeBuilder extends TemplateBuilder implements Builder
       '{ICON}' => $params['icon'],
       '{DESCRIPTION}' => $params['description']
     ]);
-    $post_type->save("$theme_path/includes/post-types/" . $params['key'] . ".php");
+    $post_type->save("$theme_path/includes/post-types/" . $params['key'] . ".php", $params['override']);
     Config::add('themes.' . $params['theme'] . '.post-types', $params['key']);
     
     if ($params['build-single']) {
       SingleBuilder::build([
         'post-type' => $params['key'],
-        'theme' => $params['theme']
+        'theme' => $params['theme'],
+        'override' => $params['override']
       ]);
     }
     
@@ -93,7 +96,8 @@ class PostTypeBuilder extends TemplateBuilder implements Builder
       ArchiveBuilder::build([
         'type' => 'post-type',
         'key' => $params['key'],
-        'theme' => $params['theme']
+        'theme' => $params['theme'],
+        'override' => $params['override']
       ]);
     }
   }
@@ -226,6 +230,7 @@ class PostTypeBuilder extends TemplateBuilder implements Builder
     $theme = StringsManager::toKebabCase($params['theme']);
     $build_single = $params['build-single'] || false;
     $build_archive = $params['build-archive'] || false;
+    $override = ($params['override'] === 'ask' || $params['override'] === 'force') ? $params['override'] : false;
     
     if (!Config::get("themes.$theme")) {
       throw new \Exception("Error: theme '$theme' doesn't exist.");
@@ -242,7 +247,8 @@ class PostTypeBuilder extends TemplateBuilder implements Builder
       'description' => $description,
       'theme' => $theme,
       'build-single' => $build_single,
-      'build-archive' => $build_archive
+      'build-archive' => $build_archive,
+      'override' => $override
     ];
   }
 }

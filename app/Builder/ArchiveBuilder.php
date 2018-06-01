@@ -44,7 +44,8 @@ class ArchiveBuilder extends TemplateBuilder implements Builder
       self::build([
         'type' => $type,
         'key' => $key,
-        'theme' => $theme
+        'theme' => $theme,
+        'override' => 'ask'
       ]);
     } catch (\Exception $e) {
       Dialog::write($e->getMessage(), 'red');
@@ -60,7 +61,8 @@ class ArchiveBuilder extends TemplateBuilder implements Builder
    * @example ArchiveBuilder::create([
    *  'type' => $type,
    *  'key' => $key,
-   *  'theme' => $theme
+   *  'theme' => $theme,
+   *  'override' => 'ask'|'force'|false
    * ]);
    * @return bool
    */
@@ -73,10 +75,10 @@ class ArchiveBuilder extends TemplateBuilder implements Builder
     $theme_path = PROJECT_ROOT . '/' . Config::get('themes-path') . '/' . $params['theme'];
     $type_and_key = trim(str_replace("''", '', $params['type'] . "' " . $params['key'] . "'"));
     $archive_ctrl = new Template("$template_engine/archive", ['{TYPE_AND_KEY}' => $type_and_key]);
-    $archive_ctrl->save("$theme_path/$filename.php");
+    $archive_ctrl->save("$theme_path/$filename.php", $params['override']);
     
     if ($template_engine === 'timber') {
-       self::buildView($archive_ctrl, $filename, $theme_path);
+       self::buildView($archive_ctrl, $filename, $theme_path, $params['override']);
     }
   }
   
@@ -85,12 +87,13 @@ class ArchiveBuilder extends TemplateBuilder implements Builder
    * @param Template $controller
    * @param string $filename
    * @param string $theme_path
+   * @param mixed $override
    */
-  private static function buildView($controller, $filename, $theme_path)
+  private static function buildView($controller, $filename, $theme_path, $override)
   {
     $controller->fill('{VIEW_FILENAME}', $filename);
     $view = new Template('timber/view');
-    $view->save("$theme_path/views/default/$filename.html.twig");
+    $view->save("$theme_path/views/default/$filename.html.twig", $override);
   }
   
   /**
@@ -165,6 +168,7 @@ class ArchiveBuilder extends TemplateBuilder implements Builder
     $type = StringsManager::toKebabCase($params['type']);
     $key = StringsManager::toKebabCase($params['key']);
     $theme = StringsManager::toKebabCase($params['theme']);
+    $override = ($params['override'] === 'ask' || $params['override'] === 'force') ? $params['override'] : false;
     
     if (!in_array($type, self::TYPES)) {
       throw new \Exception("Error: archive type '$type' not found.");
@@ -177,7 +181,8 @@ class ArchiveBuilder extends TemplateBuilder implements Builder
     return [
       'type' => $type,
       'key' => $key,
-      'theme' => $theme
+      'theme' => $theme,
+      'override' => $override
     ];
   }
 }

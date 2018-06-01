@@ -166,6 +166,7 @@ class TermBuilder extends TemplateBuilder implements Builder
     $parent = StringsManager::toKebabCase($params['parent']);
     $theme = StringsManager::toKebabCase($params['theme']);
     $build_archive = $params['build-archive'] || false;
+    $override = ($params['override'] === 'ask' || $params['override'] === 'force') ? $params['override'] : false;
     
     if (!Config::get("themes.$theme")) {
       throw new \Exception("Error: theme '$theme' doesn't exist.");

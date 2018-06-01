@@ -20,7 +20,8 @@ class SingleBuilder extends TemplateBuilder implements Builder
     try {
       self::build([
         'post_type' => $post_type,
-        'theme' => $theme
+        'theme' => $theme,
+        'override' => 'ask'
       ]);
     } catch (\Exception $e) {
       Dialog::write($e->getMessage(), 'red');
@@ -35,7 +36,8 @@ class SingleBuilder extends TemplateBuilder implements Builder
    * @param array $params
    * @example SingleBuilder::create([
    *  'post_type' => $post_type,
-   *  'theme' => $theme
+   *  'theme' => $theme,
+   *  'override' => 'ask'|'force'|false
    * ]);
    */
   public static function build($params)
@@ -45,10 +47,10 @@ class SingleBuilder extends TemplateBuilder implements Builder
     $template_engine = Config::get('themes.' . $params['theme'] . '.template-engine');
     $theme_path = PROJECT_ROOT . '/' . Config::get('themes-path') . '/' . $params['theme'];
     $single_ctrl = new Template("$template_engine/single", ['{POST_TYPE}' => $params['post_type']]);
-    $single_ctrl->save("$theme_path/$filename.php");
+    $single_ctrl->save("$theme_path/$filename.php", $params['override']);
     
     if ($template_engine === 'timber') {
-      self::buildView($single_ctrl, $filename, $theme_path);
+      self::buildView($single_ctrl, $filename, $theme_path, $params['override']);
     }
   }
   
@@ -57,12 +59,13 @@ class SingleBuilder extends TemplateBuilder implements Builder
    * @param Template $controller
    * @param string $filename
    * @param string $theme_path
+   * @param mixed $override
    */
-  private static function buildView($controller, $filename, $theme_path)
+  private static function buildView($controller, $filename, $theme_path, $override)
   {
     $controller->fill('{VIEW_FILENAME}', $filename);
     $view = new Template('timber/view');
-    $view->save("$theme_path/views/default/$filename.html.twig");
+    $view->save("$theme_path/views/default/$filename.html.twig", $override);
   }
   
   /**
@@ -99,6 +102,7 @@ class SingleBuilder extends TemplateBuilder implements Builder
     // normalizing
     $post_type = StringsManager::toKebabCase($params['post_type']);
     $theme = StringsManager::toKebabCase($params['theme']);
+    $override = ($params['override'] === 'ask' || $params['override'] === 'force') ? $params['override'] : false;
     
     if (!Config::get("themes.$theme")) {
       throw new \Exception("Error: theme '$theme' doesn't exist.");
@@ -106,7 +110,8 @@ class SingleBuilder extends TemplateBuilder implements Builder
     
     return [
       'post_type' => $post_type,
-      'theme' => $theme
+      'theme' => $theme,
+      'override' => $override
     ];
   }
 }

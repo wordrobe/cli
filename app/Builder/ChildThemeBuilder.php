@@ -46,7 +46,8 @@ class ChildThemeBuilder extends ThemeBuilder
         'text-domain' => $text_domain,
         'tags' => $tags,
         'folder-name' => $folder_name,
-        'parent' => $parent
+        'parent' => $parent,
+        'override' => 'ask'
       ]);
     } catch (\Exception $e) {
       Dialog::write($e->getMessage(), 'red');
@@ -71,7 +72,8 @@ class ChildThemeBuilder extends ThemeBuilder
    *  'text-domain' => $text_domain,
    *  'tags' => $tags,
    *  'folder-name' => $folder_name,
-   *  'parent' => $parent
+   *  'parent' => $parent,
+   *  'override' => 'ask'|'force'|false
    * ]);
    */
   public static function build($params)

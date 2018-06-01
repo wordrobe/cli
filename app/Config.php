@@ -76,7 +76,7 @@ class Config
   {
     self::getContent();
     ArraysManager::set(self::$params, $path, $value);
-    return self::updateContent();
+    self::updateContent();
   }
 
   /**
@@ -89,7 +89,7 @@ class Config
   {
     self::getContent();
     ArraysManager::add(self::$params, $path, $value);
-    return self::updateContent();
+    self::updateContent();
   }
 
   /**
@@ -110,6 +110,6 @@ class Config
    */
   private static function updateContent()
   {
-    return FilesManager::writeFile(self::FILEPATH, json_encode(self::$params, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES), true);
+    FilesManager::writeFile(self::FILEPATH, json_encode(self::$params, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES), true);
   }
 }

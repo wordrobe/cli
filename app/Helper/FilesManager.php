@@ -35,7 +35,6 @@ class FilesManager
    * @param $path
    * @param int $mode
    * @param bool $recursive
-   * @return bool
    * @throws \Exception
    */
   public static function createDirectory($path, $mode = 0755, $recursive = true)
@@ -47,8 +46,6 @@ class FilesManager
         throw new \Exception("Error: unable to create $path.");
       }
     }
-    
-    return true;
   }
   
   /**
@@ -56,27 +53,24 @@ class FilesManager
    * @param $filepath
    * @param $content
    * @param bool $force_override
-   * @return bool
    * @throws \Exception
    */
   public static function writeFile($filepath, $content, $force_override = false)
   {
     $file_exists = self::fileExists($filepath);
-    
-    if (!$file_exists || $force_override) {
-      self::createDirectory(dirname($filepath));
-      $file = fopen($filepath, 'w');
-      $written = fwrite($file, $content);
-      fclose($file);
-      
-      if ($written === false) {
-        throw new \Exception("Error: unable to write $filepath.");
-      }
-      
-      return true;
+  
+    if ($file_exists && !$force_override) {
+      throw new \Exception("Error: $filepath already exists.");
     }
     
-    return false;
+    self::createDirectory(dirname($filepath));
+    $file = fopen($filepath, 'w');
+    $written = fwrite($file, $content);
+    fclose($file);
+    
+    if ($written === false) {
+      throw new \Exception("Error: unable to write $filepath.");
+    }
   }
   
   /**
@@ -112,7 +106,6 @@ class FilesManager
    * @param $source
    * @param $destination
    * @param array $errors
-   * @return bool
    * @throws \Exception
    */
   public static function copyFiles($source, $destination, $errors = [])
@@ -145,7 +138,5 @@ class FilesManager
       $error_files = implode(', ', $errors);
       throw new \Exception("Error: unable to copy following files [$error_files].");
     }
-    
-    return true;
   }
 }

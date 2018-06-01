@@ -20,7 +20,8 @@ class PartialBuilder extends TemplateBuilder implements Builder
     try {
       self::build([
         'class_name' => $class_name,
-        'theme' => $theme
+        'theme' => $theme,
+        'override' => 'ask'
       ]);
     } catch (\Exception $e) {
       Dialog::write($e->getMessage(), 'red');
@@ -35,7 +36,8 @@ class PartialBuilder extends TemplateBuilder implements Builder
    * @param array $params
    * @example PartialBuilder::create([
    *  'class_name' => $class_name,
-   *  'theme' => $theme
+   *  'theme' => $theme,
+   *  'override' => 'ask'|'force'|false
    * ]);
    */
   public static function build($params)
@@ -54,7 +56,7 @@ class PartialBuilder extends TemplateBuilder implements Builder
       $partials_path = 'partials';
     }
     
-    $partial->save("$theme_path/$partials_path/$filename.$file_type");
+    $partial->save("$theme_path/$partials_path/$filename.$file_type", $params['override']);
   }
   
   /**
@@ -82,6 +84,7 @@ class PartialBuilder extends TemplateBuilder implements Builder
     
     // normalizing
     $theme = StringsManager::toKebabCase($params['theme']);
+    $override = ($params['override'] === 'ask' || $params['override'] === 'force') ? $params['override'] : false;
     
     if (!Config::get("themes.$theme")) {
       throw new \Exception("Error: theme '$theme' doesn't exist.");
@@ -89,7 +92,8 @@ class PartialBuilder extends TemplateBuilder implements Builder
     
     return [
       'class-name' => $params['class_name'],
-      'theme' => $theme
+      'theme' => $theme,
+      'override' => $override
     ];
   }
 }
