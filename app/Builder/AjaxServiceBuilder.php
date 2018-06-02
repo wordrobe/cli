@@ -72,14 +72,17 @@ class AjaxServiceBuilder extends TemplateBuilder implements Builder
 	{
 		// checking existence
 		if (!$params['action'] || !$params['theme']) {
-			Dialog::write('Error: unable to create ajax service because of missing parameters', 'red');
-			exit;
+      throw new \Exception('Error: unable to create ajax service because of missing parameters');
 		}
 
 		// normalizing
 		$action = StringsManager::toSnakeCase($params['action']);
 		$theme = StringsManager::toKebabCase($params['theme']);
-    $override = ($params['override'] === 'ask' || $params['override'] === 'force') ? $params['override'] : false;
+    $override = strtolower($params['override']);
+    
+    if ($override !== 'ask' && $override !== 'force') {
+      $override = false;
+    }
 
 		if (!Config::get("themes.$theme")) {
 			throw new \Exception("Error: theme '$theme' doesn't exist.");

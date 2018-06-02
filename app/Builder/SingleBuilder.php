@@ -102,10 +102,18 @@ class SingleBuilder extends TemplateBuilder implements Builder
     // normalizing
     $post_type = StringsManager::toKebabCase($params['post_type']);
     $theme = StringsManager::toKebabCase($params['theme']);
-    $override = ($params['override'] === 'ask' || $params['override'] === 'force') ? $params['override'] : false;
+    $override = strtolower($params['override']);
+  
+    if ($override !== 'ask' && $override !== 'force') {
+      $override = false;
+    }
     
     if (!Config::get("themes.$theme")) {
       throw new \Exception("Error: theme '$theme' doesn't exist.");
+    }
+    
+    if (!in_array($post_type, Config::get("themes.$theme.post-types"))) {
+      throw new \Exception("Error: post type '$post_type' not found in '$theme' theme.");
     }
     
     return [

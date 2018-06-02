@@ -84,7 +84,11 @@ class PartialBuilder extends TemplateBuilder implements Builder
     
     // normalizing
     $theme = StringsManager::toKebabCase($params['theme']);
-    $override = ($params['override'] === 'ask' || $params['override'] === 'force') ? $params['override'] : false;
+    $override = strtolower($params['override']);
+  
+    if ($override !== 'ask' && $override !== 'force') {
+      $override = false;
+    }
     
     if (!Config::get("themes.$theme")) {
       throw new \Exception("Error: theme '$theme' doesn't exist.");

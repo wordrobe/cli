@@ -30,7 +30,8 @@ class TermBuilder extends TemplateBuilder implements Builder
         'description' => $description,
         'parent' => $parent,
         'theme' => $theme,
-        'build-archive' => $build_archive
+        'build-archive' => $build_archive,
+        'override' => 'ask'
       ]);
     } catch (\Exception $e) {
       Dialog::write($e->getMessage(), 'red');
@@ -51,6 +52,7 @@ class TermBuilder extends TemplateBuilder implements Builder
    *  'parent' => $parent,
    *  'theme' => $theme,
    *  'build-archive' => $build_archive
+   *  'override' => 'ask'|'force'|false
    * ]);
    */
   public static function build($params)
@@ -64,7 +66,7 @@ class TermBuilder extends TemplateBuilder implements Builder
       '{DESCRIPTION}' => $params['description'],
       '{PARENT}' => $params['parent']
     ]);
-    $term->save("$theme_path/includes/terms/" . $params['taxonomy'] . "/" . $params['slug'] . ".php");
+    $term->save("$theme_path/includes/terms/" . $params['taxonomy'] . "/" . $params['slug'] . ".php", $params['override']);
     
     if ($params['build-archive']) {
       
@@ -79,7 +81,8 @@ class TermBuilder extends TemplateBuilder implements Builder
       ArchiveBuilder::build([
         'type' => $type,
         'key' => $key,
-        'theme' => $params['theme']
+        'theme' => $params['theme'],
+        'override' => $params['override']
       ]);
     }
   }
@@ -166,10 +169,18 @@ class TermBuilder extends TemplateBuilder implements Builder
     $parent = StringsManager::toKebabCase($params['parent']);
     $theme = StringsManager::toKebabCase($params['theme']);
     $build_archive = $params['build-archive'] || false;
-    $override = ($params['override'] === 'ask' || $params['override'] === 'force') ? $params['override'] : false;
+    $override = strtolower($params['override']);
+    
+    if ($override !== 'ask' && $override !== 'force') {
+      $override = false;
+    }
     
     if (!Config::get("themes.$theme")) {
       throw new \Exception("Error: theme '$theme' doesn't exist.");
+    }
+    
+    if (!in_array($taxonomy, Config::get("themes.$theme.taxonomies"))) {
+      throw new \Exception("Error: taxonomy '$taxonomy' not found in '$theme' theme.");
     }
     
     return [
@@ -179,7 +190,8 @@ class TermBuilder extends TemplateBuilder implements Builder
       'description' => $description,
       'parent' => $parent,
       'theme' => $theme,
-      'build-archive' => $build_archive
+      'build-archive' => $build_archive,
+      'override' => $override
     ];
   }
 }

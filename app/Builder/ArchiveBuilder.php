@@ -168,7 +168,11 @@ class ArchiveBuilder extends TemplateBuilder implements Builder
     $type = StringsManager::toKebabCase($params['type']);
     $key = StringsManager::toKebabCase($params['key']);
     $theme = StringsManager::toKebabCase($params['theme']);
-    $override = ($params['override'] === 'ask' || $params['override'] === 'force') ? $params['override'] : false;
+    $override = strtolower($params['override']);
+  
+    if ($override !== 'ask' && $override !== 'force') {
+      $override = false;
+    }
     
     if (!in_array($type, self::TYPES)) {
       throw new \Exception("Error: archive type '$type' not found.");
@@ -176,6 +180,10 @@ class ArchiveBuilder extends TemplateBuilder implements Builder
     
     if (!Config::get("themes.$theme")) {
       throw new \Exception("Error: theme '$theme' doesn't exist.");
+    }
+    
+    if ($type === 'archive' && !in_array($key, Config::get("themes.$theme.post-types"))) {
+      throw new \Exception("Error: post type '$key' not found in '$theme' theme.");
     }
     
     return [

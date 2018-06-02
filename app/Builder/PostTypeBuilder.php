@@ -222,18 +222,28 @@ class PostTypeBuilder extends TemplateBuilder implements Builder
     $singular_name = ucwords($params['singular-name']);
     $text_domain = StringsManager::toKebabCase($params['text-domain']);
     $capability_type = strtolower($params['capability-type']);
-    $taxonomies = implode(',', array_map(function ($entry) {
+    $taxonomies = array_map(function ($entry) {
       return StringsManager::toKebabCase($entry);
-    }, explode(',', $params['taxonomies'])));
+    }, explode(',', $params['taxonomies']));
     $icon = StringsManager::toKebabCase($params['icon']);
     $description = ucfirst($params['description']);
     $theme = StringsManager::toKebabCase($params['theme']);
     $build_single = $params['build-single'] || false;
     $build_archive = $params['build-archive'] || false;
-    $override = ($params['override'] === 'ask' || $params['override'] === 'force') ? $params['override'] : false;
+    $override = strtolower($params['override']);
+  
+    if ($override !== 'ask' && $override !== 'force') {
+      $override = false;
+    }
     
     if (!Config::get("themes.$theme")) {
       throw new \Exception("Error: theme '$theme' doesn't exist.");
+    }
+  
+    foreach ($taxonomies as $taxonomy) {
+      if (!in_array($taxonomy, Config::get("themes.$theme.taxonomies"))) {
+        throw new \Exception("Error: taxonomy '$taxonomy' not found in '$theme' theme.");
+      }
     }
     
     return [
@@ -242,7 +252,7 @@ class PostTypeBuilder extends TemplateBuilder implements Builder
       'singular-name' => $singular_name,
       'text-domain' => $text_domain,
       'capability-type' => $capability_type,
-      'taxonomies' => $taxonomies,
+      'taxonomies' => implode(',', $taxonomies),
       'icon' => $icon,
       'description' => $description,
       'theme' => $theme,

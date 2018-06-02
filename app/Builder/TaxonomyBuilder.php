@@ -180,10 +180,20 @@ class TaxonomyBuilder extends TemplateBuilder implements Builder
     $hierarchical = $params['hierarchical'];
     $theme = StringsManager::toKebabCase($params['theme']);
     $build_archive = $params['build-archive'] || false;
-    $override = ($params['override'] === 'ask' || $params['override'] === 'force') ? $params['override'] : false;
+    $override = strtolower($params['override']);
+  
+    if ($override !== 'ask' && $override !== 'force') {
+      $override = false;
+    }
     
     if (!Config::get("themes.$theme")) {
       throw new \Exception("Error: theme '$theme' doesn't exist.");
+    }
+    
+    foreach (explode(',', $post_types) as $post_type) {
+      if (!in_array($post_type, Config::get("themes.$theme.post-types"))) {
+        throw new \Exception("Error: post type '$post_type' not found in '$theme' theme.");
+      }
     }
     
     return [
@@ -194,7 +204,8 @@ class TaxonomyBuilder extends TemplateBuilder implements Builder
       'post-types' => $post_types,
       'hierarchical' => $hierarchical,
       'theme' => $theme,
-      'build-archive' => $build_archive
+      'build-archive' => $build_archive,
+      'override' => $override
     ];
   }
 }

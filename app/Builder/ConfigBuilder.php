@@ -78,7 +78,7 @@ class ConfigBuilder implements Builder
   private static function checkParams($params)
   {
     // checking existence
-    if (!$params['themes-path']) {
+    if (!$params['themes-path'] || !$params['plugin-path']) {
       throw new \Exception('Error: unable to create config template because of missing parameters.');
     }
     
