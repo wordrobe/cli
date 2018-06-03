@@ -65,8 +65,26 @@ class Theme
   {
     FilesManager::createDirectory($this->path);
     $this->copyBoilerplate();
+    $this->addFunctions();
     $this->addStylesheet();
     $this->updateConfig();
+  }
+  
+  /**
+   * Adds functions.php to theme
+   * @return bool
+   */
+  protected function addFunctions()
+  {
+    $subdirs = explode('/', $this->path);
+    $root_path = '';
+    
+    for ($i = 0; $i < count($subdirs) - 1; $i++) {
+      $root_path .= '../';
+    }
+    
+    $functions = new Template('theme-functions', ['{PROJECT_ROOT}' => $root_path]);
+    return $functions->save("$this->path/functions.php");
   }
   
   /**
