@@ -54,7 +54,6 @@ class MenuBuilder extends TemplateBuilder implements Builder
       '{NAME}' => $params['name'],
       '{DESCRIPTION}' => $params['description']
     ]);
-    
     $menu->save("$theme_path/includes/menus/$filename.php", $params['override']);
   }
   

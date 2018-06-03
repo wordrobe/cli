@@ -70,15 +70,16 @@ class ArchiveBuilder extends TemplateBuilder implements Builder
     $params = self::checkParams($params);
     $basename = $params['type'] === 'post-type' ? 'archive' : $params['type'];
     $filename = $params['key'] ? $basename . '-' . $params['key'] : $basename;
-    $template_engine = Config::get('themes.' . $params['theme'] . '.template-engine');
-    $theme_path = PROJECT_ROOT . '/' . Config::get('themes-path') . '/' . $params['theme'];
-    $type_and_key = trim(str_replace("''", '', $params['type'] . "' " . $params['key'] . "'"));
+    $template_engine = Config::get('themes.' . $params['theme'] . '.template-engine', true);
+    $theme_path = PROJECT_ROOT . '/' . Config::get('themes-path', true) . '/' . $params['theme'];
+    $type_and_key = trim(str_replace("''", '', $params['type'] . ($params['type'] === 'taxonomy' ? '(-term)' : '') . " '" . $params['key'] . "'"));
     $archive_ctrl = new Template("$template_engine/archive", ['{TYPE_AND_KEY}' => $type_and_key]);
-    $archive_ctrl->save("$theme_path/$filename.php", $params['override']);
     
     if ($template_engine === 'timber') {
        self::buildView($archive_ctrl, $filename, $theme_path, $params['override']);
     }
+  
+    $archive_ctrl->save("$theme_path/$filename.php", $params['override']);
   }
   
   /**
@@ -111,11 +112,11 @@ class ArchiveBuilder extends TemplateBuilder implements Builder
    */
   private static function askForPostType($theme)
   {
-    $post_types = Config::expect("themes.$theme.post-types", 'array');
+    $post_types = Config::get("themes.$theme.post-types", ['type' => 'array']);
     $post_types = array_diff($post_types, ['post']);
     
     if (!empty($post_types)) {
-      return Dialog::getChoice('Post type:', $post_types, null);
+      return Dialog::getChoice('Post type:', array_values($post_types), null);
     }
     
     Dialog::write('Error: before creating a post-type based archive, you need to define a custom post type.', 'red');
@@ -129,7 +130,7 @@ class ArchiveBuilder extends TemplateBuilder implements Builder
    */
   private static function askForTaxonomy($theme)
   {
-    $taxonomies = Config::expect("themes.$theme.taxonomies", 'array');
+    $taxonomies = Config::get("themes.$theme.taxonomies", ['tyep' => 'array']);
     $taxonomies = array_diff($taxonomies, ['category', 'tag']);
     
     if (!empty($taxonomies)) {

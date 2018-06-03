@@ -42,8 +42,8 @@ class ConfigBuilder implements Builder
   {
     $params = self::checkParams($params);
     Config::init([
-      '{THEMES_PATH}' => $params['themes_path'],
-      '{PLUGINS_PATH}' => $params['plugins_path']
+      '{THEMES_PATH}' => $params['themes-path'],
+      '{PLUGINS_PATH}' => $params['plugins-path']
     ]);
   }
   
@@ -76,7 +76,7 @@ class ConfigBuilder implements Builder
   private static function checkParams($params)
   {
     // checking existence
-    if (!$params['themes-path'] || !$params['plugin-path']) {
+    if (!$params['themes-path'] || !$params['plugins-path']) {
       throw new \Exception('Error: unable to create config template because of missing parameters.');
     }
     

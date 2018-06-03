@@ -91,8 +91,12 @@ class ArraysManager
       
       $array =& $array[$key];
     }
+  
+    $array =& $array[array_shift($keys)];
     
-    $array[array_shift($keys)][] = $value;
+    if (!in_array($value, $array)) {
+      $array[] = $value;
+    }
     
     return $array;
   }

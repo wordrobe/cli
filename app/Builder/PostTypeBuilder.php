@@ -220,7 +220,7 @@ class PostTypeBuilder extends TemplateBuilder implements Builder
     $singular_name = ucwords($params['singular-name']);
     $text_domain = StringsManager::toKebabCase($params['text-domain']);
     $capability_type = strtolower($params['capability-type']);
-    $taxonomies = array_map(function ($entry) {
+    $taxonomies = empty($params['taxonomies']) ? null : array_map(function ($entry) {
       return StringsManager::toKebabCase($entry);
     }, explode(',', $params['taxonomies']));
     $icon = StringsManager::toKebabCase($params['icon']);
@@ -236,9 +236,11 @@ class PostTypeBuilder extends TemplateBuilder implements Builder
   
     Config::check("themes.$theme", 'array', "Error: theme '$theme' doesn't exist.");
   
-    foreach ($taxonomies as $taxonomy) {
-      if (!in_array($taxonomy, Config::get("themes.$theme.taxonomies", ['type' => 'array']))) {
-        throw new \Exception("Error: taxonomy '$taxonomy' not found in '$theme' theme.");
+    if ($taxonomies) {
+      foreach ($taxonomies as $taxonomy) {
+        if (!in_array($taxonomy, Config::get("themes.$theme.taxonomies", ['type' => 'array']))) {
+          throw new \Exception("Error: taxonomy '$taxonomy' not found in '$theme' theme.");
+        }
       }
     }
     

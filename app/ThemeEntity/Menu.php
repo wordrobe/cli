@@ -52,7 +52,8 @@ class Menu implements ThemeEntity
       $id = wp_create_nav_menu($this->name);
       $locations[$this->location] = $id;
       set_theme_mod('nav_menu_locations', $locations);
-      $this->object = wp_get_nav_menu_object($id);
     }
+    
+    $this->object = wp_get_nav_menu_object($this->name);
   }
 }

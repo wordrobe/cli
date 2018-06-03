@@ -15,10 +15,10 @@ class SingleBuilder extends TemplateBuilder implements Builder
   public static function startWizard()
   {
     try {
-      $theme = self::askForTheme(['template-engine']);
+      $theme = self::askForTheme();
       $post_type = self::askForPostType($theme);
       self::build([
-        'post_type' => $post_type,
+        'post-type' => $post_type,
         'theme' => $theme,
         'override' => 'ask'
       ]);
@@ -33,7 +33,7 @@ class SingleBuilder extends TemplateBuilder implements Builder
    * Builds single template
    * @param array $params
    * @example SingleBuilder::create([
-   *  'post_type' => $post_type,
+   *  'post-type' => $post_type,
    *  'theme' => $theme,
    *  'override' => 'ask'|'force'|false
    * ]);
@@ -41,15 +41,16 @@ class SingleBuilder extends TemplateBuilder implements Builder
   public static function build($params)
   {
     $params = self::checkParams($params);
-    $filename = 'single-' . $params['post_type'];
+    $filename = 'single-' . $params['post-type'];
     $template_engine = Config::get('themes.' . $params['theme'] . '.template-engine', true);
     $theme_path = PROJECT_ROOT . '/' . Config::get('themes-path', true) . '/' . $params['theme'];
-    $single_ctrl = new Template("$template_engine/single", ['{POST_TYPE}' => $params['post_type']]);
-    $single_ctrl->save("$theme_path/$filename.php", $params['override']);
+    $single_ctrl = new Template("$template_engine/single", ['{POST_TYPE}' => $params['post-type']]);
     
     if ($template_engine === 'timber') {
       self::buildView($single_ctrl, $filename, $theme_path, $params['override']);
     }
+  
+    $single_ctrl->save("$theme_path/$filename.php", $params['override']);
   }
   
   /**
@@ -93,12 +94,12 @@ class SingleBuilder extends TemplateBuilder implements Builder
   private static function checkParams($params)
   {
     // checking existence
-    if (!$params['post_type'] || !$params['theme']) {
+    if (!$params['post-type'] || !$params['theme']) {
       throw new \Exception('Error: unable to create single template because of missing parameters.');
     }
     
     // normalizing
-    $post_type = StringsManager::toKebabCase($params['post_type']);
+    $post_type = StringsManager::toKebabCase($params['post-type']);
     $theme = StringsManager::toKebabCase($params['theme']);
     $override = strtolower($params['override']);
   
@@ -113,7 +114,7 @@ class SingleBuilder extends TemplateBuilder implements Builder
     }
     
     return [
-      'post_type' => $post_type,
+      'post-type' => $post_type,
       'theme' => $theme,
       'override' => $override
     ];

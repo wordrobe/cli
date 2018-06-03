@@ -78,7 +78,7 @@ class AddCommand extends BaseCommand
     $builder = 'Wordrobe\Builder\\' . StringsManager::toPascalCase($name) . 'Builder';
     if (!class_exists($builder)) {
       Dialog::write('Error: ' . $builder . ' is not defined.', 'red');
-      return null;
+      exit;
     }
     return $builder;
   }

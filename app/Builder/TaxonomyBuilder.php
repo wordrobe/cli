@@ -133,7 +133,7 @@ class TaxonomyBuilder extends TemplateBuilder implements Builder
    */
   private static function askForPostTypes($theme)
   {
-    $post_types = Dialog::getChoice('Post types:', Config::get("themes.$theme.post-types", ['type' => 'array']));
+    $post_types = Dialog::getChoice('Post types:', Config::get("themes.$theme.post-types", ['type' => 'array']), null, true);
     return implode(',', $post_types);
     
   }

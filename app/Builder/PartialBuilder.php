@@ -18,7 +18,7 @@ class PartialBuilder extends TemplateBuilder implements Builder
       $theme = self::askForTheme(['template-engine']);
       $class_name = self::askForClassName();
       self::build([
-        'class_name' => $class_name,
+        'class-name' => $class_name,
         'theme' => $theme,
         'override' => 'ask'
       ]);
@@ -33,7 +33,7 @@ class PartialBuilder extends TemplateBuilder implements Builder
    * Builds partial template
    * @param array $params
    * @example PartialBuilder::create([
-   *  'class_name' => $class_name,
+   *  'class-name' => $class_name,
    *  'theme' => $theme,
    *  'override' => 'ask'|'force'|false
    * ]);
@@ -41,10 +41,10 @@ class PartialBuilder extends TemplateBuilder implements Builder
   public static function build($params)
   {
     $params = self::checkParams($params);
-    $filename = StringsManager::toKebabCase($params['class_name']);
+    $filename = StringsManager::toKebabCase($params['class-name']);
     $template_engine = Config::get('themes.' . $params['theme'] . '.template-engine', true);
     $theme_path = PROJECT_ROOT . '/' . Config::get('themes-path', true) . '/' . $params['theme'];
-    $partial = new Template('partial', ['{CLASS_NAME}' => $params['class_name']]);
+    $partial = new Template('partial', ['{CLASS_NAME}' => $params['class-name']]);
     
     if ($template_engine === 'timber') {
       $file_type = 'html.twig';
@@ -76,7 +76,7 @@ class PartialBuilder extends TemplateBuilder implements Builder
   private static function checkParams($params)
   {
     // checking existence
-    if (!$params['class_name'] || !$params['theme']) {
+    if (!$params['class-name'] || !$params['theme']) {
       throw new \Exception('Error: unable to create partial template because of missing parameters.');
     }
     
@@ -91,7 +91,7 @@ class PartialBuilder extends TemplateBuilder implements Builder
     Config::check("themes.$theme", 'array', "Error: theme '$theme' doesn't exist.");
     
     return [
-      'class-name' => $params['class_name'],
+      'class-name' => $params['class-name'],
       'theme' => $theme,
       'override' => $override
     ];

@@ -45,11 +45,12 @@ class PageBuilder extends TemplateBuilder implements Builder
     $template_engine = Config::get('themes.' . $params['theme'] . '.template-engine', true);
     $theme_path = PROJECT_ROOT . '/' . Config::get('themes-path', true) . '/' . $params['theme'];
     $page_ctrl = new Template("$template_engine/page", ['{TEMPLATE_NAME}' => $params['name']]);
-    $page_ctrl->save("$theme_path/pages/$filename.php", $params['override']);
     
     if ($template_engine === 'timber') {
       self::buildView($page_ctrl, $filename, $theme_path, $params['override']);
     }
+  
+    $page_ctrl->save("$theme_path/pages/$filename.php", $params['override']);
   }
   
   /**

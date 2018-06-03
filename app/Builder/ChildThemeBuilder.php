@@ -74,17 +74,17 @@ class ChildThemeBuilder extends ThemeBuilder
   {
     $params = self::checkParams($params);
     $theme = new ChildTheme(
-      $params['theme_name'],
-      $params['theme_uri'],
+      $params['theme-name'],
+      $params['theme-uri'],
       $params['author'],
-      $params['author_uri'],
+      $params['author-uri'],
       $params['description'],
       $params['version'],
       $params['license'],
-      $params['license_uri'],
-      $params['text_domain'],
+      $params['license-uri'],
+      $params['text-domain'],
       $params['tags'],
-      $params['folder_name'],
+      $params['folder-name'],
       $params['parent']
     );
     $theme->install();

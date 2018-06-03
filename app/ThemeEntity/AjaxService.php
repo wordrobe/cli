@@ -11,14 +11,17 @@ use Wordrobe\Helper\StringsManager;
 class AjaxService implements ThemeEntity
 {
   private $name;
+  private $logic;
   
   /**
    * AjaxService constructor.
    * @param $name
+   * @param null|callable $logic
    */
-  public function __construct($name)
+  public function __construct($name, $logic = null)
   {
     $this->name = StringsManager::toSnakeCase($name);
+    $this->logic = is_callable($logic) ? $logic : null;
     add_action("wp_ajax_nopriv_$this->name", [$this, 'register']);
     add_action("wp_ajax_$this->name", [$this, 'register']);
   }
@@ -28,21 +31,8 @@ class AjaxService implements ThemeEntity
    */
   public function register()
   {
-    /*
-     * Define service's logic here to make a response and send it to client.
-     *
-     * To build an api-like service, you can use wp_send_json_success($response) and
-     * wp_send_json_error($response) if you need to send different data according to
-     * your logic's success or error cases; use wp_send_json($response) otherwise.
-     *
-     * For a non-json response, you can simply echo the generated data. In this case,
-     * don't forget to call wp_die() at the end of the function to stop execution.
-     *
-     * For more details, please check documentation at:
-     * https://codex.wordpress.org/Plugin_API/Action_Reference/wp_ajax_(action)
-     * https://codex.wordpress.org/Function_Reference/wp_send_json
-     * https://codex.wordpress.org/Function_Reference/wp_send_json_success
-     * https://codex.wordpress.org/Function_Reference/wp_send_json_error
-     */
+    if ($this->logic) {
+      $this->logic();
+    }
   }
 }

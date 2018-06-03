@@ -42,7 +42,7 @@ class Theme
    */
   public function __construct($theme_name, $theme_uri, $author, $author_uri, $description, $version, $license, $license_uri, $text_domain, $tags, $folder_name, $template_engine)
   {
-    $themes_path = Config::expect('themes-path');
+    $themes_path = Config::get('themes-path', true);
     $this->theme_name = $theme_name;
     $this->theme_uri = $theme_uri;
     $this->author = $author;
