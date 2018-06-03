@@ -14,21 +14,19 @@ class PartialBuilder extends TemplateBuilder implements Builder
    */
   public static function startWizard()
   {
-    $theme = self::askForTheme(['template-engine']);
-    $class_name = self::askForClassName();
-  
     try {
+      $theme = self::askForTheme(['template-engine']);
+      $class_name = self::askForClassName();
       self::build([
         'class_name' => $class_name,
         'theme' => $theme,
         'override' => 'ask'
       ]);
+      Dialog::write('Partial template added!', 'green');
     } catch (\Exception $e) {
       Dialog::write($e->getMessage(), 'red');
       exit;
     }
-  
-    Dialog::write('Partial template added!', 'green');
   }
   
   /**
@@ -44,8 +42,8 @@ class PartialBuilder extends TemplateBuilder implements Builder
   {
     $params = self::checkParams($params);
     $filename = StringsManager::toKebabCase($params['class_name']);
-    $template_engine = Config::get('themes.' . $params['theme'] . '.template-engine');
-    $theme_path = PROJECT_ROOT . '/' . Config::get('themes-path') . '/' . $params['theme'];
+    $template_engine = Config::get('themes.' . $params['theme'] . '.template-engine', true);
+    $theme_path = PROJECT_ROOT . '/' . Config::get('themes-path', true) . '/' . $params['theme'];
     $partial = new Template('partial', ['{CLASS_NAME}' => $params['class_name']]);
     
     if ($template_engine === 'timber') {
@@ -89,10 +87,8 @@ class PartialBuilder extends TemplateBuilder implements Builder
     if ($override !== 'ask' && $override !== 'force') {
       $override = false;
     }
-    
-    if (!Config::get("themes.$theme")) {
-      throw new \Exception("Error: theme '$theme' doesn't exist.");
-    }
+  
+    Config::check("themes.$theme", 'array', "Error: theme '$theme' doesn't exist.");
     
     return [
       'class-name' => $params['class_name'],

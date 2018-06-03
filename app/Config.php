@@ -36,34 +36,44 @@ class Config
     $template = new Template('project-config', $params);
     return $template->save(self::FILEPATH);
   }
+  
+  /**
+   * Check Config param existence
+   * @param $path
+   * @param null $type
+   * @param null $error
+   * @return bool
+   * @throws \Exception
+   */
+  public static function check($path, $type = null, $error = null)
+  {
+    $param = self::get($path);
+    $message = $error ? $error : "Error: the required param '$path' is missing or invalid in " . self::FILEPATH . ". Please fix your configuration file in order to continue.";
 
+    if (($type && gettype($param) !== $type) || is_null($param) || (gettype($param) === 'string' && empty($param))) {
+      throw new \Exception($message);
+    }
+
+    return true;
+  }
+  
   /**
    * Gets Config param
    * @param $path
+   * @param bool|array $strict
    * @return mixed|null
    */
-  public static function get($path)
+  public static function get($path, $strict = false)
   {
     self::getContent();
-    return ArraysManager::get(self::$params, $path);
-  }
-
-/**
- * Gets Config param strictly
- * @param $path
- * @param null $type
- * @return mixed|null
- * @throws \Exception
- */
-  public static function expect($path, $type = null)
-  {
-    $param = self::get($path);
-
-    if (($type && gettype($param) !== $type) || is_null($param) || (gettype($param) === 'string' && empty($param))) {
-      throw new \Exception("Error: the required param '$path' is missing or invalid in " . self::FILEPATH . ". Please fix your configuration file in order to continue.");
+    
+    if ($strict === true) {
+      self::check($path);
+    } else if (is_array($strict) && !empty($strict)) {
+      self::check($path, $strict['type'], $strict['error']);
     }
-
-    return $param;
+    
+    return ArraysManager::get(self::$params, $path);
   }
 
   /**

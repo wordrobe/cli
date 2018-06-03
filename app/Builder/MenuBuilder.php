@@ -14,12 +14,11 @@ class MenuBuilder extends TemplateBuilder implements Builder
    */
   public static function startWizard()
   {
-    $theme = self::askForTheme();
-    $location = self::askForLocation();
-    $name = self::askForName($location);
-    $description = self::askForDescription();
-  
     try {
+      $theme = self::askForTheme();
+      $location = self::askForLocation();
+      $name = self::askForName($location);
+      $description = self::askForDescription();
       self::build([
         'location' => $location,
         'name' => $name,
@@ -27,12 +26,11 @@ class MenuBuilder extends TemplateBuilder implements Builder
         'theme' => $theme,
         'override' => 'ask'
       ]);
+      Dialog::write('Menu added!', 'green');
     } catch (\Exception $e) {
       Dialog::write($e->getMessage(), 'red');
       exit;
     }
-  
-    Dialog::write('Menu added!', 'green');
   }
   
   /**
@@ -50,7 +48,7 @@ class MenuBuilder extends TemplateBuilder implements Builder
   {
     $params = self::checkParams($params);
     $filename = StringsManager::toKebabCase($params['location']);
-    $theme_path = PROJECT_ROOT . '/' . Config::get('themes-path') . '/' . $params['theme'];
+    $theme_path = PROJECT_ROOT . '/' . Config::get('themes-path', true) . '/' . $params['theme'];
     $menu = new Template('menu', [
       '{LOCATION}' => $params['location'],
       '{NAME}' => $params['name'],
@@ -112,10 +110,8 @@ class MenuBuilder extends TemplateBuilder implements Builder
     if ($override !== 'ask' && $override !== 'force') {
       $override = false;
     }
-    
-    if (!Config::get("themes.$theme")) {
-      throw new \Exception("Error: theme '$theme' doesn't exist.");
-    }
+  
+    Config::check("themes.$theme", 'array', "Error: theme '$theme' doesn't exist.");
     
     return [
       'location' => $location,

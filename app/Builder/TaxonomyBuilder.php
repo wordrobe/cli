@@ -14,16 +14,15 @@ class TaxonomyBuilder extends TemplateBuilder implements Builder
    */
   public static function startWizard()
   {
-    $theme = self::askForTheme();
-    $key = self::askForKey();
-    $general_name = self::askForGeneralName($key);
-    $singular_name = self::askForSingularName($general_name);
-    $text_domain = self::askForTextDomain($theme);
-    $post_types = self::askForPostTypes($theme);
-    $hierarchical = self::askForHierarchy();
-    $build_archive = self::askForArchiveTemplateBuild($key);
-  
     try {
+      $theme = self::askForTheme();
+      $key = self::askForKey();
+      $general_name = self::askForGeneralName($key);
+      $singular_name = self::askForSingularName($general_name);
+      $text_domain = self::askForTextDomain($theme);
+      $post_types = self::askForPostTypes($theme);
+      $hierarchical = self::askForHierarchy();
+      $build_archive = self::askForArchiveTemplateBuild($key);
       self::build([
         'key' => $key,
         'general-name' => $general_name,
@@ -35,12 +34,11 @@ class TaxonomyBuilder extends TemplateBuilder implements Builder
         'build-archive' => $build_archive,
         'override' => 'ask'
       ]);
+      Dialog::write('Taxonomy added!', 'green');
     } catch (\Exception $e) {
       Dialog::write($e->getMessage(), 'red');
       exit;
     }
-  
-    Dialog::write('Taxonomy added!', 'green');
   }
   
   /**
@@ -61,7 +59,7 @@ class TaxonomyBuilder extends TemplateBuilder implements Builder
   public static function build($params)
   {
     $params = self::checkParams($params);
-    $theme_path = PROJECT_ROOT . '/' . Config::get('themes-path') . '/' . $params['theme'];
+    $theme_path = PROJECT_ROOT . '/' . Config::get('themes-path', true) . '/' . $params['theme'];
     $taxonomy = new Template('taxonomy', [
       '{KEY}' => $params['key'],
       '{GENERAL_NAME}' => $params['general-name'],
@@ -135,7 +133,7 @@ class TaxonomyBuilder extends TemplateBuilder implements Builder
    */
   private static function askForPostTypes($theme)
   {
-    $post_types = Dialog::getChoice('Post types:', Config::expect("themes.$theme.post-types", 'array'), null, true);
+    $post_types = Dialog::getChoice('Post types:', Config::get("themes.$theme.post-types", ['type' => 'array']));
     return implode(',', $post_types);
     
   }
@@ -185,13 +183,11 @@ class TaxonomyBuilder extends TemplateBuilder implements Builder
     if ($override !== 'ask' && $override !== 'force') {
       $override = false;
     }
-    
-    if (!Config::get("themes.$theme")) {
-      throw new \Exception("Error: theme '$theme' doesn't exist.");
-    }
+  
+    Config::check("themes.$theme", 'array', "Error: theme '$theme' doesn't exist.");
     
     foreach (explode(',', $post_types) as $post_type) {
-      if (!in_array($post_type, Config::get("themes.$theme.post-types"))) {
+      if (!in_array($post_type, Config::get("themes.$theme.post-types", ['type' => 'array']))) {
         throw new \Exception("Error: post type '$post_type' not found in '$theme' theme.");
       }
     }

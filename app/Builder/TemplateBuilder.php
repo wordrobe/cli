@@ -9,12 +9,12 @@ abstract class TemplateBuilder
 {
   /**
    * Asks for target theme
-   * @param null|array $requirements
    * @return mixed
    */
-  protected static function askForTheme($requirements = null)
+  protected static function askForTheme()
   {
-    $themes = Config::expect('themes', 'array');
+    Config::check('themes-path', 'string');
+    $themes = Config::get('themes', ['type' => 'array']);
     
     switch (count($themes)) {
       case 0:
@@ -28,15 +28,7 @@ abstract class TemplateBuilder
         break;
     }
     
-    Config::expect('themes-path');
-    Config::expect("themes.$theme");
-    
-    if ($requirements) {
-      foreach ($requirements as $requirement) {
-        Config::expect("themes.$theme.$requirement");
-      }
-    }
-    
+    Config::check("themes.$theme", 'array');
     return $theme;
   }
 }

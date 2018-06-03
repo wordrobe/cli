@@ -14,21 +14,19 @@ class SingleBuilder extends TemplateBuilder implements Builder
    */
   public static function startWizard()
   {
-    $theme = self::askForTheme(['template-engine']);
-    $post_type = self::askForPostType($theme);
-  
     try {
+      $theme = self::askForTheme(['template-engine']);
+      $post_type = self::askForPostType($theme);
       self::build([
         'post_type' => $post_type,
         'theme' => $theme,
         'override' => 'ask'
       ]);
+      Dialog::write('Single template added!', 'green');
     } catch (\Exception $e) {
       Dialog::write($e->getMessage(), 'red');
       exit;
     }
-  
-    Dialog::write('Single template added!', 'green');
   }
   
   /**
@@ -44,8 +42,8 @@ class SingleBuilder extends TemplateBuilder implements Builder
   {
     $params = self::checkParams($params);
     $filename = 'single-' . $params['post_type'];
-    $template_engine = Config::get('themes.' . $params['theme'] . '.template-engine');
-    $theme_path = PROJECT_ROOT . '/' . Config::get('themes-path') . '/' . $params['theme'];
+    $template_engine = Config::get('themes.' . $params['theme'] . '.template-engine', true);
+    $theme_path = PROJECT_ROOT . '/' . Config::get('themes-path', true) . '/' . $params['theme'];
     $single_ctrl = new Template("$template_engine/single", ['{POST_TYPE}' => $params['post_type']]);
     $single_ctrl->save("$theme_path/$filename.php", $params['override']);
     
@@ -75,7 +73,7 @@ class SingleBuilder extends TemplateBuilder implements Builder
    */
   private static function askForPostType($theme)
   {
-    $post_types = Config::expect("themes.$theme.post-types", 'array');
+    $post_types = Config::get("themes.$theme.post-types", ['type' => 'array']);
     $post_types = array_diff($post_types, ['post']);
     
     if (!empty($post_types)) {
@@ -107,12 +105,10 @@ class SingleBuilder extends TemplateBuilder implements Builder
     if ($override !== 'ask' && $override !== 'force') {
       $override = false;
     }
+  
+    Config::check("themes.$theme", 'array', "Error: theme '$theme' doesn't exist.");
     
-    if (!Config::get("themes.$theme")) {
-      throw new \Exception("Error: theme '$theme' doesn't exist.");
-    }
-    
-    if (!in_array($post_type, Config::get("themes.$theme.post-types"))) {
+    if (!in_array($post_type, Config::get("themes.$theme.post-types", ['type' => 'array']))) {
       throw new \Exception("Error: post type '$post_type' not found in '$theme' theme.");
     }
     

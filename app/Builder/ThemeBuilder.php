@@ -2,7 +2,6 @@
 
 namespace Wordrobe\Builder;
 
-use Wordrobe\Config;
 use Wordrobe\Helper\Dialog;
 use Wordrobe\Entity\Theme;
 use Wordrobe\Helper\StringsManager;
@@ -23,21 +22,19 @@ class ThemeBuilder implements Builder
    */
   public static function startWizard()
   {
-    Config::expect('themes-path');
-    $theme_name = self::askForThemeName();
-    $theme_uri = self::askForThemeURI();
-    $author = self::askForAuthor();
-    $author_uri = self::askForAuthorURI();
-    $description = self::askForDescription();
-    $version = self::askForVersion();
-    $license = self::askForLicense();
-    $license_uri = self::askForLicenseURI();
-    $text_domain = self::askForTextDomain($theme_name);
-    $tags = self::askForTags();
-    $folder_name = self::askForFolderName($theme_name);
-    $template_engine = self::askForTemplateEngine();
-  
     try {
+      $theme_name = self::askForThemeName();
+      $theme_uri = self::askForThemeURI();
+      $author = self::askForAuthor();
+      $author_uri = self::askForAuthorURI();
+      $description = self::askForDescription();
+      $version = self::askForVersion();
+      $license = self::askForLicense();
+      $license_uri = self::askForLicenseURI();
+      $text_domain = self::askForTextDomain($theme_name);
+      $tags = self::askForTags();
+      $folder_name = self::askForFolderName($theme_name);
+      $template_engine = self::askForTemplateEngine();
       self::build([
         'theme-name' => $theme_name,
         'theme-uri' => $theme_uri,

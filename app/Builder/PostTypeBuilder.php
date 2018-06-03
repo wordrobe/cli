@@ -14,19 +14,18 @@ class PostTypeBuilder extends TemplateBuilder implements Builder
    */
   public static function startWizard()
   {
-    $theme = self::askForTheme();
-    $key = self::askForKey();
-    $general_name = self::askForGeneralName($key);
-    $singular_name = self::askForSingularName($general_name);
-    $text_domain = self::askForTextDomain($theme);
-    $capability_type = self::askForCapabilityType();
-    $taxonomies = self::askForTaxonomies();
-    $icon = self::askForIcon();
-    $description = self::askForDescription();
-    $build_single = self::askForSingleTemplateBuild($key);
-    $build_archive = self::askForArchiveTemplateBuild($key);
-  
     try {
+      $theme = self::askForTheme();
+      $key = self::askForKey();
+      $general_name = self::askForGeneralName($key);
+      $singular_name = self::askForSingularName($general_name);
+      $text_domain = self::askForTextDomain($theme);
+      $capability_type = self::askForCapabilityType();
+      $taxonomies = self::askForTaxonomies();
+      $icon = self::askForIcon();
+      $description = self::askForDescription();
+      $build_single = self::askForSingleTemplateBuild($key);
+      $build_archive = self::askForArchiveTemplateBuild($key);
       self::build([
         'key' => $key,
         'general-name' => $general_name,
@@ -41,12 +40,11 @@ class PostTypeBuilder extends TemplateBuilder implements Builder
         'build-archive' => $build_archive,
         'override' => 'ask'
       ]);
+      Dialog::write('Post type added!', 'green');
     } catch (\Exception $e) {
       Dialog::write($e->getMessage(), 'red');
       exit;
     }
-  
-    Dialog::write('Post type added!', 'green');
   }
   
   /**
@@ -70,7 +68,7 @@ class PostTypeBuilder extends TemplateBuilder implements Builder
   public static function build($params)
   {
     $params = self::checkParams($params);
-    $theme_path = PROJECT_ROOT . '/' . Config::get('themes-path') . '/' . $params['theme'];
+    $theme_path = PROJECT_ROOT . '/' . Config::get('themes-path', true) . '/' . $params['theme'];
     $post_type = new Template('post-type', [
       '{KEY}' => $params['key'],
       '{GENERAL_NAME}' => $params['general-name'],
@@ -235,13 +233,11 @@ class PostTypeBuilder extends TemplateBuilder implements Builder
     if ($override !== 'ask' && $override !== 'force') {
       $override = false;
     }
-    
-    if (!Config::get("themes.$theme")) {
-      throw new \Exception("Error: theme '$theme' doesn't exist.");
-    }
+  
+    Config::check("themes.$theme", 'array', "Error: theme '$theme' doesn't exist.");
   
     foreach ($taxonomies as $taxonomy) {
-      if (!in_array($taxonomy, Config::get("themes.$theme.taxonomies"))) {
+      if (!in_array($taxonomy, Config::get("themes.$theme.taxonomies", ['type' => 'array']))) {
         throw new \Exception("Error: taxonomy '$taxonomy' not found in '$theme' theme.");
       }
     }

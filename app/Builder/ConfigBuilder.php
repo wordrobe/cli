@@ -16,20 +16,18 @@ class ConfigBuilder implements Builder
    */
   public static function startWizard()
   {
-    $themes_path = self::askForThemesPath();
-    $plugins_path = self::askForPluginsPath();
-  
     try {
+      $themes_path = self::askForThemesPath();
+      $plugins_path = self::askForPluginsPath();
       self::build([
         'themes-path' => $themes_path,
         'plugins-path' => $plugins_path
       ]);
+      Dialog::write('Configuration completed!', 'green');
     } catch (\Exception $e) {
       Dialog::write($e->getMessage(), 'red');
       exit;
     }
-    
-    Dialog::write('Configuration completed!', 'green');
   }
   
   /**

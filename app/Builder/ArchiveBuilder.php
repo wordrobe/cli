@@ -25,34 +25,33 @@ class ArchiveBuilder extends TemplateBuilder implements Builder
    */
   public static function startWizard()
   {
-    $theme = self::askForTheme(['template-engine']);
-    $type = self::askForType();
-    
-    switch ($type) {
-      case 'post-type':
-        $key = self::askForPostType($theme);
-        break;
-      case 'taxonomy':
-        $key = self::askForTaxonomy($theme);
-        break;
-      default:
-        $key = self::askForTerm();
-        break;
-    }
-    
     try {
+      $theme = self::askForTheme();
+      $type = self::askForType();
+  
+      switch ($type) {
+        case 'post-type':
+          $key = self::askForPostType($theme);
+          break;
+        case 'taxonomy':
+          $key = self::askForTaxonomy($theme);
+          break;
+        default:
+          $key = self::askForTerm();
+          break;
+      }
+      
       self::build([
         'type' => $type,
         'key' => $key,
         'theme' => $theme,
         'override' => 'ask'
       ]);
+      Dialog::write('Archive template added!', 'green');
     } catch (\Exception $e) {
       Dialog::write($e->getMessage(), 'red');
       exit;
     }
-  
-    Dialog::write('Archive template added!', 'green');
   }
   
   /**
@@ -177,12 +176,10 @@ class ArchiveBuilder extends TemplateBuilder implements Builder
     if (!in_array($type, self::TYPES)) {
       throw new \Exception("Error: archive type '$type' not found.");
     }
+  
+    Config::check("themes.$theme", 'array', "Error: theme '$theme' doesn't exist.");
     
-    if (!Config::get("themes.$theme")) {
-      throw new \Exception("Error: theme '$theme' doesn't exist.");
-    }
-    
-    if ($type === 'archive' && !in_array($key, Config::get("themes.$theme.post-types"))) {
+    if ($type === 'archive' && !in_array($key, Config::get("themes.$theme.post-types", ['type' => 'array']))) {
       throw new \Exception("Error: post type '$key' not found in '$theme' theme.");
     }
     

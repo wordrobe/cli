@@ -14,15 +14,14 @@ class TermBuilder extends TemplateBuilder implements Builder
    */
   public static function startWizard()
   {
-    $theme = self::askForTheme();
-    $name = self::askForName();
-    $taxonomy = self::askForTaxonomy($theme);
-    $slug = self::askForSlug($name);
-    $description = self::askForDescription();
-    $parent = self::askForParent();
-    $build_archive = self::askForArchiveTemplateBuild($slug);
-  
     try {
+      $theme = self::askForTheme();
+      $name = self::askForName();
+      $taxonomy = self::askForTaxonomy($theme);
+      $slug = self::askForSlug($name);
+      $description = self::askForDescription();
+      $parent = self::askForParent();
+      $build_archive = self::askForArchiveTemplateBuild($slug);
       self::build([
         'name' => $name,
         'taxonomy' => $taxonomy,
@@ -33,12 +32,11 @@ class TermBuilder extends TemplateBuilder implements Builder
         'build-archive' => $build_archive,
         'override' => 'ask'
       ]);
+      Dialog::write('Term added!', 'green');
     } catch (\Exception $e) {
       Dialog::write($e->getMessage(), 'red');
       exit;
     }
-  
-    Dialog::write('Term added!', 'green');
   }
   
   /**
@@ -58,7 +56,7 @@ class TermBuilder extends TemplateBuilder implements Builder
   public static function build($params)
   {
     $params = self::checkParams($params);
-    $theme_path = PROJECT_ROOT . '/' . Config::get('themes-path') . '/' . $params['theme'];
+    $theme_path = PROJECT_ROOT . '/' . Config::get('themes-path', true) . '/' . $params['theme'];
     $term = new Template('term', [
       '{NAME}' => $params['name'],
       '{TAXONOMY}' => $params['taxonomy'],
@@ -104,7 +102,7 @@ class TermBuilder extends TemplateBuilder implements Builder
    */
   private static function askForTaxonomy($theme)
   {
-    $taxonomies = Config::get("themes.$theme.taxonomies");
+    $taxonomies = Config::get("themes.$theme.taxonomies", ['type' => 'array']);
     return Dialog::getChoice('Taxonomy:', $taxonomies, null);
   }
   
@@ -174,12 +172,10 @@ class TermBuilder extends TemplateBuilder implements Builder
     if ($override !== 'ask' && $override !== 'force') {
       $override = false;
     }
+  
+    Config::check("themes.$theme", 'array', "Error: theme '$theme' doesn't exist.");
     
-    if (!Config::get("themes.$theme")) {
-      throw new \Exception("Error: theme '$theme' doesn't exist.");
-    }
-    
-    if (!in_array($taxonomy, Config::get("themes.$theme.taxonomies"))) {
+    if (!in_array($taxonomy, Config::get("themes.$theme.taxonomies", ['type' => 'array']))) {
       throw new \Exception("Error: taxonomy '$taxonomy' not found in '$theme' theme.");
     }
     

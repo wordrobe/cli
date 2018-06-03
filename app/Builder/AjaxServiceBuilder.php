@@ -14,21 +14,19 @@ class AjaxServiceBuilder extends TemplateBuilder implements Builder
 	 */
 	public static function startWizard()
 	{
-		$theme = self::askForTheme();
-		$action = self::askForAction();
-    
     try {
+      $theme = self::askForTheme();
+      $action = self::askForAction();
       self::build([
         'action' => $action,
         'theme' => $theme,
         'override' => 'ask'
       ]);
+      Dialog::write('Ajax service added!', 'green');
     } catch (\Exception $e) {
       Dialog::write($e->getMessage(), 'red');
       exit;
     }
-    
-    Dialog::write('Ajax service added!', 'green');
 	}
 
 	/**
@@ -44,7 +42,7 @@ class AjaxServiceBuilder extends TemplateBuilder implements Builder
 	{
 		$params = self::checkParams($params);
 		$filename = StringsManager::toKebabCase($params['action']);
-		$theme_path = PROJECT_ROOT . '/' . Config::get('themes-path') . '/' . $params['theme'];
+		$theme_path = PROJECT_ROOT . '/' . Config::get('themes-path', true) . '/' . $params['theme'];
 		$ajax_service = new Template('ajax-service', [
 			'{KEY}' => $filename,
 			'{ACTION}' => $params['action']
@@ -83,10 +81,8 @@ class AjaxServiceBuilder extends TemplateBuilder implements Builder
     if ($override !== 'ask' && $override !== 'force') {
       $override = false;
     }
-
-		if (!Config::get("themes.$theme")) {
-			throw new \Exception("Error: theme '$theme' doesn't exist.");
-		}
+    
+    Config::check("themes.$theme", 'array', "Error: theme '$theme' doesn't exist.");
 
 		return [
 			'action' => $action,

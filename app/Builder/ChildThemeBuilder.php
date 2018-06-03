@@ -18,22 +18,19 @@ class ChildThemeBuilder extends ThemeBuilder
    */
   public static function startWizard()
   {
-    Config::expect('themes-path');
-    Config::expect('themes', 'array');
-    $theme_name = parent::askForThemeName();
-    $theme_uri = parent::askForThemeURI();
-    $author = parent::askForAuthor();
-    $author_uri = parent::askForAuthorURI();
-    $description = parent::askForDescription();
-    $version = parent::askForVersion();
-    $license = parent::askForLicense();
-    $license_uri = parent::askForLicenseURI();
-    $text_domain = parent::askForTextDomain($theme_name);
-    $tags = parent::askForTags();
-    $folder_name = parent::askForFolderName($theme_name);
-    $parent = self::askForParentTheme();
-  
     try {
+      $theme_name = parent::askForThemeName();
+      $theme_uri = parent::askForThemeURI();
+      $author = parent::askForAuthor();
+      $author_uri = parent::askForAuthorURI();
+      $description = parent::askForDescription();
+      $version = parent::askForVersion();
+      $license = parent::askForLicense();
+      $license_uri = parent::askForLicenseURI();
+      $text_domain = parent::askForTextDomain($theme_name);
+      $tags = parent::askForTags();
+      $folder_name = parent::askForFolderName($theme_name);
+      $parent = self::askForParentTheme();
       self::build([
         'theme-name' => $theme_name,
         'theme-uri' => $theme_uri,
@@ -48,12 +45,11 @@ class ChildThemeBuilder extends ThemeBuilder
         'folder-name' => $folder_name,
         'parent' => $parent
       ]);
+      Dialog::write('Child theme installed!', 'green');
     } catch (\Exception $e) {
       Dialog::write($e->getMessage(), 'red');
       exit;
     }
-  
-    Dialog::write('Child theme installed!', 'green');
   }
   
   /**
@@ -100,7 +96,7 @@ class ChildThemeBuilder extends ThemeBuilder
    */
   protected static function askForParentTheme()
   {
-    $themes = Config::get('themes');
+    $themes = Config::get('themes', true);
     return Dialog::getChoice('Parent theme:', array_keys($themes), null);
   }
   
@@ -131,9 +127,7 @@ class ChildThemeBuilder extends ThemeBuilder
     $folder_name = StringsManager::toKebabCase($params['folder-name']);
     $parent = StringsManager::toKebabCase($params['parent']);
     
-    if (!Config::get("themes.$parent")) {
-      throw new \Exception("Error: parent theme '$parent' not found.");
-    }
+    Config::check("themes.$parent", 'array', "Error: parent theme '$parent' not found.");
     
     return [
       'theme-name' => $theme_name,
