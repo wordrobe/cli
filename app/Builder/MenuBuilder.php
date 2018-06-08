@@ -5,7 +5,7 @@ namespace Wordrobe\Builder;
 use Wordrobe\Config;
 use Wordrobe\Helper\Dialog;
 use Wordrobe\Helper\StringsManager;
-use Wordrobe\Entity\Template;
+use Wordrobe\Wrapper\Template;
 
 class MenuBuilder extends TemplateBuilder implements Builder
 {

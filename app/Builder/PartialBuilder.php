@@ -5,7 +5,7 @@ namespace Wordrobe\Builder;
 use Wordrobe\Config;
 use Wordrobe\Helper\Dialog;
 use Wordrobe\Helper\StringsManager;
-use Wordrobe\Entity\Template;
+use Wordrobe\Wrapper\Template;
 
 class PartialBuilder extends TemplateBuilder implements Builder
 {
@@ -65,7 +65,7 @@ class PartialBuilder extends TemplateBuilder implements Builder
   private static function askForClassName()
   {
     $class_name = Dialog::getAnswer('Class name (e.g. my-partial):');
-    return $class_name ? $class_name : self::askForClassName();
+    return $class_name ?: self::askForClassName();
   }
   
   /**

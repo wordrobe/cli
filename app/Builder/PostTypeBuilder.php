@@ -5,7 +5,7 @@ namespace Wordrobe\Builder;
 use Wordrobe\Config;
 use Wordrobe\Helper\Dialog;
 use Wordrobe\Helper\StringsManager;
-use Wordrobe\Entity\Template;
+use Wordrobe\Wrapper\Template;
 
 class PostTypeBuilder extends TemplateBuilder implements Builder
 {
@@ -120,7 +120,7 @@ class PostTypeBuilder extends TemplateBuilder implements Builder
   {
     $default = ucwords(str_replace('-', ' ', $key)) . 's';
     $general_name = Dialog::getAnswer("General name [$default]:", $default);
-    return $general_name ? $general_name : self::askForGeneralName($key);
+    return $general_name ?: self::askForGeneralName($key);
   }
   
   /**
@@ -132,7 +132,7 @@ class PostTypeBuilder extends TemplateBuilder implements Builder
   {
     $default = substr($general_name, -1) === 's' ? substr($general_name, 0, -1) : $general_name;
     $singular_name = Dialog::getAnswer("Singular name [$default]:", $default);
-    return $singular_name ? $singular_name : self::askForSingularName($general_name);
+    return $singular_name ?: self::askForSingularName($general_name);
   }
   
   /**
@@ -143,7 +143,7 @@ class PostTypeBuilder extends TemplateBuilder implements Builder
   private static function askForTextDomain($theme)
   {
     $text_domain = Dialog::getAnswer("Text domain [$theme]:", $theme);
-    return $text_domain ? $text_domain : self::askForTextDomain($theme);
+    return $text_domain ?: self::askForTextDomain($theme);
   }
   
   /**

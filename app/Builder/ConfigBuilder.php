@@ -55,7 +55,7 @@ class ConfigBuilder implements Builder
   private static function askForThemesPath()
   {
     $themes_path = Dialog::getAnswer('Please provide themes directory path [wp-content/themes]:', 'wp-content/themes');
-    return $themes_path ? $themes_path : self::askForThemesPath();
+    return $themes_path ?: self::askForThemesPath();
   }
   
   /**
@@ -65,7 +65,7 @@ class ConfigBuilder implements Builder
   private static function askForPluginsPath()
   {
     $plugins_path = Dialog::getAnswer('Please provide plugins directory path [wp-content/plugins]:', 'wp-content/plugins');
-    return $plugins_path ? $plugins_path : self::askForPluginsPath();
+    return $plugins_path ?: self::askForPluginsPath();
   }
   
   /**

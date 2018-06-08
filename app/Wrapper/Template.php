@@ -1,13 +1,13 @@
 <?php
 
-namespace Wordrobe\Entity;
+namespace Wordrobe\Wrapper;
 
 use Wordrobe\Helper\FilesManager;
 use Wordrobe\Helper\Dialog;
 
 /**
  * Class Template
- * @package Wordrobe\Model
+ * @package Wordrobe\Wrapper
  */
 class Template
 {
@@ -92,6 +92,6 @@ class Template
    */
   private static function getModelContent($model)
   {
-    return FilesManager::readFile(TEMPLATES_MODELS_PATH . '/' . $model);
+    return FilesManager::readFile(dirname(__DIR__) . '/TemplateModels/' . $model);
   }
 }

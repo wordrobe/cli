@@ -1,14 +1,14 @@
 <?php
 
-namespace Wordrobe\ThemeEntity;
+namespace Wordrobe\Entity;
 
 use Wordrobe\Helper\StringsManager;
 
 /**
  * Class PostType
- * @package Wordrobe\ThemeEntity
+ * @package Wordrobe\Entity
  */
-class PostType implements ThemeEntity
+class PostType
 {
   private $key;
   private $general_name;

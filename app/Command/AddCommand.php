@@ -18,6 +18,7 @@ class AddCommand extends BaseCommand
 {
   const CONTENT_TYPES = [
     'theme',
+    'plugin',
     'child-theme',
     'page',
     'single',
@@ -28,17 +29,22 @@ class AddCommand extends BaseCommand
     'term',
     'menu',
     'ajax-service',
-    'shortcode',
-    'widget'
+    'shortcode'
   ];
-  
+
   protected function configure()
   {
     $this->setName('add');
     $this->setDescription("Adds a new content to your project");
     $this->addArgument('content-type', InputArgument::OPTIONAL, 'The content type');
   }
-  
+
+  /**
+   * @param InputInterface $input
+   * @param OutputInterface $output
+   * @return int|mixed|null|void
+   * @throws \Exception
+   */
   protected function execute(InputInterface $input, OutputInterface $output)
   {
     parent::execute($input, $output);
@@ -51,7 +57,8 @@ class AddCommand extends BaseCommand
       $command = $this->getApplication()->find('init');
       $arguments = ['command' => 'init'];
       $command->run(new ArrayInput($arguments), Dialog::$output);
-      return self::execute($input, $output);
+      self::execute($input, $output);
+      return;
     }
     
     if (!$content_type = Dialog::read('content-type')) {

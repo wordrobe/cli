@@ -1,14 +1,14 @@
 <?php
 
-namespace Wordrobe\ThemeEntity;
+namespace Wordrobe\Entity;
 
 use Wordrobe\Helper\StringsManager;
 
 /**
  * Class Taxonomy
- * @package Wordrobe\ThemeEntity
+ * @package Wordrobe\Entity
  */
-class Taxonomy implements ThemeEntity
+class Taxonomy
 {
   private $key;
   private $general_name;

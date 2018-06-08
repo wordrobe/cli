@@ -1,14 +1,14 @@
 <?php
 
-namespace Wordrobe\ThemeEntity;
+namespace Wordrobe\Entity;
 
 use Wordrobe\Helper\StringsManager;
 
 /**
  * Class AjaxService
- * @package Wordrobe\ThemeEntity
+ * @package Wordrobe\Entity
  */
-class AjaxService implements ThemeEntity
+class AjaxService
 {
   private $name;
   private $logic;

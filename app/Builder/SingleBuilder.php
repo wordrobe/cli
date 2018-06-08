@@ -5,7 +5,7 @@ namespace Wordrobe\Builder;
 use Wordrobe\Config;
 use Wordrobe\Helper\Dialog;
 use Wordrobe\Helper\StringsManager;
-use Wordrobe\Entity\Template;
+use Wordrobe\Wrapper\Template;
 
 class SingleBuilder extends TemplateBuilder implements Builder
 {
@@ -73,6 +73,7 @@ class SingleBuilder extends TemplateBuilder implements Builder
    * Asks for post type
    * @param $theme
    * @return string
+   * @throws \Exception
    */
   private static function askForPostType($theme)
   {

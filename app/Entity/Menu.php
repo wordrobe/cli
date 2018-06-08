@@ -1,14 +1,14 @@
 <?php
 
-namespace Wordrobe\ThemeEntity;
+namespace Wordrobe\Entity;
 
 use Wordrobe\Helper\StringsManager;
 
 /**
  * Class Menu
- * @package Wordrobe\ThemeEntity
+ * @package Wordrobe\Entity
  */
-class Menu implements ThemeEntity
+class Menu
 {
   private $location;
   private $name;

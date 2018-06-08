@@ -5,7 +5,7 @@ namespace Wordrobe\Builder;
 use Wordrobe\Config;
 use Wordrobe\Helper\Dialog;
 use Wordrobe\Helper\StringsManager;
-use Wordrobe\Entity\Template;
+use Wordrobe\Wrapper\Template;
 
 class TermBuilder extends TemplateBuilder implements Builder
 {
@@ -93,13 +93,14 @@ class TermBuilder extends TemplateBuilder implements Builder
   private static function askForName()
   {
     $name = Dialog::getAnswer('Term name (e.g. Entertainment):');
-    return $name ? $name : self::askForName();
+    return $name ?: self::askForName();
   }
   
   /**
    * Asks for taxonomy
    * @param $theme
    * @return mixed
+   * @throws \Exception
    */
   private static function askForTaxonomy($theme)
   {
@@ -134,7 +135,7 @@ class TermBuilder extends TemplateBuilder implements Builder
   private static function askForParent()
   {
     $parent_slug = Dialog::getAnswer('Parent term slug [null]:');
-    return $parent_slug ? $parent_slug : null;
+    return $parent_slug ?: null;
   }
   
   /**

@@ -1,6 +1,6 @@
 <?php
 
-use Wordrobe\ThemeEntity\AjaxService;
+use Wordrobe\Entity\AjaxService;
 
 $ajax_services['{KEY}'] = new AjaxService('{ACTION}', function() {
   /*

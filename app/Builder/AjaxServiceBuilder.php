@@ -5,7 +5,7 @@ namespace Wordrobe\Builder;
 use Wordrobe\Config;
 use Wordrobe\Helper\Dialog;
 use Wordrobe\Helper\StringsManager;
-use Wordrobe\Entity\Template;
+use Wordrobe\Wrapper\Template;
 
 class AjaxServiceBuilder extends TemplateBuilder implements Builder
 {
@@ -58,7 +58,7 @@ class AjaxServiceBuilder extends TemplateBuilder implements Builder
 	private static function askForAction()
 	{
 		$action = Dialog::getAnswer('Action (e.g. send_email):');
-		return $action ? $action : self::askForAction();
+		return $action ?: self::askForAction();
 	}
 
 	/**

@@ -5,7 +5,7 @@ namespace Wordrobe\Builder;
 use Wordrobe\Config;
 use Wordrobe\Helper\Dialog;
 use Wordrobe\Helper\StringsManager;
-use Wordrobe\Entity\Template;
+use Wordrobe\Wrapper\Template;
 
 class PageBuilder extends TemplateBuilder implements Builder
 {
@@ -76,7 +76,7 @@ class PageBuilder extends TemplateBuilder implements Builder
   private static function askForName()
   {
     $name = Dialog::getAnswer('Template name (e.g. My Custom Page):');
-    return $name ? $name : self::askForName();
+    return $name ?: self::askForName();
   }
   
   /**

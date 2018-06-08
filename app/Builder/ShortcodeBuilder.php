@@ -5,7 +5,7 @@ namespace Wordrobe\Builder;
 use Wordrobe\Config;
 use Wordrobe\Helper\Dialog;
 use Wordrobe\Helper\StringsManager;
-use Wordrobe\Entity\Template;
+use Wordrobe\Wrapper\Template;
 
 class ShortcodeBuilder extends TemplateBuilder implements Builder
 {
@@ -71,7 +71,7 @@ class ShortcodeBuilder extends TemplateBuilder implements Builder
   private static function askForKey()
   {
     $name = Dialog::getAnswer('Key (e.g. my-shortcode):');
-    return $name ? $name : self::askForKey();
+    return $name ?: self::askForKey();
   }
 
   /**

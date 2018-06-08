@@ -2,7 +2,7 @@
 
 namespace Wordrobe;
 
-use Wordrobe\Entity\Template;
+use Wordrobe\Wrapper\Template;
 use Wordrobe\Helper\FilesManager;
 use Wordrobe\Helper\ArraysManager;
 
@@ -29,12 +29,12 @@ class Config
 /**
  * Initializes Config
  * @param null $params
- * @return bool
+ * @throws \Exception
  */
   public static function init($params = null)
   {
     $template = new Template('project-config', $params);
-    return $template->save(self::FILEPATH);
+    $template->save(self::FILEPATH);
   }
   
   /**
@@ -62,6 +62,7 @@ class Config
    * @param $path
    * @param bool|array $strict
    * @return mixed|null
+   * @throws \Exception
    */
   public static function get($path, $strict = false)
   {
@@ -81,6 +82,7 @@ class Config
    * @param $path
    * @param $value
    * @return array
+   * @throws \Exception
    */
   public static function set($path, $value)
   {
@@ -94,6 +96,7 @@ class Config
    * @param $path
    * @param $value
    * @return array|null
+   * @throws \Exception
    */
   public static function add($path, $value)
   {
@@ -103,7 +106,25 @@ class Config
   }
 
   /**
+   * Calculates relative root path from given path
+   * @param $from_path
+   * @return string
+   */
+  public static function getRelativeRootPath($from_path)
+  {
+    $subdirs = explode('/', $from_path);
+    $root_path = '';
+
+    for ($i = 0; $i < count($subdirs) - 1; $i++) {
+      $root_path .= '../';
+    }
+
+    return $root_path;
+  }
+
+  /**
    * Gets Config file contents
+   * @throws \Exception
    */
   private static function getContent()
   {
@@ -114,9 +135,10 @@ class Config
       self::$params = null;
     }
   }
-  
+
   /**
    * Updates Config file content
+   * @throws \Exception
    */
   private static function updateContent()
   {

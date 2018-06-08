@@ -1,14 +1,14 @@
 <?php
 
-namespace Wordrobe\ThemeEntity;
+namespace Wordrobe\Entity;
 
 use Wordrobe\Helper\StringsManager;
 
 /**
  * Class Shortcode
- * @package Wordrobe\ThemeEntity
+ * @package Wordrobe\Entity
  */
-class Shortcode implements ThemeEntity
+class Shortcode
 {
   private $key;
   private $logic;

@@ -4,7 +4,7 @@ namespace Wordrobe\Builder;
 
 use Wordrobe\Config;
 use Wordrobe\Helper\Dialog;
-use Wordrobe\Entity\Template;
+use Wordrobe\Wrapper\Template;
 use Wordrobe\Helper\StringsManager;
 
 /**
@@ -111,6 +111,7 @@ class ArchiveBuilder extends TemplateBuilder implements Builder
    * Asks for post type
    * @param $theme
    * @return mixed
+   * @throws \Exception
    */
   private static function askForPostType($theme)
   {
@@ -129,6 +130,7 @@ class ArchiveBuilder extends TemplateBuilder implements Builder
    * Asks for taxonomy
    * @param $theme
    * @return mixed
+   * @throws \Exception
    */
   private static function askForTaxonomy($theme)
   {
@@ -150,7 +152,7 @@ class ArchiveBuilder extends TemplateBuilder implements Builder
   private static function askForTerm()
   {
     $term = Dialog::getAnswer('Term:');
-    return $term ? $term : self::askForTerm();
+    return $term ?: self::askForTerm();
   }
   
   /**

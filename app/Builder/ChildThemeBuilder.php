@@ -5,7 +5,7 @@ namespace Wordrobe\Builder;
 use Wordrobe\Config;
 use Wordrobe\Helper\Dialog;
 use Wordrobe\Helper\StringsManager;
-use Wordrobe\Entity\ChildTheme;
+use Wordrobe\Wrapper\ChildTheme;
 
 /**
  * Class ChildThemeBuilder
@@ -21,27 +21,27 @@ class ChildThemeBuilder extends ThemeBuilder
     try {
       $theme_name = parent::askForThemeName();
       $theme_uri = parent::askForThemeURI();
+      $description = parent::askForDescription();
+      $tags = parent::askForTags();
+      $version = parent::askForVersion();
       $author = parent::askForAuthor();
       $author_uri = parent::askForAuthorURI();
-      $description = parent::askForDescription();
-      $version = parent::askForVersion();
       $license = parent::askForLicense();
       $license_uri = parent::askForLicenseURI();
       $text_domain = parent::askForTextDomain($theme_name);
-      $tags = parent::askForTags();
       $folder_name = parent::askForFolderName($theme_name);
       $parent = self::askForParentTheme();
       self::build([
         'theme-name' => $theme_name,
         'theme-uri' => $theme_uri,
+        'description' => $description,
+        'tags' => $tags,
+        'version' => $version,
         'author' => $author,
         'author-uri' => $author_uri,
-        'description' => $description,
-        'version' => $version,
         'license' => $license,
         'license-uri' => $license_uri,
         'text-domain' => $text_domain,
-        'tags' => $tags,
         'folder-name' => $folder_name,
         'parent' => $parent
       ]);
@@ -58,14 +58,14 @@ class ChildThemeBuilder extends ThemeBuilder
    * @example ChildThemeBuilder::create([
    *  'theme-name' => $theme_name,
    *  'theme-uri' => $theme_uri,
+   *  'description' => $description,
+   *  'tags' => $tags,
+   *  'version' => $version,
    *  'author' => $author,
    *  'author-uri' => $author_uri,
-   *  'description' => $description,
-   *  'version' => $version,
    *  'license' => $license,
    *  'license-uri' => $license_uri,
    *  'text-domain' => $text_domain,
-   *  'tags' => $tags,
    *  'folder-name' => $folder_name,
    *  'parent' => $parent
    * ]);
@@ -77,14 +77,14 @@ class ChildThemeBuilder extends ThemeBuilder
     $theme = new ChildTheme(
       $params['theme-name'],
       $params['theme-uri'],
+      $params['description'],
+      $params['tags'],
+      $params['version'],
       $params['author'],
       $params['author-uri'],
-      $params['description'],
-      $params['version'],
       $params['license'],
       $params['license-uri'],
       $params['text-domain'],
-      $params['tags'],
       $params['folder-name'],
       $params['parent']
     );
@@ -94,6 +94,7 @@ class ChildThemeBuilder extends ThemeBuilder
   /**
    * Asks for child theme's parent
    * @return mixed
+   * @throws \Exception
    */
   protected static function askForParentTheme()
   {
@@ -117,14 +118,14 @@ class ChildThemeBuilder extends ThemeBuilder
     // normalizing
     $theme_name = ucwords($params['theme-name']);
     $theme_uri = $params['theme-uri'];
+    $description = ucfirst($params['description']);
+    $tags = strtolower(StringsManager::removeMultipleSpaces($params['tags']));
+    $version = $params['version'];
     $author = ucwords($params['author']);
     $author_uri = $params['author-uri'];
-    $description = ucfirst($params['description']);
-    $version = $params['version'];
     $license = $params['license'];
     $license_uri = $params['license-uri'];
     $text_domain = StringsManager::toKebabCase($params['text-domain']);
-    $tags = strtolower(StringsManager::removeMultipleSpaces($params['tags']));
     $folder_name = StringsManager::toKebabCase($params['folder-name']);
     $parent = StringsManager::toKebabCase($params['parent']);
     
@@ -133,14 +134,14 @@ class ChildThemeBuilder extends ThemeBuilder
     return [
       'theme-name' => $theme_name,
       'theme-uri' => $theme_uri,
+      'description' => $description,
+      'tags' => $tags,
+      'version' => $version,
       'author' => $author,
       'author-uri' => $author_uri,
-      'description' => $description,
-      'version' => $version,
       'license' => $license,
       'license-uri' => $license_uri,
       'text-domain' => $text_domain,
-      'tags' => $tags,
       'folder-name' => $folder_name,
       'parent' => $parent
     ];

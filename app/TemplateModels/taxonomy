@@ -1,5 +1,5 @@
 <?php
 
-use Wordrobe\ThemeEntity\Taxonomy;
+use Wordrobe\Entity\Taxonomy;
 
 $taxonomies['{KEY}'] = new Taxonomy('{KEY}', '{GENERAL_NAME}', '{SINGULAR_NAME}', '{TEXT_DOMAIN}', '{POST_TYPES}', {HIERARCHICAL});
