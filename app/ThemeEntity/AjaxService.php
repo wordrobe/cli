@@ -31,7 +31,7 @@ class AjaxService implements ThemeEntity
    */
   public function register()
   {
-    if ($this->logic) {
+    if (!is_null($this->logic)) {
       $this->logic();
     }
   }

@@ -74,6 +74,7 @@ class ThemeBuilder implements Builder
    *  'folder-name' => $folder_name,
    *  'template-engine' => $template_engine
    * ]);
+   * @throws \Exception
    */
   public static function build($params)
   {

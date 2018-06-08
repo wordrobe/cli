@@ -60,6 +60,7 @@ class Theme
   
   /**
    * Installs theme
+   * @throws \Exception
    */
   public function install()
   {
@@ -72,7 +73,7 @@ class Theme
   
   /**
    * Adds functions.php to theme
-   * @return bool
+   * @throws \Exception
    */
   protected function addFunctions()
   {
@@ -84,12 +85,12 @@ class Theme
     }
     
     $functions = new Template('theme-functions', ['{PROJECT_ROOT}' => $root_path]);
-    return $functions->save("$this->path/functions.php");
+    $functions->save("$this->path/functions.php");
   }
-  
+
   /**
    * Adds style.css to theme
-   * @return bool
+   * @throws \Exception
    */
   protected function addStylesheet()
   {
@@ -105,12 +106,13 @@ class Theme
       '{TEXT_DOMAIN}' => $this->text_domain,
       '{TAGS}' => $this->tags
     ]);
-    return $stylesheet->save("$this->path/style.css");
+    $stylesheet->save("$this->path/style.css");
   }
   
   /**
    * Adds theme params to Config
    * @return array
+   * @throws \Exception
    */
   protected function updateConfig()
   {
@@ -121,6 +123,7 @@ class Theme
   
   /**
    * Copies theme boilerplate
+   * @throws \Exception
    */
   private function copyBoilerplate()
   {

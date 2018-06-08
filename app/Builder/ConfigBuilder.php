@@ -37,6 +37,7 @@ class ConfigBuilder implements Builder
    *  'themes-path' => $themes_path
    *  'plugins-path' => $plugins_path
    * ]);
+   * @throws \Exception
    */
   public static function build($params)
   {

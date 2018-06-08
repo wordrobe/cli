@@ -69,6 +69,7 @@ class ChildThemeBuilder extends ThemeBuilder
    *  'folder-name' => $folder_name,
    *  'parent' => $parent
    * ]);
+   * @throws \Exception
    */
   public static function build($params)
   {

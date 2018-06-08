@@ -55,6 +55,7 @@ class TaxonomyBuilder extends TemplateBuilder implements Builder
    *  'build-archive' => $build_archive,
    *  'override' => 'ask'|'force'|false
    * ]);
+   * @throws \Exception
    */
   public static function build($params)
   {

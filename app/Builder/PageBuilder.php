@@ -28,7 +28,7 @@ class PageBuilder extends TemplateBuilder implements Builder
       exit;
     }
   }
-  
+
   /**
    * Builds page template
    * @param array $params
@@ -37,6 +37,7 @@ class PageBuilder extends TemplateBuilder implements Builder
    *  'theme' => $theme,
    *  'override' => 'ask'|'force'|false
    * ]);
+   * @throws \Exception
    */
   public static function build($params)
   {
@@ -59,6 +60,7 @@ class PageBuilder extends TemplateBuilder implements Builder
    * @param string $filename
    * @param string $theme_path
    * @param mixed $override
+   * @throws \Exception
    */
   private static function buildView($controller, $filename, $theme_path, $override)
   {

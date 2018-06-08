@@ -64,6 +64,7 @@ class ArchiveBuilder extends TemplateBuilder implements Builder
    *  'override' => 'ask'|'force'|false
    * ]);
    * @return bool
+   * @throws \Exception
    */
   public static function build($params)
   {
@@ -88,6 +89,7 @@ class ArchiveBuilder extends TemplateBuilder implements Builder
    * @param string $filename
    * @param string $theme_path
    * @param mixed $override
+   * @throws \Exception
    */
   private static function buildView($controller, $filename, $theme_path, $override)
   {

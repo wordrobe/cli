@@ -43,6 +43,7 @@ class MenuBuilder extends TemplateBuilder implements Builder
    *  'theme' => $theme,
    *  'override' => 'ask'|'force'|false
    * ]);
+   * @throws \Exception
    */
   public static function build($params)
   {

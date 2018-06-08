@@ -10,6 +10,7 @@ abstract class TemplateBuilder
   /**
    * Asks for target theme
    * @return mixed
+   * @throws \Exception
    */
   protected static function askForTheme()
   {

@@ -17,6 +17,7 @@ class Template
    * Template constructor.
    * @param $model
    * @param $replacements
+   * @throws \Exception
    */
   public function __construct($model, $replacements = null)
   {
@@ -61,6 +62,7 @@ class Template
    * Saves template in a file
    * @param $filepath
    * @param mixed $override
+   * @throws \Exception
    */
   public function save($filepath, $override = false)
   {

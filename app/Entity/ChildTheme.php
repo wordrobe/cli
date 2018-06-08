@@ -36,6 +36,7 @@ class ChildTheme extends Theme
   
   /**
    * Adds style.css to theme
+   * @throws \Exception
    */
   protected function addStylesheet()
   {
@@ -57,6 +58,7 @@ class ChildTheme extends Theme
   
   /**
    * Adds theme params to Config
+   * @throws \Exception
    */
   protected function updateConfig()
   {

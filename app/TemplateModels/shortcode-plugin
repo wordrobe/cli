@@ -1,0 +1,18 @@
+/**
+ * {TITLE} Shortcode Plugin
+ */
+(function(tinymce) {
+
+  'use strict';
+
+  tinymce.PluginManager.add('{KEY}', function(editor) {
+    editor.addButton('{KEY}', {
+      title: '{TITLE}',
+      icon: 'dashicon {ICON}',
+      onclick: function() {
+        editor.execCommand('mceInsertContent', 0, '[{SHORTCODE}{ATTRIBUTES}][/{SHORTCODE}]');
+      }
+    });
+  });
+
+})(window.tinymce);
