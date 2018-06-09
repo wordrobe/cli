@@ -5,53 +5,53 @@ require_once __DIR__ . '/{PROJECT_ROOT}vendor/autoload.php';
 /*=======*/
 /* THEME */
 /*=======*/
-require_once get_template_directory() . '/includes/Theme.php';
+require_once __DIR__ . '/includes/Theme.php';
 
 /*===============*/
 /* CUSTOM FIELDS */
 /*===============*/
-foreach (glob(get_template_directory() . '/includes/custom-fields/**/*.php') as $customField) {
+foreach (glob(__DIR__ . '/includes/custom-fields/**/*.php') as $customField) {
   require_once $customField;
 }
 
 /*======*/
 /* MENU */
 /*======*/
-foreach (glob(get_template_directory() . '/includes/menu/*.php') as $menu) {
+foreach (glob(__DIR__ . '/includes/menu/*.php') as $menu) {
   require_once $menu;
 }
 
 /*============*/
 /* POST TYPES */
 /*============*/
-foreach (glob(get_template_directory() . '/includes/post-types/*.php') as $postType) {
+foreach (glob(__DIR__ . '/includes/post-types/*.php') as $postType) {
   require_once $postType;
 }
 
 /*==========*/
 /* SERVICES */
 /*==========*/
-foreach (glob(get_template_directory() . '/includes/services/**/*.php') as $service) {
+foreach (glob(__DIR__ . '/includes/services/**/*.php') as $service) {
   require_once $service;
 }
 
 /*============*/
 /* SHORTCODES */
 /*============*/
-foreach (glob(get_template_directory() . '/includes/shortcodes/**/*.php') as $shortcode) {
+foreach (glob(__DIR__ . '/includes/shortcodes/**/*.php') as $shortcode) {
   require_once $shortcode;
 }
 
 /*============*/
 /* TAXONOMIES */
 /*============*/
-foreach (glob(get_template_directory() . '/includes/taxonomies/*.php') as $taxonomy) {
+foreach (glob(__DIR__ . '/includes/taxonomies/*.php') as $taxonomy) {
   require_once $taxonomy;
 }
 
 /*=======*/
 /* TERMS */
 /*=======*/
-foreach (glob(get_template_directory() . '/includes/terms/**/*.php') as $term) {
+foreach (glob(__DIR__ . '/includes/terms/**/*.php') as $term) {
   require_once $term;
 }
