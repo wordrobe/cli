@@ -5,7 +5,7 @@ namespace Wordrobe\Builder;
 use Wordrobe\Config;
 use Wordrobe\Helper\Dialog;
 use Wordrobe\Helper\StringsManager;
-use Wordrobe\Wrapper\Template;
+use Wordrobe\Entity\Template;
 
 class TaxonomyBuilder extends TemplateBuilder implements Builder
 {
@@ -94,7 +94,7 @@ class TaxonomyBuilder extends TemplateBuilder implements Builder
   
   /**
    * Asks for general name
-   * @param $key
+   * @param string $key
    * @return string
    */
   private static function askForGeneralName($key)
@@ -106,7 +106,7 @@ class TaxonomyBuilder extends TemplateBuilder implements Builder
   
   /**
    * Asks for singular name
-   * @param $general_name
+   * @param string $general_name
    * @return string
    */
   private static function askForSingularName($general_name)
@@ -118,7 +118,7 @@ class TaxonomyBuilder extends TemplateBuilder implements Builder
   
   /**
    * Asks for text domain
-   * @param $theme
+   * @param string $theme
    * @return mixed
    */
   private static function askForTextDomain($theme)
@@ -129,7 +129,7 @@ class TaxonomyBuilder extends TemplateBuilder implements Builder
   
   /**
    * Asks for post types
-   * @param $theme
+   * @param string $theme
    * @return string
    * @throws \Exception
    */
@@ -150,7 +150,7 @@ class TaxonomyBuilder extends TemplateBuilder implements Builder
   
   /**
    * Asks for archive template auto-build confirmation
-   * @param $key
+   * @param string $key
    * @return mixed
    */
   private static function askForArchiveTemplateBuild($key)
@@ -160,7 +160,7 @@ class TaxonomyBuilder extends TemplateBuilder implements Builder
   
   /**
    * Checks params existence and normalizes them
-   * @param $params
+   * @param array $params
    * @return mixed
    * @throws \Exception
    */

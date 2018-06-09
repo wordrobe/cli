@@ -4,7 +4,7 @@ namespace Wordrobe\Builder;
 
 use Wordrobe\Config;
 use Wordrobe\Helper\Dialog;
-use Wordrobe\Wrapper\Template;
+use Wordrobe\Entity\Template;
 use Wordrobe\Helper\StringsManager;
 
 /**
@@ -63,7 +63,6 @@ class ArchiveBuilder extends TemplateBuilder implements Builder
    *  'theme' => $theme,
    *  'override' => 'ask'|'force'|false
    * ]);
-   * @return bool
    * @throws \Exception
    */
   public static function build($params)
@@ -109,7 +108,7 @@ class ArchiveBuilder extends TemplateBuilder implements Builder
   
   /**
    * Asks for post type
-   * @param $theme
+   * @param string $theme
    * @return mixed
    * @throws \Exception
    */
@@ -128,7 +127,7 @@ class ArchiveBuilder extends TemplateBuilder implements Builder
   
   /**
    * Asks for taxonomy
-   * @param $theme
+   * @param string $theme
    * @return mixed
    * @throws \Exception
    */
@@ -157,7 +156,7 @@ class ArchiveBuilder extends TemplateBuilder implements Builder
   
   /**
    * Checks params existence and normalizes them
-   * @param $params
+   * @param array $params
    * @return array
    * @throws \Exception
    */

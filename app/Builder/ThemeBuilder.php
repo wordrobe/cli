@@ -3,7 +3,7 @@
 namespace Wordrobe\Builder;
 
 use Wordrobe\Helper\Dialog;
-use Wordrobe\Wrapper\Theme;
+use Wordrobe\Entity\Theme;
 use Wordrobe\Helper\StringsManager;
 
 /**
@@ -103,10 +103,7 @@ class ThemeBuilder implements Builder
   protected static function askForThemeName()
   {
     $theme_name = Dialog::getAnswer('Theme name (e.g. My Theme):');
-    if (!$theme_name) {
-      return self::askForThemeName();
-    }
-    return $theme_name;
+    return $theme_name ?: self::askForThemeName();
   }
   
   /**
@@ -183,7 +180,7 @@ class ThemeBuilder implements Builder
   
   /**
    * Asks for theme's text domain
-   * @param $theme_name
+   * @param string $theme_name
    * @return mixed
    */
   protected static function askForTextDomain($theme_name)
@@ -194,7 +191,7 @@ class ThemeBuilder implements Builder
   
   /**
    * Asks for theme's folder name
-   * @param $theme_name
+   * @param string $theme_name
    * @return mixed
    */
   protected static function askForFolderName($theme_name)
@@ -219,7 +216,7 @@ class ThemeBuilder implements Builder
   
   /**
    * Checks params existence and normalizes them
-   * @param $params
+   * @param array $params
    * @return mixed
    * @throws \Exception
    */

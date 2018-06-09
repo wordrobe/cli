@@ -12,7 +12,7 @@ class FilesManager
   
   /**
    * Checks file existence
-   * @param $filepath
+   * @param string $filepath
    * @return bool
    */
   public static function fileExists($filepath)
@@ -22,7 +22,7 @@ class FilesManager
   
   /**
    * Checks directory existence
-   * @param $path
+   * @param string $path
    * @return bool
    */
   public static function directoryExists($path)
@@ -32,7 +32,7 @@ class FilesManager
   
   /**
    * Handles directory creation
-   * @param $path
+   * @param string $path
    * @param int $mode
    * @param bool $recursive
    * @throws \Exception
@@ -50,8 +50,8 @@ class FilesManager
   
   /**
    * Handles file write
-   * @param $filepath
-   * @param $content
+   * @param string $filepath
+   * @param string $content
    * @param bool $force_override
    * @throws \Exception
    */
@@ -75,7 +75,7 @@ class FilesManager
   
   /**
    * File contents getter
-   * @param $filepath
+   * @param string $filepath
    * @return string
    * @throws \Exception
    */
@@ -90,8 +90,8 @@ class FilesManager
   
   /**
    * Handles file/directory permissions modification
-   * @param $path
-   * @param $mode
+   * @param string $path
+   * @param int $mode
    * @throws \Exception
    */
   public static function setPermissions($path, $mode)
@@ -103,8 +103,8 @@ class FilesManager
   
   /**
    * Handles files copy
-   * @param $source
-   * @param $destination
+   * @param string $source
+   * @param string $destination
    * @param array $errors
    * @throws \Exception
    */

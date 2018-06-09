@@ -12,16 +12,12 @@ class ArraysManager
   
   /**
    * Array param getter
-   * @param $array
-   * @param $path
+   * @param array $array
+   * @param string $path
    * @return mixed|null
    */
   public static function get($array, $path)
   {
-    if (is_null($path)) {
-      return $array;
-    }
-    
     if (isset($array[$path])) {
       return $array[$path];
     }
@@ -39,17 +35,13 @@ class ArraysManager
   
   /**
    * Array param setter
-   * @param $array
-   * @param $path
-   * @param $value
+   * @param array $array
+   * @param string $path
+   * @param string $value
    * @return mixed
    */
   public static function set(&$array, $path, $value)
   {
-    if (is_null($path)) {
-      return $array = $value;
-    }
-    
     $keys = explode('.', $path);
     
     while (count($keys) > 1) {
@@ -69,17 +61,13 @@ class ArraysManager
   
   /**
    * Adds value to array param
-   * @param $array
-   * @param $path
-   * @param $value
+   * @param array $array
+   * @param string $path
+   * @param string $value
    * @return array
    */
   public static function add(&$array, $path, $value)
   {
-    if (is_null($path)) {
-      return $array[] = $value;
-    }
-    
     $keys = explode('.', $path);
     
     while (count($keys) > 1) {

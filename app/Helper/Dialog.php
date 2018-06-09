@@ -35,7 +35,7 @@ class Dialog
   
   /**
    * Provides an open-ended question
-   * @param $text
+   * @param string $text
    * @param string $default
    * @param string $color
    * @param array $autocomplete
@@ -56,9 +56,9 @@ class Dialog
   /**
    * Provides a multiple choice question
    *
-   * @param $text
+   * @param string $text
    * @param array $choices
-   * @param int $default
+   * @param null|int $default
    * @param bool $allow_multiple
    * @param string $color
    * @return mixed
@@ -74,7 +74,7 @@ class Dialog
   /**
    * Provides a yes/no question
    *
-   * @param $text
+   * @param string $text
    * @param bool $default
    * @param string $color
    * @return mixed
@@ -90,8 +90,8 @@ class Dialog
   /**
    * Writes an output message
    *
-   * @param $text
-   * @param $color
+   * @param string $text
+   * @param string $color
    * @param bool $newLine
    */
   public static function write($text, $color = 'black', $newLine = true)
@@ -108,7 +108,7 @@ class Dialog
   /**
    * Reads an input argument
    *
-   * @param $argument
+   * @param string $argument
    * @return mixed
    */
   public static function read($argument)

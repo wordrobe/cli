@@ -1,5 +1,4 @@
 {
 	"themes-path": "{THEMES_PATH}",
-	"plugins-path": "{PLUGINS_PATH}",
 	"themes": {}
 }

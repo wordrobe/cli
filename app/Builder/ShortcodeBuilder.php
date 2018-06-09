@@ -5,7 +5,7 @@ namespace Wordrobe\Builder;
 use Wordrobe\Config;
 use Wordrobe\Helper\Dialog;
 use Wordrobe\Helper\StringsManager;
-use Wordrobe\Wrapper\Template;
+use Wordrobe\Entity\Template;
 
 class ShortcodeBuilder extends TemplateBuilder implements Builder
 {
@@ -55,7 +55,7 @@ class ShortcodeBuilder extends TemplateBuilder implements Builder
     $shortcode_ctrl = new Template('shortcode', ['{KEY}' => $params['key']]);
     $shortcode_plugin = new Template('shortcode-plugin', [
       '{TITLE}' => $params['title'],
-      '{KEY}' => $params['plugin_key'],
+      '{KEY}' => $params['plugin-key'],
       '{ICON}' => $params['icon'],
       '{SHORTCODE}' => $params['key'],
       '{ATTRIBUTES}' => $params['attributes']
@@ -85,7 +85,7 @@ class ShortcodeBuilder extends TemplateBuilder implements Builder
 
   /**
    * Asks for shortcode title
-   * @param $key
+   * @param string $key
    * @return mixed
    */
   private static function askForTitle($key)
@@ -96,7 +96,6 @@ class ShortcodeBuilder extends TemplateBuilder implements Builder
 
   /**
    * Asks for shortcode icon
-   * @param $key
    * @return mixed
    */
   private static function askForIcon()
@@ -106,7 +105,7 @@ class ShortcodeBuilder extends TemplateBuilder implements Builder
 
   /**
    * Checks params existence and normalizes them
-   * @param $params
+   * @param array $params
    * @return mixed
    * @throws \Exception
    */
@@ -124,10 +123,10 @@ class ShortcodeBuilder extends TemplateBuilder implements Builder
     $icon = $params['icon'] ? StringsManager::toKebabCase($params['icon']) : 'dashicons-editor-code';
     $theme = StringsManager::toKebabCase($params['theme']);
     $override = strtolower($params['override']);
+    $attributes = '';
 
     if (!empty($params['attributes'])) {
       $attributesList = explode(',', $params['attributes']);
-      $attributes = '';
 
       foreach ($attributesList as $attr) {
         if (!empty(trim($attr))) {

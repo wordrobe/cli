@@ -1,6 +1,6 @@
 <?php
 
-use Wordrobe\Entity\Shortcode;
+use Wordrobe\ThemeEntity\Shortcode;
 
 $shortcodes['{KEY}'] = new Shortcode('{KEY}', function($atts, $content) {
   /*

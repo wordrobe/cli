@@ -1,14 +1,14 @@
 <?php
 
-namespace Wordrobe\Entity;
+namespace Wordrobe\ThemeEntity;
 
 use Wordrobe\Helper\StringsManager;
 
 /**
  * Class Menu
- * @package Wordrobe\Entity
+ * @package Wordrobe\ThemeEntity
  */
-class Menu
+class Menu implements ThemeEntity
 {
   private $location;
   private $name;
@@ -47,9 +47,9 @@ class Menu
   private function create()
   {
     $locations = get_nav_menu_locations();
-    
+    $id = wp_create_nav_menu($this->name);
+
     if (empty($locations) || !array_key_exists($this->location, $locations) || $locations[$this->location] === null) {
-      $id = wp_create_nav_menu($this->name);
       $locations[$this->location] = $id;
       set_theme_mod('nav_menu_locations', $locations);
     }

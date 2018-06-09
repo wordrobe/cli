@@ -18,8 +18,6 @@ class AddCommand extends BaseCommand
 {
   const CONTENT_TYPES = [
     'theme',
-    'plugin',
-    'child-theme',
     'page',
     'single',
     'archive',
@@ -77,7 +75,7 @@ class AddCommand extends BaseCommand
   /**
    * Entity builder getter
    *
-   * @param $name
+   * @param string $name
    * @return string
    */
   protected function getBuilder($name)

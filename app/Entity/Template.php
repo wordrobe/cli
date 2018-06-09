@@ -1,13 +1,13 @@
 <?php
 
-namespace Wordrobe\Wrapper;
+namespace Wordrobe\Entity;
 
 use Wordrobe\Helper\FilesManager;
 use Wordrobe\Helper\Dialog;
 
 /**
  * Class Template
- * @package Wordrobe\Wrapper
+ * @package Wordrobe\Entity
  */
 class Template
 {
@@ -15,8 +15,8 @@ class Template
   
   /**
    * Template constructor.
-   * @param $model
-   * @param $replacements
+   * @param string $model
+   * @param null|array $replacements
    * @throws \Exception
    */
   public function __construct($model, $replacements = null)
@@ -41,7 +41,7 @@ class Template
   
   /**
    * Content setter
-   * @param $content
+   * @param string $content
    */
   public function setContent($content)
   {
@@ -50,8 +50,8 @@ class Template
   
   /**
    * Replaces template placeholder
-   * @param $placeholder
-   * @param $value
+   * @param string $placeholder
+   * @param string $value
    */
   public function fill($placeholder, $value)
   {
@@ -60,7 +60,7 @@ class Template
   
   /**
    * Saves template in a file
-   * @param $filepath
+   * @param string $filepath
    * @param mixed $override
    * @throws \Exception
    */
@@ -86,7 +86,7 @@ class Template
   
   /**
    * Model content getter
-   * @param $model
+   * @param string $model
    * @return string
    * @throws \Exception
    */

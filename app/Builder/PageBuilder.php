@@ -5,7 +5,7 @@ namespace Wordrobe\Builder;
 use Wordrobe\Config;
 use Wordrobe\Helper\Dialog;
 use Wordrobe\Helper\StringsManager;
-use Wordrobe\Wrapper\Template;
+use Wordrobe\Entity\Template;
 
 class PageBuilder extends TemplateBuilder implements Builder
 {
@@ -15,7 +15,7 @@ class PageBuilder extends TemplateBuilder implements Builder
   public static function startWizard()
   {
     try {
-      $theme = self::askForTheme(['template-engine']);
+      $theme = self::askForTheme();
       $name = self::askForName();
       self::build([
         'name' => $name,
@@ -81,7 +81,7 @@ class PageBuilder extends TemplateBuilder implements Builder
   
   /**
    * Checks params existence and normalizes them
-   * @param $params
+   * @param array $params
    * @return mixed
    * @throws \Exception
    */

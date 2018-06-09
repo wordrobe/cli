@@ -1,38 +1,38 @@
 <?php
 
-namespace Wordrobe\Entity;
+namespace Wordrobe\ThemeEntity;
 
 use Wordrobe\Helper\StringsManager;
 
 /**
  * Class AjaxService
- * @package Wordrobe\Entity
+ * @package Wordrobe\ThemeEntity
  */
-class AjaxService
+class AjaxService implements ThemeEntity
 {
   private $name;
   private $logic;
   
   /**
    * AjaxService constructor.
-   * @param $name
+   * @param string $name
    * @param null|callable $logic
    */
-  public function __construct($name, $logic = null)
+  public function __construct($name, $logic)
   {
     $this->name = StringsManager::toSnakeCase($name);
     $this->logic = is_callable($logic) ? $logic : null;
     add_action("wp_ajax_nopriv_$this->name", [$this, 'register']);
     add_action("wp_ajax_$this->name", [$this, 'register']);
   }
-  
+
   /**
    * Defines ajax service logic
    */
   public function register()
   {
     if (!is_null($this->logic)) {
-      $this->logic();
+      call_user_func($this->logic);
     }
   }
 }

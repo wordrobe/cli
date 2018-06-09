@@ -5,7 +5,7 @@ namespace Wordrobe\Builder;
 use Wordrobe\Config;
 use Wordrobe\Helper\Dialog;
 use Wordrobe\Helper\StringsManager;
-use Wordrobe\Wrapper\Template;
+use Wordrobe\Entity\Template;
 
 class MenuBuilder extends TemplateBuilder implements Builder
 {
@@ -69,7 +69,7 @@ class MenuBuilder extends TemplateBuilder implements Builder
   
   /**
    * Asks for name
-   * @param $location
+   * @param string $location
    * @return mixed
    */
   private static function askForName($location)
@@ -89,7 +89,7 @@ class MenuBuilder extends TemplateBuilder implements Builder
   
   /**
    * Checks params existence and normalizes them
-   * @param $params
+   * @param array $params
    * @return mixed
    * @throws \Exception
    */

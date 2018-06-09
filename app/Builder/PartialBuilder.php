@@ -5,7 +5,7 @@ namespace Wordrobe\Builder;
 use Wordrobe\Config;
 use Wordrobe\Helper\Dialog;
 use Wordrobe\Helper\StringsManager;
-use Wordrobe\Wrapper\Template;
+use Wordrobe\Entity\Template;
 
 class PartialBuilder extends TemplateBuilder implements Builder
 {
@@ -15,7 +15,7 @@ class PartialBuilder extends TemplateBuilder implements Builder
   public static function startWizard()
   {
     try {
-      $theme = self::askForTheme(['template-engine']);
+      $theme = self::askForTheme();
       $class_name = self::askForClassName();
       self::build([
         'class-name' => $class_name,
@@ -70,7 +70,7 @@ class PartialBuilder extends TemplateBuilder implements Builder
   
   /**
    * Checks params existence and normalizes them
-   * @param $params
+   * @param array $params
    * @return mixed
    * @throws \Exception
    */

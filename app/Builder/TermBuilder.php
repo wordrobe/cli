@@ -5,7 +5,7 @@ namespace Wordrobe\Builder;
 use Wordrobe\Config;
 use Wordrobe\Helper\Dialog;
 use Wordrobe\Helper\StringsManager;
-use Wordrobe\Wrapper\Template;
+use Wordrobe\Entity\Template;
 
 class TermBuilder extends TemplateBuilder implements Builder
 {
@@ -98,7 +98,7 @@ class TermBuilder extends TemplateBuilder implements Builder
   
   /**
    * Asks for taxonomy
-   * @param $theme
+   * @param string $theme
    * @return mixed
    * @throws \Exception
    */
@@ -110,7 +110,7 @@ class TermBuilder extends TemplateBuilder implements Builder
   
   /**
    * Asks for slug
-   * @param $name
+   * @param string $name
    * @return mixed
    */
   private static function askForSlug($name)
@@ -140,7 +140,7 @@ class TermBuilder extends TemplateBuilder implements Builder
   
   /**
    * Asks for archive template auto-build confirmation
-   * @param $slug
+   * @param string $slug
    * @return mixed
    */
   private static function askForArchiveTemplateBuild($slug)
@@ -150,7 +150,7 @@ class TermBuilder extends TemplateBuilder implements Builder
   
   /**
    * Checks params existence and normalizes them
-   * @param $params
+   * @param array $params
    * @return mixed
    * @throws \Exception
    */

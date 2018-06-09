@@ -12,7 +12,7 @@ class StringsManager
   
   /**
    * Removes accented chars in a string and replaces them with relative no-accent version
-   * @param $string
+   * @param string $string
    * @return string
    */
   public static function removeAccents($string)
@@ -22,7 +22,7 @@ class StringsManager
   
   /**
    * Removes dashes from a string
-   * @param $string
+   * @param string $string
    * @param string $replacement
    * @return mixed
    */
@@ -33,7 +33,7 @@ class StringsManager
   
   /**
    * Removes all spaces from a string
-   * @param $string
+   * @param string $string
    * @return string
    */
   public static function removeSpaces($string)
@@ -43,7 +43,7 @@ class StringsManager
   
   /**
    * Replaces multiple spaces in a string with a single space
-   * @param $string
+   * @param string $string
    * @return string
    */
   public static function removeMultipleSpaces($string)
@@ -53,7 +53,7 @@ class StringsManager
   
   /**
    * Sanitizes a string
-   * @param $string
+   * @param string $string
    * @return string
    */
   public static function sanitize($string)
@@ -67,7 +67,7 @@ class StringsManager
   
   /**
    * Formats a string in kebab-case
-   * @param $string
+   * @param string $string
    * @return mixed
    */
   public static function toKebabCase($string)
@@ -78,7 +78,7 @@ class StringsManager
   
   /**
    * Formats a string in snake_case
-   * @param $string
+   * @param string $string
    * @return mixed
    */
   public static function toSnakeCase($string)
@@ -89,7 +89,7 @@ class StringsManager
   
   /**
    * Formats a string in PascalCase
-   * @param $string
+   * @param string $string
    * @return mixed
    */
   public static function toPascalCase($string)
@@ -100,7 +100,7 @@ class StringsManager
   
   /**
    * Extracts dirname from a string
-   * @param $string
+   * @param string $string
    * @return mixed
    */
   public static function extractDirname($string)
@@ -111,7 +111,7 @@ class StringsManager
   
   /**
    * Extracts basename from a string
-   * @param $string
+   * @param string $string
    * @return mixed
    */
   public static function extractBasename($string)
@@ -123,7 +123,7 @@ class StringsManager
   
   /**
    * Extracts filename from a string
-   * @param $string
+   * @param string $string
    * @return mixed
    */
   public static function extractFilename($string)
@@ -135,7 +135,7 @@ class StringsManager
   
   /**
    * Extracts file extension from a string
-   * @param $string
+   * @param string $string
    * @return string
    */
   public static function extractFileExtension($string)

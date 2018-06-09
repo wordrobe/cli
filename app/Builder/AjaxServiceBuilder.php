@@ -5,7 +5,7 @@ namespace Wordrobe\Builder;
 use Wordrobe\Config;
 use Wordrobe\Helper\Dialog;
 use Wordrobe\Helper\StringsManager;
-use Wordrobe\Wrapper\Template;
+use Wordrobe\Entity\Template;
 
 class AjaxServiceBuilder extends TemplateBuilder implements Builder
 {
@@ -63,7 +63,7 @@ class AjaxServiceBuilder extends TemplateBuilder implements Builder
 
 	/**
 	 * Checks params existence and normalizes them
-	 * @param $params
+	 * @param array $params
 	 * @return array
 	 * @throws \Exception
 	 */

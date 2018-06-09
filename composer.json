@@ -1,7 +1,8 @@
 {
   "name": "wordrobe/cli",
-  "type": "library",
   "description": "Boosting development CLI for Wordpress",
+  "type": "library",
+  "license": "MIT",
   "authors": [
     {
       "name": "Andrea 'Fiad' Fiadone",
@@ -27,6 +28,6 @@
     "phpstan/phpstan": "^0.9.2"
   },
   "scripts": {
-    "code-review": "vendor/bin/phpstan analyse app/Builder app/Command app/Entity app/Helper app/Config.php app/Wordrobe.php"
+    "code-review": "vendor/bin/phpstan analyse -l 7 -c phpstan.neon app/*.php app/Builder app/Command app/Entity app/Helper app/ThemeEntity app/TemplateModels"
   }
 }

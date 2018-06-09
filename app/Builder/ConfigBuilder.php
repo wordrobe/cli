@@ -18,11 +18,7 @@ class ConfigBuilder implements Builder
   {
     try {
       $themes_path = self::askForThemesPath();
-      $plugins_path = self::askForPluginsPath();
-      self::build([
-        'themes-path' => $themes_path,
-        'plugins-path' => $plugins_path
-      ]);
+      self::build(['themes-path' => $themes_path]);
       Dialog::write('Configuration completed!', 'green');
     } catch (\Exception $e) {
       Dialog::write($e->getMessage(), 'red');
@@ -42,10 +38,7 @@ class ConfigBuilder implements Builder
   public static function build($params)
   {
     $params = self::checkParams($params);
-    Config::init([
-      '{THEMES_PATH}' => $params['themes-path'],
-      '{PLUGINS_PATH}' => $params['plugins-path']
-    ]);
+    Config::init(['{THEMES_PATH}' => $params['themes-path']]);
   }
   
   /**
@@ -59,25 +52,15 @@ class ConfigBuilder implements Builder
   }
   
   /**
-   * Asks for plugin path
-   * @return mixed
-   */
-  private static function askForPluginsPath()
-  {
-    $plugins_path = Dialog::getAnswer('Please provide plugins directory path [wp-content/plugins]:', 'wp-content/plugins');
-    return $plugins_path ?: self::askForPluginsPath();
-  }
-  
-  /**
    * Checks params existence and normalizes them
-   * @param $params
+   * @param array $params
    * @return mixed
    * @throws \Exception
    */
   private static function checkParams($params)
   {
     // checking existence
-    if (!$params['themes-path'] || !$params['plugins-path']) {
+    if (!$params['themes-path']) {
       throw new \Exception('Error: unable to create config template because of missing parameters.');
     }
     

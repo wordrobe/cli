@@ -1,14 +1,14 @@
 <?php
 
-namespace Wordrobe\Entity;
+namespace Wordrobe\ThemeEntity;
 
 use Wordrobe\Helper\StringsManager;
 
 /**
  * Class Term
- * @package Wordrobe\Entity
+ * @package Wordrobe\ThemeEntity
  */
-class Term
+class Term implements ThemeEntity
 {
   private $name;
   private $description;

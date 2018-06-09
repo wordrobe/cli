@@ -1,8 +1,8 @@
 <?php
 
-use Wordrobe\Entity\AjaxService;
+use Wordrobe\ThemeEntity\AjaxService;
 
-$ajax_services['{KEY}'] = new AjaxService('{ACTION}', function() {
+$services['ajax']['{KEY}'] = new AjaxService('{ACTION}', function() {
   /*
    * Define service's logic here to make a response and send it to client.
    *

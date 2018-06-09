@@ -1,5 +1,5 @@
 <?php
 
-use Wordrobe\Entity\Menu;
+use Wordrobe\ThemeEntity\Menu;
 
 $menus['{LOCATION}'] = new Menu('{LOCATION}', '{NAME}', '{DESCRIPTION}');

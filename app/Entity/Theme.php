@@ -1,13 +1,13 @@
 <?php
 
-namespace Wordrobe\Wrapper;
+namespace Wordrobe\Entity;
 
 use Wordrobe\Config;
 use Wordrobe\Helper\FilesManager;
 
 /**
  * Class Theme
- * @package Wordrobe\Wrapper
+ * @package Wordrobe\Entity
  */
 class Theme
 {
@@ -27,18 +27,18 @@ class Theme
   
   /**
    * Theme constructor.
-   * @param $theme_name
-   * @param $theme_uri
-   * @param $description
-   * @param $tags
-   * @param $version
-   * @param $author
-   * @param $author_uri
-   * @param $license
-   * @param $license_uri
-   * @param $text_domain
-   * @param $folder_name
-   * @param $template_engine
+   * @param string $theme_name
+   * @param string $theme_uri
+   * @param string $description
+   * @param string $tags
+   * @param string $version
+   * @param string $author
+   * @param string $author_uri
+   * @param string $license
+   * @param string $license_uri
+   * @param string $text_domain
+   * @param string $folder_name
+   * @param string $template_engine
    * @throws \Exception
    */
   public function __construct($theme_name, $theme_uri, $description, $tags, $version, $author, $author_uri, $license, $license_uri, $text_domain, $folder_name, $template_engine)
@@ -105,7 +105,6 @@ class Theme
   
   /**
    * Adds theme params to Config
-   * @return array
    * @throws \Exception
    */
   protected function updateConfig()

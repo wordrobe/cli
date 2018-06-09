@@ -2,7 +2,7 @@
 
 namespace Wordrobe;
 
-use Wordrobe\Wrapper\Template;
+use Wordrobe\Entity\Template;
 use Wordrobe\Helper\FilesManager;
 use Wordrobe\Helper\ArraysManager;
 
@@ -28,7 +28,7 @@ class Config
 
 /**
  * Initializes Config
- * @param null $params
+ * @param null|array $params
  * @throws \Exception
  */
   public static function init($params = null)
@@ -39,9 +39,9 @@ class Config
   
   /**
    * Check Config param existence
-   * @param $path
-   * @param null $type
-   * @param null $error
+   * @param string $path
+   * @param null|string $type
+   * @param null|string $error
    * @return bool
    * @throws \Exception
    */
@@ -59,7 +59,7 @@ class Config
   
   /**
    * Gets Config param
-   * @param $path
+   * @param string $path
    * @param bool|array $strict
    * @return mixed|null
    * @throws \Exception
@@ -79,9 +79,8 @@ class Config
 
   /**
    * Sets Config param
-   * @param $path
-   * @param $value
-   * @return array
+   * @param string $path
+   * @param string $value
    * @throws \Exception
    */
   public static function set($path, $value)
@@ -93,9 +92,8 @@ class Config
 
   /**
    * Adds Config param
-   * @param $path
-   * @param $value
-   * @return array|null
+   * @param string $path
+   * @param string $value
    * @throws \Exception
    */
   public static function add($path, $value)
@@ -107,7 +105,7 @@ class Config
 
   /**
    * Calculates relative root path from given path
-   * @param $from_path
+   * @param string $from_path
    * @return string
    */
   public static function getRelativeRootPath($from_path)

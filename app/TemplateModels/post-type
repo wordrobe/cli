@@ -1,5 +1,5 @@
 <?php
 
-use Wordrobe\Entity\PostType;
+use Wordrobe\ThemeEntity\PostType;
 
 $post_types['{KEY}'] = new PostType('{KEY}', '{GENERAL_NAME}', '{SINGULAR_NAME}', '{TEXT_DOMAIN}', '{CAPABILITY_TYPE}', '{TAXONOMIES}', '{ICON}', '{DESCRIPTION}');

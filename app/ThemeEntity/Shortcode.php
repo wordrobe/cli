@@ -1,21 +1,21 @@
 <?php
 
-namespace Wordrobe\Entity;
+namespace Wordrobe\ThemeEntity;
 
 use Wordrobe\Helper\StringsManager;
 
 /**
  * Class Shortcode
- * @package Wordrobe\Entity
+ * @package Wordrobe\ThemeEntity
  */
-class Shortcode
+class Shortcode implements ThemeEntity
 {
   private $key;
   private $logic;
 
   /**
    * Shortcode constructor.
-   * @param $key
+   * @param string $key
    * @param null|callable $logic
    */
   public function __construct($key, $logic = null)
@@ -37,34 +37,34 @@ class Shortcode
 
   /**
    * Handles shortcode registration
-   * @param $atts
-   * @param null $content
+   * @param array $atts
+   * @param null|string $content
    * @return string
    */
-  private function registerShortcode($atts, $content = null)
+  public function registerShortcode($atts, $content = null)
   {
     if (!is_null($this->logic)) {
-      $this->logic($atts, $content);
+      call_user_func($this->logic, [$atts, $content]);
     }
   }
 
   /**
    * Handles shortcode js plugin registration
-   * @param $plugin_array
+   * @param array $plugin_array
    * @return mixed
    */
-  private function registerPlugin($plugin_array)
+  public function registerPlugin($plugin_array)
   {
-    $plugin_array[$this->key] =  get_template_directory_uri() . '/includes/shortcodes/' . $this->key . '/plugin.js';
+    $plugin_array[$this->key] =  get_template_directory_uri() . '/includes/shortcodes/' . $this->key . '/index.js';
     return $plugin_array;
   }
 
   /**
    * Handles shortcode mce button registration
-   * @param $buttons
+   * @param array $buttons
    * @return array
    */
-  private function registerButton($buttons)
+  public function registerButton($buttons)
   {
     $buttons[] = $this->key;
     return $buttons;

@@ -1,14 +1,14 @@
 <?php
 
-namespace Wordrobe\Entity;
+namespace Wordrobe\ThemeEntity;
 
 use Wordrobe\Helper\StringsManager;
 
 /**
  * Class Taxonomy
- * @package Wordrobe\Entity
+ * @package Wordrobe\ThemeEntity
  */
-class Taxonomy
+class Taxonomy implements ThemeEntity
 {
   private $key;
   private $general_name;
@@ -19,11 +19,11 @@ class Taxonomy
   
   /**
    * Taxonomy constructor
-   * @param $key
-   * @param $general_name
-   * @param $singular_name
-   * @param $text_domain
-   * @param $post_types
+   * @param string $key
+   * @param string $general_name
+   * @param string $singular_name
+   * @param string $text_domain
+   * @param string $post_types
    * @param bool $hierarchical
    */
   public function __construct($key, $general_name, $singular_name, $text_domain, $post_types, $hierarchical = true)
@@ -73,7 +73,7 @@ class Taxonomy
     return [
       'name' => _x($this->general_name, "$this->singular_name General _name", $this->text_domain),
       'singular_name' => _x($this->singular_name, "$this->singular_name Singular _name", $this->text_domain),
-      'menu_name' => __($this->singular_name, $this->text_domain),
+      'menu_name' => __($this->general_name, $this->text_domain),
       'all_items' => __("All $this->general_name", $this->text_domain),
       'parent_item' => __("Parent $this->singular_name", $this->text_domain),
       'parent_item_colon' => __("Parent $this->singular_name:", $this->text_domain),

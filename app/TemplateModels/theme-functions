@@ -1,18 +1,16 @@
 <?php
 
-require_once '{PROJECT_ROOT}vendor/autoload.php';
+require_once __DIR__ . '/{PROJECT_ROOT}vendor/autoload.php';
 
-/*========*/
-/* CONFIG */
-/*========*/
-foreach (glob(get_template_directory() . '/includes/config/*.php') as $config) {
-  require_once $config;
-}
+/*=======*/
+/* THEME */
+/*=======*/
+require_once get_template_directory() . '/includes/Theme.php';
 
 /*===============*/
 /* CUSTOM FIELDS */
 /*===============*/
-foreach (glob(get_template_directory() . '/includes/custom-fields/*.php') as $customField) {
+foreach (glob(get_template_directory() . '/includes/custom-fields/**/*.php') as $customField) {
   require_once $customField;
 }
 
@@ -54,13 +52,6 @@ foreach (glob(get_template_directory() . '/includes/taxonomies/*.php') as $taxon
 /*=======*/
 /* TERMS */
 /*=======*/
-foreach (glob(get_template_directory() . '/includes/terms/*.php') as $term) {
+foreach (glob(get_template_directory() . '/includes/terms/**/*.php') as $term) {
   require_once $term;
-}
-
-/*=========*/
-/* WIDGETS */
-/*=========*/
-foreach (glob(get_template_directory() . '/includes/widgets/**/*.php') as $widget) {
-  require_once $widget;
 }
