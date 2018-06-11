@@ -13,14 +13,23 @@ class Menu implements ThemeEntity
   private $location;
   private $name;
   private $description;
+  private $text_domain;
   private $object;
   
-  public function __construct($location, $name, $description = '')
+  /**
+   * Menu constructor.
+   * @param string $location
+   * @param string $name
+   * @param string $description
+   * @param string $text_domain
+   */
+  public function __construct($location, $name, $description, $text_domain = 'default')
   {
     $this->location = StringsManager::toKebabCase($location);
     $this->name = ucwords($name);
     $this->description = ucfirst($description);
-    add_action('init', [$this, 'register']);
+    $this->text_domain = StringsManager::toKebabCase($text_domain);
+    add_action('after_setup_theme', [$this, 'register']);
   }
   
   /**
@@ -28,7 +37,7 @@ class Menu implements ThemeEntity
    */
   public function register()
   {
-    register_nav_menu($this->location, $this->description);
+    register_nav_menu($this->location, __($this->description, $this->text_domain));
     $this->create();
   }
   

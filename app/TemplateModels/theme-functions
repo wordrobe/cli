@@ -2,11 +2,6 @@
 
 require_once __DIR__ . '/{PROJECT_ROOT}vendor/autoload.php';
 
-/*=======*/
-/* THEME */
-/*=======*/
-require_once __DIR__ . '/includes/Theme.php';
-
 /*===============*/
 /* CUSTOM FIELDS */
 /*===============*/
@@ -55,3 +50,8 @@ foreach (glob(__DIR__ . '/includes/taxonomies/*.php') as $taxonomy) {
 foreach (glob(__DIR__ . '/includes/terms/**/*.php') as $term) {
   require_once $term;
 }
+
+/*=======*/
+/* THEME */
+/*=======*/
+require_once __DIR__ . '/includes/Theme.php';

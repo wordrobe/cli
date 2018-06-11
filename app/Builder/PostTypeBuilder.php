@@ -138,8 +138,8 @@ class PostTypeBuilder extends TemplateBuilder implements Builder
    */
   private static function askForTextDomain($theme)
   {
-    $text_domain = Dialog::getAnswer("Text domain [$theme]:", $theme);
-    return $text_domain ?: self::askForTextDomain($theme);
+    $default = Config::get("themes.$theme.text-domain");
+    return Dialog::getAnswer("Text domain [$default]:", $default);
   }
   
   /**

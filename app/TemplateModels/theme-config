@@ -1,5 +1,6 @@
 {
 	"template-engine": "{TEMPLATE_ENGINE}",
+	"text-domain": "{TEXT_DOMAIN}",
 	"post-types": ["post"],
 	"taxonomies": {
 	  "category": {

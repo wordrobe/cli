@@ -109,7 +109,10 @@ class Theme
    */
   protected function updateConfig()
   {
-    $themeConfig = new Template('theme-config', ['{TEMPLATE_ENGINE}' => $this->template_engine]);
+    $themeConfig = new Template('theme-config', [
+      '{TEMPLATE_ENGINE}' => $this->template_engine,
+      '{TEXT_DOMAIN}' => $this->text_domain
+    ]);
     $content = $themeConfig->getContent();
     return Config::set("themes.$this->folder_name", json_decode($content));
   }

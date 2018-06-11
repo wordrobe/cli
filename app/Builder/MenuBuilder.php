@@ -18,11 +18,13 @@ class MenuBuilder extends TemplateBuilder implements Builder
       $theme = self::askForTheme();
       $location = self::askForLocation();
       $name = self::askForName($location);
-      $description = self::askForDescription();
+      $description = self::askForDescription($name);
+      $text_domain = self::askForTextDomain($theme);
       self::build([
         'location' => $location,
         'name' => $name,
-        '$description' => $description,
+        'description' => $description,
+        'text-domain' => $text_domain,
         'theme' => $theme,
         'override' => 'ask'
       ]);
@@ -39,7 +41,8 @@ class MenuBuilder extends TemplateBuilder implements Builder
    * @example MenuBuilder::create([
    *  'location' => $location,
    *  'name' => $name,
-   *  '$description' => $description,
+   *  'description' => $description,
+   *  'text-domain' => $text_domain,
    *  'theme' => $theme,
    *  'override' => 'ask'|'force'|false
    * ]);
@@ -48,12 +51,13 @@ class MenuBuilder extends TemplateBuilder implements Builder
   public static function build($params)
   {
     $params = self::checkParams($params);
-    $filename = StringsManager::toKebabCase($params['location']);
+    $filename = $params['location'];
     $theme_path = PROJECT_ROOT . '/' . Config::get('themes-path', true) . '/' . $params['theme'];
     $menu = new Template('menu', [
       '{LOCATION}' => $params['location'],
       '{NAME}' => $params['name'],
-      '{DESCRIPTION}' => $params['description']
+      '{DESCRIPTION}' => $params['description'],
+      '{TEXT_DOMAIN}' => $params['text-domain']
     ]);
     $menu->save("$theme_path/includes/menu/$filename.php", $params['override']);
   }
@@ -64,7 +68,7 @@ class MenuBuilder extends TemplateBuilder implements Builder
    */
   private static function askForLocation()
   {
-    return Dialog::getAnswer('Location (e.g. main_menu):');
+    return Dialog::getAnswer('Location (e.g. main-menu):');
   }
   
   /**
@@ -82,9 +86,21 @@ class MenuBuilder extends TemplateBuilder implements Builder
    * Asks for description
    * @return mixed
    */
-  private static function askForDescription()
+  private static function askForDescription($name)
   {
-    return Dialog::getAnswer('Description:');
+    $default = ucwords(StringsManager::removeDashes($name));
+    return Dialog::getAnswer("Description [$default]:", $default);
+  }
+  
+  /**
+   * Asks for text domain
+   * @param string $theme
+   * @return mixed
+   */
+  private static function askForTextDomain($theme)
+  {
+    $default = Config::get("themes.$theme.text-domain");
+    return Dialog::getAnswer("Text domain [$default]:", $default);
   }
   
   /**
@@ -96,14 +112,15 @@ class MenuBuilder extends TemplateBuilder implements Builder
   private static function checkParams($params)
   {
     // checking existence
-    if (!$params['location'] || !$params['name'] || !$params['theme']) {
+    if (!$params['location'] || !$params['name'] || !$params['theme'] || !$params['description']) {
       throw new \Exception('Error: unable to create menu because of missing parameters.');
     }
     
     // normalizing
-    $location = StringsManager::toSnakeCase($params['location']);
+    $location = StringsManager::toKebabCase($params['location']);
     $name = ucwords($params['name']);
     $description = ucfirst($params['description']);
+    $text_domain = $params['text-domain'] ? StringsManager::toKebabCase($params['text-domain']) : 'default';
     $theme = StringsManager::toKebabCase($params['theme']);
     $override = strtolower($params['override']);
   
@@ -116,7 +133,8 @@ class MenuBuilder extends TemplateBuilder implements Builder
     return [
       'location' => $location,
       'name' => $name,
-      '$description' => $description,
+      'description' => $description,
+      'text-domain' => $text_domain,
       'theme' => $theme,
       'override' => $override
     ];

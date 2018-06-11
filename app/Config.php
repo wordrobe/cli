@@ -80,7 +80,7 @@ class Config
   /**
    * Sets Config param
    * @param string $path
-   * @param string $value
+   * @param mixed $value
    * @throws \Exception
    */
   public static function set($path, $value)

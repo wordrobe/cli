@@ -60,8 +60,15 @@ class Theme {
    */
   public static function setGlobalContext($context)
   {
+    global $menus;
+    
     $context['env'] = defined('WP_ENV') ? WP_ENV : 'production';
     $context['ajax_url'] =  site_url() . '/wp-admin/admin-ajax.php';
+    
+    if (is_array($menus)) {
+      $context['menus'] = $menus;
+    }
+    
     return $context;
   }
 }
