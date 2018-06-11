@@ -20,7 +20,7 @@ class TermBuilder extends TemplateBuilder implements Builder
       $taxonomy = self::askForTaxonomy($theme);
       $slug = self::askForSlug($name);
       $description = self::askForDescription();
-      $parent = self::askForParent();
+      $parent = Config::get("themes.$theme.taxonomies.$taxonomy.hierarchical") ? self::askForParent() : null;
       $build_archive = self::askForArchiveTemplateBuild($slug);
       self::build([
         'name' => $name,
@@ -66,6 +66,7 @@ class TermBuilder extends TemplateBuilder implements Builder
       '{PARENT}' => $params['parent']
     ]);
     $term->save("$theme_path/includes/terms/" . $params['taxonomy'] . "/" . $params['slug'] . ".php", $params['override']);
+    Config::add('themes.' . $params['theme'] . '.taxonomies.' . $params['taxonomy'] . '.terms', $params['slug']);
     
     if ($params['build-archive']) {
       
@@ -105,7 +106,7 @@ class TermBuilder extends TemplateBuilder implements Builder
   private static function askForTaxonomy($theme)
   {
     $taxonomies = Config::get("themes.$theme.taxonomies", ['type' => 'array']);
-    return Dialog::getChoice('Taxonomy:', $taxonomies, null);
+    return Dialog::getChoice('Taxonomy:', array_keys($taxonomies), null);
   }
   
   /**
@@ -166,7 +167,7 @@ class TermBuilder extends TemplateBuilder implements Builder
     $taxonomy = StringsManager::toKebabCase($params['taxonomy']);
     $slug = StringsManager::toKebabCase($params['slug']);
     $description = ucfirst($params['description']);
-    $parent = StringsManager::toKebabCase($params['parent']);
+    $parent = Config::get("themes." . $params['theme'] . ".taxonomies.$taxonomy.hierarchical") ? StringsManager::toKebabCase($params['parent']) : '';
     $theme = StringsManager::toKebabCase($params['theme']);
     $build_archive = $params['build-archive'] || false;
     $override = strtolower($params['override']);
@@ -177,7 +178,7 @@ class TermBuilder extends TemplateBuilder implements Builder
   
     Config::check("themes.$theme", 'array', "Error: theme '$theme' doesn't exist.");
     
-    if (!in_array($taxonomy, Config::get("themes.$theme.taxonomies", ['type' => 'array']))) {
+    if (!in_array($taxonomy, array_keys(Config::get("themes.$theme.taxonomies", ['type' => 'array'])))) {
       throw new \Exception("Error: taxonomy '$taxonomy' not found in '$theme' theme.");
     }
     

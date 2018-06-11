@@ -1,5 +1,14 @@
 {
 	"template-engine": "{TEMPLATE_ENGINE}",
 	"post-types": ["post"],
-	"taxonomies": ["category", "tag"]
+	"taxonomies": {
+	  "category": {
+	    "hierarchical": true,
+	    "terms": []
+	  },
+	  "tag": {
+	    "hierarchical": false,
+      "terms": []
+	  }
+  }
 }

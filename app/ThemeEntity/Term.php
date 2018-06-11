@@ -37,8 +37,8 @@ class Term implements ThemeEntity
     } else {
       $this->parent = null;
     }
-    
-    $this->register();
+  
+    add_action('init', [$this, 'register']);
   }
   
   /**

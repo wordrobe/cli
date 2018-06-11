@@ -70,7 +70,11 @@ class TaxonomyBuilder extends TemplateBuilder implements Builder
       '{HIERARCHICAL}' => $params['hierarchical']
     ]);
     $taxonomy->save("$theme_path/includes/taxonomies/" . $params['key'] . ".php", $params['override']);
-    Config::add('themes.' . $params['theme'] . '.taxonomies', $params['key']);
+    Config::set('themes.' . $params['theme'] . '.taxonomies.' . $params['key'], [
+      'post-types' => explode(',', $params['post-types']),
+      'hierarchical' => $params['hierarchical'],
+      'terms' => []
+    ]);
     
     if ($params['build-archive']) {
       ArchiveBuilder::build([
@@ -177,7 +181,7 @@ class TaxonomyBuilder extends TemplateBuilder implements Builder
     $singular_name = ucwords($params['singular-name']);
     $text_domain = StringsManager::toKebabCase($params['text-domain']);
     $post_types = strtolower(StringsManager::removeSpaces($params['post-types']));
-    $hierarchical = $params['hierarchical'];
+    $hierarchical = $params['hierarchical'] ? 1 : 0;
     $theme = StringsManager::toKebabCase($params['theme']);
     $build_archive = $params['build-archive'] || false;
     $override = strtolower($params['override']);
