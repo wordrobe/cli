@@ -2,4 +2,4 @@
 
 use Wordrobe\ThemeEntity\PostType;
 
-$post_types['{KEY}'] = new PostType('{KEY}', '{GENERAL_NAME}', '{SINGULAR_NAME}', '{TEXT_DOMAIN}', '{CAPABILITY_TYPE}', '{TAXONOMIES}', '{ICON}', '{DESCRIPTION}');
+$post_types['{KEY}'] = new PostType('{KEY}', '{GENERAL_NAME}', '{SINGULAR_NAME}', '{TEXT_DOMAIN}', '{CAPABILITY_TYPE}', '{ICON}', '{DESCRIPTION}');

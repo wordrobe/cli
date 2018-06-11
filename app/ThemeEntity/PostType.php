@@ -15,7 +15,6 @@ class PostType implements ThemeEntity
   private $singular_name;
   private $text_domain;
   private $capability_type;
-  private $taxonomies;
   private $icon;
   private $description;
   
@@ -26,18 +25,16 @@ class PostType implements ThemeEntity
    * @param string $singular_name
    * @param string $text_domain
    * @param string $capability_type
-   * @param string $taxonomies
    * @param string $icon
    * @param string $description
    */
-  public function __construct($key, $general_name, $singular_name, $text_domain, $capability_type = 'post', $taxonomies = '', $icon = 'dashicons-admin-post', $description = '')
+  public function __construct($key, $general_name, $singular_name, $text_domain, $capability_type = 'post', $icon = 'dashicons-admin-post', $description = '')
   {
     $this->key = StringsManager::toKebabCase($key);
     $this->general_name = ucwords($general_name);
     $this->singular_name = ucwords($singular_name);
     $this->text_domain = StringsManager::toKebabCase($text_domain);
     $this->capability_type = ($capability_type === 'post' || $capability_type === 'page') ? $capability_type : 'post';
-    $this->taxonomies = ($capability_type === 'post') ? explode(',', StringsManager::removeSpaces($taxonomies)) : null;
     $this->icon = StringsManager::toKebabCase($icon);
     $this->description = ucfirst($description);
     add_action('init', [$this, 'register'], 0);
@@ -59,15 +56,6 @@ class PostType implements ThemeEntity
   public function getKey()
   {
     return $this->key;
-  }
-  
-  /**
-   * Post type taxonomies getter
-   * @return array|null
-   */
-  public function getTaxonomies()
-  {
-    return $this->taxonomies;
   }
   
   /**
@@ -136,7 +124,6 @@ class PostType implements ThemeEntity
       'labels' => $this->getLabels(),
       'capability_type' => $this->capability_type,
       'hierarchical' => true,
-      'taxonomies' => $this->taxonomies,
       'has_archive' => true,
       'supports' => $this->getSupportableFeatures(),
       'show_ui' => true,

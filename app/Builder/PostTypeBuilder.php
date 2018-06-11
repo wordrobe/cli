@@ -21,7 +21,6 @@ class PostTypeBuilder extends TemplateBuilder implements Builder
       $singular_name = self::askForSingularName($general_name);
       $text_domain = self::askForTextDomain($theme);
       $capability_type = self::askForCapabilityType();
-      $taxonomies = $capability_type === 'post' ? self::askForTaxonomies() : '';
       $icon = self::askForIcon();
       $description = self::askForDescription();
       $build_single = self::askForSingleTemplateBuild($key);
@@ -32,7 +31,6 @@ class PostTypeBuilder extends TemplateBuilder implements Builder
         'singular-name' => $singular_name,
         'text-domain' => $text_domain,
         'capability-type' => $capability_type,
-        'taxonomies' => $taxonomies,
         'icon' => $icon,
         'description' => $description,
         'theme' => $theme,
@@ -56,7 +54,6 @@ class PostTypeBuilder extends TemplateBuilder implements Builder
    *  'singular-name' => $singular_name,
    *  'text-domain' => $text_domain,
    *  'capability-type' => $capability_type,
-   *  'taxonomies' => $taxonomies,
    *  'icon' => $icon,
    *  'description' => $description,
    *  'theme' => $theme,
@@ -76,7 +73,6 @@ class PostTypeBuilder extends TemplateBuilder implements Builder
       '{SINGULAR_NAME}' => $params['singular-name'],
       '{TEXT_DOMAIN}' => $params['text-domain'],
       '{CAPABILITY_TYPE}' => $params['capability-type'],
-      '{TAXONOMIES}' => $params['taxonomies'],
       '{ICON}' => $params['icon'],
       '{DESCRIPTION}' => $params['description']
     ]);
@@ -156,15 +152,6 @@ class PostTypeBuilder extends TemplateBuilder implements Builder
   }
   
   /**
-   * Asks for taxonomies
-   * @return array|mixed
-   */
-  private static function askForTaxonomies()
-  {
-    return Dialog::getAnswer('Taxonomies (comma separated):');
-  }
-  
-  /**
    * Asks for icon
    * @return mixed
    */
@@ -221,9 +208,6 @@ class PostTypeBuilder extends TemplateBuilder implements Builder
     $singular_name = ucwords($params['singular-name']);
     $text_domain = StringsManager::toKebabCase($params['text-domain']);
     $capability_type = strtolower($params['capability-type']);
-    $taxonomies = empty($params['taxonomies']) ? null : array_map(function ($entry) {
-      return StringsManager::toKebabCase($entry);
-    }, explode(',', $params['taxonomies']));
     $icon = StringsManager::toKebabCase($params['icon']);
     $description = ucfirst($params['description']);
     $theme = StringsManager::toKebabCase($params['theme']);
@@ -236,14 +220,6 @@ class PostTypeBuilder extends TemplateBuilder implements Builder
     }
   
     Config::check("themes.$theme", 'array', "Error: theme '$theme' doesn't exist.");
-  
-    if ($taxonomies) {
-      foreach ($taxonomies as $taxonomy) {
-        if (!in_array($taxonomy, Config::get("themes.$theme.taxonomies", ['type' => 'array']))) {
-          throw new \Exception("Error: taxonomy '$taxonomy' not found in '$theme' theme.");
-        }
-      }
-    }
     
     return [
       'key' => $key,
@@ -251,7 +227,6 @@ class PostTypeBuilder extends TemplateBuilder implements Builder
       'singular-name' => $singular_name,
       'text-domain' => $text_domain,
       'capability-type' => $capability_type,
-      'taxonomies' => implode(',', $taxonomies),
       'icon' => $icon,
       'description' => $description,
       'theme' => $theme,
