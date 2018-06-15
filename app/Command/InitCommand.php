@@ -34,7 +34,7 @@ class InitCommand extends BaseCommand
       ConfigBuilder::startWizard();
     }
 
-    if (Dialog::getConfirmation('Do you want to add a new theme right now?', true)) {
+    if (Dialog::getConfirmation('Do you want to add a new theme right now?', true, 'green')) {
       ThemeBuilder::startWizard();
     }
   }
