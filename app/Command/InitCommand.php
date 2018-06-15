@@ -4,7 +4,10 @@ namespace Wordrobe\Command;
 
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Wordrobe\Helper\SetupManager;
+use Wordrobe\Config;
+use Wordrobe\Helper\Dialog;
+use Wordrobe\Builder\ConfigBuilder;
+use Wordrobe\Builder\ThemeBuilder;
 
 /**
  * Class InitCommand
@@ -26,6 +29,13 @@ class InitCommand extends BaseCommand
   protected function execute(InputInterface $input, OutputInterface $output)
   {
     parent::execute($input, $output);
-    SetupManager::install();
+
+    if (!Config::exists()) {
+      ConfigBuilder::startWizard();
+    }
+
+    if (Dialog::getConfirmation('Do you want to add a new theme right now?', true)) {
+      ThemeBuilder::startWizard();
+    }
   }
 }
