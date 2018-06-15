@@ -23,7 +23,7 @@ class SetupManager
       Dialog::write('Project configuration already exists! Check wordrobe.json file in the project root for details.', 'green');
     }
 
-    if (Dialog::getConfirmation('Do you want to add a new theme right now?', true, 'green')) {
+    if (Dialog::getConfirmation('Do you want to add a new theme right now?', true, 'yellow')) {
       ThemeBuilder::startWizard();
     }
   }
