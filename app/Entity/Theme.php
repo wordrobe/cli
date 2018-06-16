@@ -3,6 +3,7 @@
 namespace Wordrobe\Entity;
 
 use Wordrobe\Helper\Config;
+use Wordrobe\Helper\Dialog;
 use Wordrobe\Helper\FilesManager;
 
 /**
@@ -24,7 +25,7 @@ class Theme
   protected $folder_name;
   protected $template_engine;
   protected $path;
-  
+
   /**
    * Theme constructor.
    * @param string $theme_name
@@ -58,20 +59,44 @@ class Theme
     $this->template_engine = $template_engine;
     $this->path = PROJECT_ROOT . "/$themes_path/$this->folder_name";
   }
-  
+
   /**
    * Installs theme
    * @throws \Exception
    */
-  public function install()
+  public function install($override = false)
   {
-    FilesManager::createDirectory($this->path);
-    $this->copyBoilerplate();
-    $this->addFunctions();
-    $this->addStylesheet();
-    $this->updateConfig();
+    $can_install = !FilesManager::directoryExists($this->path);
+
+    if (!$can_install) {
+      switch ($override) {
+        case 'force':
+          $can_install = true;
+          break;
+        case 'ask':
+          $can_install = Dialog::getConfirmation('Attention: a theme already exists at ' . $this->path . '! Do you want to override it?', false, 'red');
+          break;
+        default:
+          break;
+      }
+    }
+
+    if ($can_install) {
+      FilesManager::createDirectory($this->path);
+      $this->copyBoilerplate();
+      $this->addFunctions();
+      $this->addStylesheet();
+      $this->updateConfig();
+    } else {
+
+      if (is_null(Config::get("themes.$this->folder_name"))) {
+        $this->updateConfig();
+      }
+
+      throw new \Exception('Theme installation aborted.');
+    }
   }
-  
+
   /**
    * Adds functions.php to theme
    * @throws \Exception
@@ -79,7 +104,7 @@ class Theme
   protected function addFunctions()
   {
     $functions = new Template('theme-functions', ['{PROJECT_ROOT}' => Config::getRelativeRootPath($this->path)]);
-    $functions->save("$this->path/functions.php");
+    $functions->save("$this->path/functions.php", 'force');
   }
 
   /**
@@ -100,9 +125,9 @@ class Theme
       '{LICENSE_URI}' => $this->license_uri,
       '{TEXT_DOMAIN}' => $this->text_domain
     ]);
-    $stylesheet->save("$this->path/style.css");
+    $stylesheet->save("$this->path/style.css", 'force');
   }
-  
+
   /**
    * Adds theme params to Config
    * @throws \Exception
@@ -114,9 +139,9 @@ class Theme
       '{TEXT_DOMAIN}' => $this->text_domain
     ]);
     $content = $themeConfig->getContent();
-    return Config::set("themes.$this->folder_name", json_decode($content));
+    Config::set("themes.$this->folder_name", json_decode($content));
   }
-  
+
   /**
    * Copies theme boilerplate
    * @throws \Exception
@@ -124,8 +149,8 @@ class Theme
   private function copyBoilerplate()
   {
     $themeBoilerplatesPath = dirname(__DIR__) . '/ThemeBoilerplates';
-    $commonBoilerplateFiles = $themeBoilerplatesPath . '/commons';
-    $specificBoilerplateFiles = $themeBoilerplatesPath . '/' . $this->template_engine;
+    $commonBoilerplateFiles = "$themeBoilerplatesPath/commons";
+    $specificBoilerplateFiles = "$themeBoilerplatesPath/$this->template_engine";
     FilesManager::copyFiles($commonBoilerplateFiles, $this->path);
     FilesManager::copyFiles($specificBoilerplateFiles, $this->path);
   }

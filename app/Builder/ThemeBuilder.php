@@ -16,7 +16,7 @@ class ThemeBuilder implements Builder
     'timber',
     'standard'
   ];
-  
+
   /**
    * Handles theme creation wizard
    */
@@ -47,16 +47,17 @@ class ThemeBuilder implements Builder
         'license-uri' => $license_uri,
         'text-domain' => $text_domain,
         'folder-name' => $folder_name,
-        'template-engine' => $template_engine
+        'template-engine' => $template_engine,
+        'override' => 'ask'
       ]);
     } catch (\Exception $e) {
       Dialog::write($e->getMessage(), 'red');
       exit;
     }
-  
+
     Dialog::write('Theme installed!', 'green');
   }
-  
+
   /**
    * Builds theme
    * @param array $params
@@ -72,7 +73,8 @@ class ThemeBuilder implements Builder
    *  'license-uri' => $license_uri,
    *  'text-domain' => $text_domain,
    *  'folder-name' => $folder_name,
-   *  'template-engine' => $template_engine
+   *  'template-engine' => $template_engine,
+   *  'override' => $override
    * ]);
    * @throws \Exception
    */
@@ -93,9 +95,9 @@ class ThemeBuilder implements Builder
       $params['folder-name'],
       $params['template-engine']
     );
-    $theme->install();
+    $theme->install($params['override']);
   }
-  
+
   /**
    * Ask for theme's name
    * @return mixed
@@ -105,7 +107,7 @@ class ThemeBuilder implements Builder
     $theme_name = Dialog::getAnswer('Theme name (e.g. My Theme):');
     return $theme_name ?: self::askForThemeName();
   }
-  
+
   /**
    * Asks for theme's URI
    * @return mixed
@@ -141,7 +143,7 @@ class ThemeBuilder implements Builder
   {
     return Dialog::getAnswer('Version [1.0]:', '1.0');
   }
-  
+
   /**
    * Asks for theme's author
    * @return mixed
@@ -150,7 +152,7 @@ class ThemeBuilder implements Builder
   {
     return Dialog::getAnswer('Author (e.g. John Doe):');
   }
-  
+
   /**
    * Asks for theme's author URI
    * @return mixed
@@ -159,7 +161,7 @@ class ThemeBuilder implements Builder
   {
     return Dialog::getAnswer('Author URI (e.g. http://john-doe.com):');
   }
-  
+
   /**
    * Asks for theme's license
    * @return mixed
@@ -168,7 +170,7 @@ class ThemeBuilder implements Builder
   {
     return Dialog::getAnswer('License [GNU General Public License]:', 'GNU General Public License');
   }
-  
+
   /**
    * Asks for theme's license URI
    * @return mixed
@@ -177,7 +179,7 @@ class ThemeBuilder implements Builder
   {
     return Dialog::getAnswer('License URI [http://www.gnu.org/licenses/gpl-2.0.html]:', 'http://www.gnu.org/licenses/gpl-2.0.html');
   }
-  
+
   /**
    * Asks for theme's text domain
    * @param string $theme_name
@@ -188,7 +190,7 @@ class ThemeBuilder implements Builder
     $default = StringsManager::toKebabCase($theme_name);
     return Dialog::getAnswer("Text domain [$default]:", $default);
   }
-  
+
   /**
    * Asks for theme's folder name
    * @param string $theme_name
@@ -199,7 +201,7 @@ class ThemeBuilder implements Builder
     $default = StringsManager::toKebabCase($theme_name);
     return Dialog::getAnswer("Folder name [$default]:", $default);
   }
-  
+
   /**
    * Asks for theme's template engine
    * @return mixed
@@ -213,7 +215,7 @@ class ThemeBuilder implements Builder
     $choice = Dialog::getChoice('Template engine:', array_keys($template_engines), null);
     return $template_engines[$choice];
   }
-  
+
   /**
    * Checks params existence and normalizes them
    * @param array $params
@@ -226,7 +228,7 @@ class ThemeBuilder implements Builder
     if (!$params['theme-name'] || !$params['text-domain'] || !$params['folder-name'] || !$params['template-engine']) {
       throw new \Exception('Error: unable to create theme because of missing parameters.');
     }
-    
+
     // normalizing
     $theme_name = ucwords($params['theme-name']);
     $theme_uri = $params['theme-uri'];
@@ -240,11 +242,16 @@ class ThemeBuilder implements Builder
     $text_domain = StringsManager::toKebabCase($params['text-domain']);
     $folder_name = StringsManager::toKebabCase($params['folder-name']);
     $template_engine = strtolower($params['template-engine']);
-    
+    $override = strtolower($params['override']);
+
+    if ($override !== 'ask' && $override !== 'force') {
+      $override = false;
+    }
+
     if (!in_array($template_engine, self::TEMPLATE_ENGINES)) {
       throw new \Exception("Error: template engine '$template_engine' is not defined.");
     }
-    
+
     return [
       'theme-name' => $theme_name,
       'theme-uri' => $theme_uri,
@@ -257,7 +264,8 @@ class ThemeBuilder implements Builder
       'license-uri' => $license_uri,
       'text-domain' => $text_domain,
       'folder-name' => $folder_name,
-      'template-engine' => $template_engine
+      'template-engine' => $template_engine,
+      'override' => $override
     ];
   }
 }

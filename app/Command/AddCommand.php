@@ -7,6 +7,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Wordrobe\Helper\Config;
 use Wordrobe\Helper\Dialog;
 use Wordrobe\Helper\SetupManager;
+use Wordrobe\Builder\ThemeBuilder;
 
 /**
  * Class AddCommand
@@ -40,7 +41,8 @@ abstract class AddCommand extends BaseCommand
   {
     parent::execute($input, $output);
     $this->checkSetup();
-    call_user_func('Wordrobe\Builder\\' . $this->builder::startWizard);
+    $this->checkThemes();
+    call_user_func('Wordrobe\Builder\\' . $this->builder . '::startWizard');
   }
 
   /**
@@ -51,6 +53,23 @@ abstract class AddCommand extends BaseCommand
     if (!Config::exists()) {
       if (Dialog::getConfirmation('Your project is not configured yet. Do you want to run setup right now?', true, 'yellow')) {
         SetupManager::install();
+        Dialog::write('Resuming ' . $this->builder . ' wizard...', 'cyan');
+      } else {
+        Dialog::write('Unable to continue.', 'red');
+        exit;
+      }
+    }
+  }
+
+  /**
+   * Checks themes existence
+   * @throws \Exception
+   */
+  private function checkThemes()
+  {
+    if ($this->builder !== 'ThemeBuilder' && empty(Config::get('themes'))) {
+      if (Dialog::getConfirmation('Your project has no themes yet. Do you want to add one right now?', true, 'yellow')) {
+        ThemeBuilder::startWizard();
         Dialog::write('Resuming ' . $this->builder . ' wizard...', 'cyan');
       } else {
         Dialog::write('Unable to continue.', 'red');
