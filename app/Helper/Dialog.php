@@ -21,7 +21,6 @@ class Dialog
   
   /**
    * Initializes Dialog
-   *
    * @param QuestionHelper $questionHelper
    * @param InputInterface $input
    * @param OutputInterface $output
@@ -55,7 +54,6 @@ class Dialog
   
   /**
    * Provides a multiple choice question
-   *
    * @param string $text
    * @param array $choices
    * @param null|int $default
@@ -73,7 +71,6 @@ class Dialog
   
   /**
    * Provides a yes/no question
-   *
    * @param string $text
    * @param bool $default
    * @param string $color
@@ -89,7 +86,6 @@ class Dialog
   
   /**
    * Writes an output message
-   *
    * @param string $text
    * @param string $color
    * @param bool $newLine
@@ -107,7 +103,6 @@ class Dialog
   
   /**
    * Reads an input argument
-   *
    * @param string $argument
    * @return mixed
    */
@@ -118,7 +113,6 @@ class Dialog
   
   /**
    * A QuestionHelper's "ask" method wrapper
-   *
    * @param Question $question
    * @return mixed
    */

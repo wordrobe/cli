@@ -33,7 +33,7 @@ class AddCommand extends BaseCommand
   protected function configure()
   {
     $this->setName('add');
-    $this->setDescription("Adds a new content to your project");
+    $this->setDescription('Adds a new content to your project');
     $this->addArgument('content-type', InputArgument::OPTIONAL, 'The content type');
   }
 
@@ -50,11 +50,10 @@ class AddCommand extends BaseCommand
     if (!Config::exists()) {
       $runInit = Dialog::getConfirmation('Your project is not configured yet. Do you want to run setup right now?', true, 'yellow');
       if (!$runInit) {
-        exit();
+        exit;
       }
       $command = $this->getApplication()->find('init');
-      $arguments = ['command' => 'init'];
-      $command->run(new ArrayInput($arguments), Dialog::$output);
+      $command->run(new ArrayInput([]), Dialog::$output);
       self::execute($input, $output);
       return;
     }

@@ -4,7 +4,6 @@ namespace Wordrobe\Helper;
 
 /**
  * Class StringsManager
- *
  * @package Wordrobe\Helper
  */
 class StringsManager

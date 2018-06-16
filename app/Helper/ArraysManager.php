@@ -4,7 +4,6 @@ namespace Wordrobe\Helper;
 
 /**
  * Class ArraysManager
- *
  * @package Wordrobe\Helper
  */
 class ArraysManager
