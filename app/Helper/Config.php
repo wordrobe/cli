@@ -1,14 +1,12 @@
 <?php
 
-namespace Wordrobe;
+namespace Wordrobe\Helper;
 
 use Wordrobe\Entity\Template;
-use Wordrobe\Helper\FilesManager;
-use Wordrobe\Helper\ArraysManager;
 
 /**
  * Class Config
- * @package Wordrobe\Config
+ * @package Wordrobe\Helper\Config
  */
 class Config
 {

@@ -2,7 +2,7 @@
 
 namespace Wordrobe\Entity;
 
-use Wordrobe\Config;
+use Wordrobe\Helper\Config;
 use Wordrobe\Helper\FilesManager;
 
 /**

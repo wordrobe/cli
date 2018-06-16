@@ -6,7 +6,7 @@ use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Wordrobe\Config;
+use Wordrobe\Helper\Config;
 use Wordrobe\Helper\Dialog;
 use Wordrobe\Helper\StringsManager;
 

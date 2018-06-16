@@ -2,7 +2,7 @@
 
 namespace Wordrobe\Builder;
 
-use Wordrobe\Config;
+use Wordrobe\Helper\Config;
 use Wordrobe\Helper\Dialog;
 use Wordrobe\Helper\StringsManager;
 use Wordrobe\Entity\Template;
