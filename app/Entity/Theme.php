@@ -57,7 +57,7 @@ class Theme
     $this->text_domain = $text_domain;
     $this->folder_name = $folder_name;
     $this->template_engine = $template_engine;
-    $this->path = Config::get('project-root') . "/$themes_path/$this->folder_name";
+    $this->path = Config::getRootPath() . "/$themes_path/$this->folder_name";
   }
 
   /**
@@ -103,7 +103,7 @@ class Theme
    */
   protected function addFunctions()
   {
-    $functions = new Template('theme-functions', ['{Config::get('project-root')}' => Config::getRelativeRootPath($this->path)]);
+    $functions = new Template('theme-functions', ['{Config::getRootPath()}' => Config::getRelativeRootPath($this->path)]);
     $functions->save("$this->path/functions.php", 'force');
   }
 

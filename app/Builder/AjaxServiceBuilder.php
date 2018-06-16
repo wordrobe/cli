@@ -43,7 +43,7 @@ class AjaxServiceBuilder extends TemplateBuilder implements Builder
 	{
 		$params = self::checkParams($params);
 		$filename = StringsManager::toKebabCase($params['action']);
-		$theme_path = Config::get('project-root') . '/' . Config::get('themes-path', true) . '/' . $params['theme'];
+		$theme_path = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $params['theme'];
 		$ajax_service = new Template('ajax-service', [
 			'{KEY}' => $filename,
 			'{ACTION}' => $params['action']

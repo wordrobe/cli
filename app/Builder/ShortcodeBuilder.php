@@ -51,7 +51,7 @@ class ShortcodeBuilder extends TemplateBuilder implements Builder
   public static function build($params)
   {
     $params = self::checkParams($params);
-    $theme_path = Config::get('project-root') . '/' . Config::get('themes-path', true) . '/' . $params['theme'];
+    $theme_path = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $params['theme'];
     $shortcode_ctrl = new Template('shortcode', ['{KEY}' => $params['key']]);
     $shortcode_plugin = new Template('shortcode-plugin', [
       '{TITLE}' => $params['title'],

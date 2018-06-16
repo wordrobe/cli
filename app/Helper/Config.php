@@ -14,7 +14,6 @@ class Config
 {
   const FILENAME = 'wordrobe.json';
 
-  private static $filepath = null;
   private static $params = null;
 
   /**
@@ -24,7 +23,7 @@ class Config
    */
   public static function exists()
   {
-    return FilesManager::fileExists(self::$filepath);
+    return FilesManager::fileExists(self::getRootPath() . '/' . self::FILENAME);
   }
 
 /**
@@ -34,11 +33,8 @@ class Config
  */
   public static function init($params = null)
   {
-    $project_root = dirname(Factory::getComposerFile());
-    self::$filepath = $project_root . '/' . self::FILENAME;
     $template = new Template('project-config', $params);
-    $template->fill('{PROJECT_ROOT}', $project_root);
-    $template->save(self::$filepath);
+    $template->save(self::getRootPath() . '/' . self::FILENAME);
   }
   
   /**
@@ -52,7 +48,7 @@ class Config
   public static function check($path, $type = null, $error = null)
   {
     $param = self::get($path);
-    $message = $error ? $error : "Error: the required param '$path' is missing or invalid in " . self::$filepath . ". Please fix your configuration file in order to continue.";
+    $message = $error ? $error : "Error: the required param '$path' is missing or invalid in " . self::getRootPath() . '/' . self::FILENAME . ". Please fix your configuration file in order to continue.";
 
     if (($type && gettype($param) !== $type) || is_null($param) || (gettype($param) === 'string' && empty($param))) {
       throw new \Exception($message);
@@ -125,12 +121,21 @@ class Config
   }
 
   /**
+   * Project root path getter
+   * @return string
+   */
+  public static function getRootPath()
+  {
+    return dirname(Factory::getComposerFile());
+  }
+
+  /**
    * Gets Config file contents
    * @throws \Exception
    */
   private static function getContent()
   {
-    $content = FilesManager::readFile(self::$filepath);
+    $content = FilesManager::readFile(self::getRootPath() . '/' . self::FILENAME);
     if ($content) {
       self::$params = json_decode($content, true);
     } else {
@@ -144,6 +149,6 @@ class Config
    */
   private static function updateContent()
   {
-    FilesManager::writeFile(self::$filepath, json_encode(self::$params, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES), true);
+    FilesManager::writeFile(self::getRootPath() . '/' . self::FILENAME, json_encode(self::$params, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES), true);
   }
 }

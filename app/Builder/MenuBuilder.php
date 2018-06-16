@@ -52,7 +52,7 @@ class MenuBuilder extends TemplateBuilder implements Builder
   {
     $params = self::checkParams($params);
     $filename = $params['location'];
-    $theme_path = Config::get('project-root') . '/' . Config::get('themes-path', true) . '/' . $params['theme'];
+    $theme_path = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $params['theme'];
     $menu = new Template('menu', [
       '{LOCATION}' => $params['location'],
       '{NAME}' => $params['name'],

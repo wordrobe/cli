@@ -44,7 +44,7 @@ class SingleBuilder extends TemplateBuilder implements Builder
     $params = self::checkParams($params);
     $filename = 'single-' . $params['post-type'];
     $template_engine = Config::get('themes.' . $params['theme'] . '.template-engine', true);
-    $theme_path = Config::get('project-root') . '/' . Config::get('themes-path', true) . '/' . $params['theme'];
+    $theme_path = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $params['theme'];
     $single_ctrl = new Template("$template_engine/single", ['{POST_TYPE}' => $params['post-type']]);
     
     if ($template_engine === 'timber') {
