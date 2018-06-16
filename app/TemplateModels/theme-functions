@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . '/{PROJECT_ROOT}vendor/autoload.php';
+require_once __DIR__ . '/{Config::get('project-root')}vendor/autoload.php';
 
 /*===============*/
 /* CUSTOM FIELDS */

@@ -1,6 +1,5 @@
 parameters:
 	ignoreErrors:
-		- '#Constant PROJECT_ROOT not found#'
 		- '#Function add_action not found#'
 		- '#Function add_filter not found#'
 		- '#Function _x not found#'

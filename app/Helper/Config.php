@@ -2,7 +2,9 @@
 
 namespace Wordrobe\Helper;
 
+use Composer\Factory;
 use Wordrobe\Entity\Template;
+
 
 /**
  * Class Config
@@ -11,17 +13,18 @@ use Wordrobe\Entity\Template;
 class Config
 {
   const FILENAME = 'wordrobe.json';
-  const FILEPATH = PROJECT_ROOT . '/' . self::FILENAME;
 
+  private static $filepath = null;
   private static $params = null;
 
   /**
    * Checks Config existence
    * @return bool
+   * @throws \Exception
    */
   public static function exists()
   {
-    return FilesManager::fileExists(self::FILEPATH);
+    return FilesManager::fileExists(self::$filepath);
   }
 
 /**
@@ -31,8 +34,11 @@ class Config
  */
   public static function init($params = null)
   {
+    $project_root = dirname(Factory::getComposerFile());
+    self::$filepath = $project_root . '/' . self::FILENAME;
     $template = new Template('project-config', $params);
-    $template->save(self::FILEPATH);
+    $template->fill('{PROJECT_ROOT}', $project_root);
+    $template->save(self::$filepath);
   }
   
   /**
@@ -46,7 +52,7 @@ class Config
   public static function check($path, $type = null, $error = null)
   {
     $param = self::get($path);
-    $message = $error ? $error : "Error: the required param '$path' is missing or invalid in " . self::FILEPATH . ". Please fix your configuration file in order to continue.";
+    $message = $error ? $error : "Error: the required param '$path' is missing or invalid in " . self::$filepath . ". Please fix your configuration file in order to continue.";
 
     if (($type && gettype($param) !== $type) || is_null($param) || (gettype($param) === 'string' && empty($param))) {
       throw new \Exception($message);
@@ -124,7 +130,7 @@ class Config
    */
   private static function getContent()
   {
-    $content = FilesManager::readFile(self::FILEPATH);
+    $content = FilesManager::readFile(self::$filepath);
     if ($content) {
       self::$params = json_decode($content, true);
     } else {
@@ -138,6 +144,6 @@ class Config
    */
   private static function updateContent()
   {
-    FilesManager::writeFile(self::FILEPATH, json_encode(self::$params, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES), true);
+    FilesManager::writeFile(self::$filepath, json_encode(self::$params, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES), true);
   }
 }

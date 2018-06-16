@@ -57,7 +57,7 @@ class TermBuilder extends TemplateBuilder implements Builder
   public static function build($params)
   {
     $params = self::checkParams($params);
-    $theme_path = PROJECT_ROOT . '/' . Config::get('themes-path', true) . '/' . $params['theme'];
+    $theme_path = Config::get('project-root') . '/' . Config::get('themes-path', true) . '/' . $params['theme'];
     $term = new Template('term', [
       '{NAME}' => $params['name'],
       '{TAXONOMY}' => $params['taxonomy'],

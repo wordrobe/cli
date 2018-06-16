@@ -71,7 +71,7 @@ class ArchiveBuilder extends TemplateBuilder implements Builder
     $basename = $params['type'] === 'post-type' ? 'archive' : $params['type'];
     $filename = $params['key'] ? $basename . '-' . $params['key'] : $basename;
     $template_engine = Config::get('themes.' . $params['theme'] . '.template-engine', true);
-    $theme_path = PROJECT_ROOT . '/' . Config::get('themes-path', true) . '/' . $params['theme'];
+    $theme_path = Config::get('project-root') . '/' . Config::get('themes-path', true) . '/' . $params['theme'];
     $type_and_key = trim(str_replace("''", '', $params['type'] . ($params['type'] === 'taxonomy' ? '(-term)' : '') . " '" . $params['key'] . "'"));
     $archive_ctrl = new Template("$template_engine/archive", ['{TYPE_AND_KEY}' => $type_and_key]);
     

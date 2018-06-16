@@ -44,7 +44,7 @@ class PageBuilder extends TemplateBuilder implements Builder
     $params = self::checkParams($params);
     $filename = StringsManager::toKebabCase($params['name']);
     $template_engine = Config::get('themes.' . $params['theme'] . '.template-engine', true);
-    $theme_path = PROJECT_ROOT . '/' . Config::get('themes-path', true) . '/' . $params['theme'];
+    $theme_path = Config::get('project-root') . '/' . Config::get('themes-path', true) . '/' . $params['theme'];
     $page_ctrl = new Template("$template_engine/page", ['{TEMPLATE_NAME}' => $params['name']]);
     
     if ($template_engine === 'timber') {

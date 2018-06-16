@@ -1,6 +1,5 @@
 <?php
 
-use Composer\Factory;
 use Symfony\Component\Console\Application;
 use Wordrobe\Command\AddAjaxServiceCommand;
 use Wordrobe\Command\AddArchiveCommand;
@@ -14,8 +13,6 @@ use Wordrobe\Command\AddTaxonomyCommand;
 use Wordrobe\Command\AddTermCommand;
 use Wordrobe\Command\AddThemeCommand;
 use Wordrobe\Command\SetupCommand;
-
-define('PROJECT_ROOT', dirname(Factory::getComposerFile()));
 
 $ascii = '
  _      __            __         __      

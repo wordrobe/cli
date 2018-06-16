@@ -66,7 +66,7 @@ class PostTypeBuilder extends TemplateBuilder implements Builder
   public static function build($params)
   {
     $params = self::checkParams($params);
-    $theme_path = PROJECT_ROOT . '/' . Config::get('themes-path', true) . '/' . $params['theme'];
+    $theme_path = Config::get('project-root') . '/' . Config::get('themes-path', true) . '/' . $params['theme'];
     $post_type = new Template('post-type', [
       '{KEY}' => $params['key'],
       '{GENERAL_NAME}' => $params['general-name'],
