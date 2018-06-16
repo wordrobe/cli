@@ -1,7 +1,6 @@
 <?php
 
 use Symfony\Component\Console\Application;
-use Wordrobe\Command\AddCommand;
 use Wordrobe\Command\AddAjaxServiceCommand;
 use Wordrobe\Command\AddArchiveCommand;
 use Wordrobe\Command\AddMenuCommand;
@@ -18,20 +17,27 @@ use Composer\Factory;
 
 define('PROJECT_ROOT', dirname(Factory::getComposerFile()));
 
-$wordrobe = new Application('Wordrobe', 'v1.0.0');
-$wordrobe->add(new AddThemeCommand());
-$wordrobe->add(new AddPostTypeCommand());
-$wordrobe->add(new AddTaxonomyCommand());
-$wordrobe->add(new AddTermCommand());
+$ascii = '
+ _      __            __         __      
+| | /| / /__  _______/ /______  / /  ___ 
+| |/ |/ / _ \/ __/ _  / __/ _ \/ _ \/ -_)
+|__/|__/\___/_/  \_,_/_/  \___/_.__/\__/ 
+                                  ';
+
+$wordrobe = new Application($ascii, 'v1.0.0');
+
+$wordrobe->add(new AddAjaxServiceCommand());
+$wordrobe->add(new AddArchiveCommand());
 $wordrobe->add(new AddMenuCommand());
 $wordrobe->add(new AddPageCommand());
 $wordrobe->add(new AddPartialCommand());
+$wordrobe->add(new AddPostTypeCommand());
 $wordrobe->add(new AddShortcodeCommand());
-$wordrobe->add(new AddAjaxServiceCommand());
 $wordrobe->add(new AddSingleCommand());
-$wordrobe->add(new AddArchiveCommand());
+$wordrobe->add(new AddTaxonomyCommand());
+$wordrobe->add(new AddTermCommand());
+$wordrobe->add(new AddThemeCommand());
 $wordrobe->add(new SetupCommand());
-$wordrobe->add(new AddCommand());
 
 try {
   $wordrobe->run();
