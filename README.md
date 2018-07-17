@@ -14,7 +14,7 @@ vendor/bin/wordrobe setup
 It creates the *wordrobe.json* configuration file and lets you setup a new theme.
 
 ## Theme development
-As easily as project's setup, **Wordrobe** allows you to create themes and themes' features by running simple command line wizards.
+As easily as project setup, **Wordrobe** allows you to create themes and themes' features by running simple command line wizards.
 
 Run the following command to add the wanted feature:
 ```
