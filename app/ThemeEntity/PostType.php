@@ -124,7 +124,7 @@ class PostType implements ThemeEntity
       'labels' => $this->getLabels(),
       'capability_type' => $this->capability_type,
       'hierarchical' => true,
-      'has_archive' => true,
+      'has_archive' => __(strtolower($this->general_name), $this->text_domain),
       'supports' => $this->getSupportableFeatures(),
       'show_ui' => true,
       'show_in_menu' => true,
