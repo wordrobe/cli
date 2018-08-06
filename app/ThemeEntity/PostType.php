@@ -124,7 +124,7 @@ class PostType implements ThemeEntity
       'labels' => $this->getLabels(),
       'capability_type' => $this->capability_type,
       'hierarchical' => true,
-      'has_archive' => __(strtolower($this->general_name), $this->text_domain),
+      'has_archive' => true,
       'supports' => $this->getSupportableFeatures(),
       'show_ui' => true,
       'show_in_menu' => true,
@@ -136,7 +136,10 @@ class PostType implements ThemeEntity
       'public' => true,
       'publicly_queryable' => true,
       'exclude_from_search' => false,
-      'rewrite' => true
+      'rewrite' => [
+        'slug' => strtolower($this->general_name),
+        'with_front' => false
+      ]
     ];
   }
 }
