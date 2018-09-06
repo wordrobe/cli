@@ -21,16 +21,18 @@ class PostTypeBuilder extends TemplateBuilder implements Builder
       $singular_name = self::askForSingularName($general_name);
       $text_domain = self::askForTextDomain($theme);
       $capability_type = self::askForCapabilityType();
+      $has_archive = $capability_type === 'post' ? self::askForArchive() : false;
       $icon = self::askForIcon();
       $description = self::askForDescription();
       $build_single = self::askForSingleTemplateBuild($key);
-      $build_archive = self::askForArchiveTemplateBuild($key);
+      $build_archive = $has_archive ? self::askForArchiveTemplateBuild($key) : false;
       self::build([
         'key' => $key,
         'general-name' => $general_name,
         'singular-name' => $singular_name,
         'text-domain' => $text_domain,
         'capability-type' => $capability_type,
+        'has-archive' => $has_archive,
         'icon' => $icon,
         'description' => $description,
         'theme' => $theme,
@@ -54,6 +56,7 @@ class PostTypeBuilder extends TemplateBuilder implements Builder
    *  'singular-name' => $singular_name,
    *  'text-domain' => $text_domain,
    *  'capability-type' => $capability_type,
+   *  'has-archive' => $has_archive,
    *  'icon' => $icon,
    *  'description' => $description,
    *  'theme' => $theme,
@@ -73,6 +76,7 @@ class PostTypeBuilder extends TemplateBuilder implements Builder
       '{SINGULAR_NAME}' => $params['singular-name'],
       '{TEXT_DOMAIN}' => $params['text-domain'],
       '{CAPABILITY_TYPE}' => $params['capability-type'],
+      '{HAS_ARCHIVE}' => $params['has-archive'],
       '{ICON}' => $params['icon'],
       '{DESCRIPTION}' => $params['description']
     ]);
@@ -130,11 +134,12 @@ class PostTypeBuilder extends TemplateBuilder implements Builder
     $singular_name = Dialog::getAnswer("Singular name [$default]:", $default);
     return $singular_name ?: self::askForSingularName($general_name);
   }
-  
+
   /**
    * Asks for text domain
-   * @param string $theme
+   * @param $theme
    * @return mixed
+   * @throws \Exception
    */
   private static function askForTextDomain($theme)
   {
@@ -149,6 +154,14 @@ class PostTypeBuilder extends TemplateBuilder implements Builder
   private static function askForCapabilityType()
   {
     return Dialog::getChoice('Capability type:', ['post', 'page'], null);
+  }
+
+  /**
+   * Asks for archive
+   */
+  private static function askForArchive()
+  {
+    return Dialog::getConfirmation('Has archive?', true, 'yellow');
   }
   
   /**

@@ -15,26 +15,29 @@ class PostType implements ThemeEntity
   private $singular_name;
   private $text_domain;
   private $capability_type;
+  private $has_archive;
   private $icon;
   private $description;
-  
+
   /**
    * PostType constructor
-   * @param string $key
-   * @param string $general_name
-   * @param string $singular_name
-   * @param string $text_domain
+   * @param $key
+   * @param $general_name
+   * @param $singular_name
+   * @param $text_domain
    * @param string $capability_type
+   * @param bool $has_archive
    * @param string $icon
    * @param string $description
    */
-  public function __construct($key, $general_name, $singular_name, $text_domain, $capability_type = 'post', $icon = 'dashicons-admin-post', $description = '')
+  public function __construct($key, $general_name, $singular_name, $text_domain, $capability_type = 'post', $has_archive = true, $icon = 'dashicons-admin-post', $description = '')
   {
     $this->key = StringsManager::toKebabCase($key);
     $this->general_name = ucwords($general_name);
     $this->singular_name = ucwords($singular_name);
     $this->text_domain = StringsManager::toKebabCase($text_domain);
     $this->capability_type = ($capability_type === 'post' || $capability_type === 'page') ? $capability_type : 'post';
+    $this->has_archive = $this->capability_type === 'post' ? $has_archive : false;
     $this->icon = StringsManager::toKebabCase($icon);
     $this->description = ucfirst($description);
     add_action('init', [$this, 'register'], 0);
@@ -124,7 +127,7 @@ class PostType implements ThemeEntity
       'labels' => $this->getLabels(),
       'capability_type' => $this->capability_type,
       'hierarchical' => $this->capability_type === 'page',
-      'has_archive' => true,
+      'has_archive' => $this->has_archive,
       'supports' => $this->getSupportableFeatures(),
       'show_ui' => true,
       'show_in_menu' => true,
