@@ -12,6 +12,7 @@ use Wordrobe\Helper\FilesManager;
  */
 class Theme
 {
+  protected $namespace;
   protected $theme_name;
   protected $theme_uri;
   protected $description;
@@ -45,6 +46,7 @@ class Theme
   public function __construct($theme_name, $theme_uri, $description, $tags, $version, $author, $author_uri, $license, $license_uri, $text_domain, $folder_name, $template_engine)
   {
     $themes_path = Config::get('themes-path', true);
+    $this->namespace = str_replace(' ', '', ucwords($theme_name));
     $this->theme_name = $theme_name;
     $this->theme_uri = $theme_uri;
     $this->description = $description;
@@ -62,6 +64,7 @@ class Theme
 
   /**
    * Installs theme
+   * @param bool $override
    * @throws \Exception
    */
   public function install($override = false)
@@ -84,6 +87,7 @@ class Theme
     if ($can_install) {
       FilesManager::createDirectory($this->path);
       $this->copyBoilerplate();
+      $this->addThemeManager();
       $this->addFunctions();
       $this->addStylesheet();
       $this->updateConfig();
@@ -98,12 +102,28 @@ class Theme
   }
 
   /**
+   * Adds ThemeManager.php to theme
+   * @throws \Exception
+   */
+  protected function addThemeManager()
+  {
+    $functions = new Template("$this->template_engine/theme-manager", [
+      '{NAMESPACE}' => $this->namespace,
+      '{ROOT_PATH}' => Config::getRelativeRootPath($this->path)
+    ]);
+    $functions->save("$this->path/includes/ThemeManager.php", 'force');
+  }
+
+  /**
    * Adds functions.php to theme
    * @throws \Exception
    */
   protected function addFunctions()
   {
-    $functions = new Template('theme-functions', ['{Config::getRootPath()}' => Config::getRelativeRootPath($this->path)]);
+    $functions = new Template('theme-functions', [
+      '{NAMESPACE}' => $this->namespace,
+      '{ROOT_PATH}' => Config::getRelativeRootPath($this->path)
+    ]);
     $functions->save("$this->path/functions.php", 'force');
   }
 
