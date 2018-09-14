@@ -12,7 +12,6 @@ use Wordrobe\Helper\FilesManager;
  */
 class Theme
 {
-  protected $namespace;
   protected $theme_name;
   protected $theme_uri;
   protected $description;
@@ -22,6 +21,7 @@ class Theme
   protected $author_uri;
   protected $license;
   protected $license_uri;
+  protected $namespace;
   protected $text_domain;
   protected $folder_name;
   protected $template_engine;
@@ -29,7 +29,6 @@ class Theme
 
   /**
    * Theme constructor.
-   * @param string $namespace
    * @param string $theme_name
    * @param string $theme_uri
    * @param string $description
@@ -39,15 +38,15 @@ class Theme
    * @param string $author_uri
    * @param string $license
    * @param string $license_uri
+   * @param string $namespace
    * @param string $text_domain
    * @param string $folder_name
    * @param string $template_engine
    * @throws \Exception
    */
-  public function __construct($namespace, $theme_name, $theme_uri, $description, $tags, $version, $author, $author_uri, $license, $license_uri, $text_domain, $folder_name, $template_engine)
+  public function __construct($theme_name, $theme_uri, $description, $tags, $version, $author, $author_uri, $license, $license_uri, $namespace, $text_domain, $folder_name, $template_engine)
   {
     $themes_path = Config::get('themes-path', true);
-    $this->namespace = $namespace;
     $this->theme_name = $theme_name;
     $this->theme_uri = $theme_uri;
     $this->description = $description;
@@ -57,6 +56,7 @@ class Theme
     $this->author_uri = $author_uri;
     $this->license = $license;
     $this->license_uri = $license_uri;
+    $this->namespace = $namespace;
     $this->text_domain = $text_domain;
     $this->folder_name = $folder_name;
     $this->template_engine = $template_engine;
