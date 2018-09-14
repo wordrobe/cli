@@ -1,8 +1,6 @@
 <?php
 
-use Wordrobe\ThemeEntity\Factory;
-
-Factory::create("PostType", [
+Wordrobe\ThemeEntity\Factory::create("PostType", [
   "key" => "{KEY}",
   "settings" => [
     "label" => __("{GENERAL_NAME}", "{TEXT_DOMAIN}"),

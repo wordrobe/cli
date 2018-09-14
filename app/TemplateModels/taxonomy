@@ -1,8 +1,6 @@
 <?php
 
-use Wordrobe\ThemeEntity\Factory;
-
-Factory::create("Taxonomy", [
+Wordrobe\ThemeEntity\Factory::create("Taxonomy", [
   "key" => "{KEY}",
   "post_types" => "{POST_TYPES}",
   "settings" => [

@@ -1,8 +1,6 @@
 <?php
 
-use Wordrobe\ThemeEntity\Factory;
-
-Factory::create("Shortcode", [
+Wordrobe\ThemeEntity\Factory::create("Shortcode", [
   "key" => "{KEY}",
   "logic" => function($atts, $content) {
     /*

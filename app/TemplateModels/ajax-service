@@ -1,8 +1,6 @@
 <?php
 
-use Wordrobe\ThemeEntity\Factory;
-
-Factory::create("AjaxService", [
+Wordrobe\ThemeEntity\Factory::create("AjaxService", [
   "action" => "{ACTION}",
   "logic" => function() {
     /*

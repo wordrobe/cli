@@ -11,6 +11,7 @@ use Timber\Timber;
 class ThemeManager {
 
   public static $timber;
+  public static $env;
 
   /**
    * Theme support setter
@@ -79,15 +80,8 @@ class ThemeManager {
    */
   public static function setGlobalContext($context)
   {
-    global $menus;
-
-    $context['env'] = defined('WP_ENV') ? WP_ENV : 'production';
+    $context['env'] = self::$env;
     $context['ajax_url'] =  site_url() . '/wp-admin/admin-ajax.php';
-
-    if (is_array($menus)) {
-      $context['menus'] = $menus;
-    }
-
     return $context;
   }
 
@@ -97,6 +91,7 @@ class ThemeManager {
   public static function init()
   {
     self::$timber = new Timber();
+    self::$env = defined('WP_ENV') ? WP_ENV : 'production';
 
     add_action('init', __NAMESPACE__ . '\\ThemeManager::setSupport');
     add_action('wp_enqueue_scripts', __NAMESPACE__ . '\\ThemeManager::enqueueAssets');
@@ -105,8 +100,11 @@ class ThemeManager {
     add_filter('timber/context', __NAMESPACE__ . '\\ThemeManager::setGlobalContext');
 
     if (class_exists('acf')) {
-      add_filter('acf/settings/save_json', __NAMESPACE__ . '\\ThemeManager::enableCustomFieldsAutosave');
       add_filter('acf/settings/load_json', __NAMESPACE__ . '\\ThemeManager::enableCustomFieldsAutoload');
+
+      if (defined('ACF_AUTOSAVE') && ACF_AUTOSAVE) {
+        add_filter('acf/settings/save_json', __NAMESPACE__ . '\\ThemeManager::enableCustomFieldsAutosave');
+      }
     }
   }
 }

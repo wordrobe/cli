@@ -7,6 +7,10 @@ namespace {NAMESPACE};
  * @package {NAMESPACE}
  */
 class ThemeManager {
+
+  public static $env;
+  public static $ajax_url;
+
   /**
    * Theme support setter
    */
@@ -57,36 +61,23 @@ class ThemeManager {
   }
 
   /**
-   * Global context getter
-   * @param $context
-   * @return mixed
-   */
-  public static function getGlobalContext($context)
-  {
-    global $menus;
-
-    $context['env'] = defined('WP_ENV') ? WP_ENV : 'production';
-    $context['ajax_url'] =  site_url() . '/wp-admin/admin-ajax.php';
-
-    if (is_array($menus)) {
-      $context['menus'] = $menus;
-    }
-
-    return $context;
-  }
-
-  /**
    * Sets theme configurations
    */
   public static function init()
   {
+    self::$env = defined('WP_ENV') ? WP_ENV : 'production';
+    self::$ajax_url = site_url() . '/wp-admin/admin-ajax.php';
+
     add_action('init', __NAMESPACE__ . '\\ThemeManager::setSupport');
     add_action('wp_enqueue_scripts', __NAMESPACE__ . '\\ThemeManager::enqueueAssets');
     add_action('admin_menu', __NAMESPACE__ . '\\ThemeManager::hideMenuPages');
 
     if (class_exists('acf')) {
-      add_filter('acf/settings/save_json', __NAMESPACE__ . '\\ThemeManager::enableCustomFieldsAutosave');
       add_filter('acf/settings/load_json', __NAMESPACE__ . '\\ThemeManager::enableCustomFieldsAutoload');
+
+      if (defined('ACF_AUTOSAVE') && ACF_AUTOSAVE) {
+        add_filter('acf/settings/save_json', __NAMESPACE__ . '\\ThemeManager::enableCustomFieldsAutosave');
+      }
     }
   }
 }
