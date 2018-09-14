@@ -19,9 +19,9 @@ $ascii = '
 | | /| / /__  _______/ /______  / /  ___ 
 | |/ |/ / _ \/ __/ _  / __/ _ \/ _ \/ -_)
 |__/|__/\___/_/  \_,_/_/  \___/_.__/\__/ 
-                                  ';
+                                   ';
 
-$wordrobe = new Application($ascii, 'v1.0.0');
+$wordrobe = new Application($ascii, 'v1.1');
 
 $wordrobe->add(new AddAjaxServiceCommand());
 $wordrobe->add(new AddArchiveCommand());
