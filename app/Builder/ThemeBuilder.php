@@ -32,6 +32,7 @@ class ThemeBuilder implements Builder
       $author_uri = self::askForAuthorURI();
       $license = self::askForLicense();
       $license_uri = self::askForLicenseURI();
+      $namespace = self::askForNamespace($theme_name);
       $text_domain = self::askForTextDomain($theme_name);
       $folder_name = self::askForFolderName($theme_name);
       $template_engine = self::askForTemplateEngine();
@@ -45,6 +46,7 @@ class ThemeBuilder implements Builder
         'author-uri' => $author_uri,
         'license' => $license,
         'license-uri' => $license_uri,
+        'namespace' => $namespace,
         'text-domain' => $text_domain,
         'folder-name' => $folder_name,
         'template-engine' => $template_engine,
@@ -71,6 +73,7 @@ class ThemeBuilder implements Builder
    *  'author-uri' => $author_uri,
    *  'license' => $license,
    *  'license-uri' => $license_uri,
+   *  'namespace' => $namespace,
    *  'text-domain' => $text_domain,
    *  'folder-name' => $folder_name,
    *  'template-engine' => $template_engine,
@@ -91,6 +94,7 @@ class ThemeBuilder implements Builder
       $params['author-uri'],
       $params['license'],
       $params['license-uri'],
+      $params['namespace'],
       $params['text-domain'],
       $params['folder-name'],
       $params['template-engine']
@@ -99,7 +103,7 @@ class ThemeBuilder implements Builder
   }
 
   /**
-   * Ask for theme's name
+   * Asks for theme's name
    * @return mixed
    */
   protected static function askForThemeName()
@@ -168,7 +172,7 @@ class ThemeBuilder implements Builder
    */
   protected static function askForLicense()
   {
-    return Dialog::getAnswer('License [GNU General Public License]:', 'GNU General Public License');
+    return Dialog::getAnswer('License [proprietary]:', 'proprietary');
   }
 
   /**
@@ -177,7 +181,18 @@ class ThemeBuilder implements Builder
    */
   protected static function askForLicenseURI()
   {
-    return Dialog::getAnswer('License URI [http://www.gnu.org/licenses/gpl-2.0.html]:', 'http://www.gnu.org/licenses/gpl-2.0.html');
+    return Dialog::getAnswer('License URI:');
+  }
+
+  /**
+   * Asks for theme's namespace
+   * @param $theme_name
+   * @return mixed
+   */
+  protected static function askForNamespace($theme_name)
+  {
+    $default = StringsManager::toPascalCase($theme_name);
+    return Dialog::getAnswer("Namespace [$default]:", $default);
   }
 
   /**
@@ -239,6 +254,7 @@ class ThemeBuilder implements Builder
     $author_uri = $params['author-uri'];
     $license = $params['license'];
     $license_uri = $params['license-uri'];
+    $namespace = StringsManager::toPascalCase($params['namespace'] ? $params['namespace'] : $theme_name);
     $text_domain = StringsManager::toKebabCase($params['text-domain']);
     $folder_name = StringsManager::toKebabCase($params['folder-name']);
     $template_engine = strtolower($params['template-engine']);
@@ -262,6 +278,7 @@ class ThemeBuilder implements Builder
       'author-uri' => $author_uri,
       'license' => $license,
       'license-uri' => $license_uri,
+      'namespace' => $namespace,
       'text-domain' => $text_domain,
       'folder-name' => $folder_name,
       'template-engine' => $template_engine,

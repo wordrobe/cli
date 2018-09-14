@@ -29,6 +29,7 @@ class Theme
 
   /**
    * Theme constructor.
+   * @param string $namespace
    * @param string $theme_name
    * @param string $theme_uri
    * @param string $description
@@ -43,10 +44,10 @@ class Theme
    * @param string $template_engine
    * @throws \Exception
    */
-  public function __construct($theme_name, $theme_uri, $description, $tags, $version, $author, $author_uri, $license, $license_uri, $text_domain, $folder_name, $template_engine)
+  public function __construct($namespace, $theme_name, $theme_uri, $description, $tags, $version, $author, $author_uri, $license, $license_uri, $text_domain, $folder_name, $template_engine)
   {
     $themes_path = Config::get('themes-path', true);
-    $this->namespace = str_replace(' ', '', ucwords($theme_name));
+    $this->namespace = $namespace;
     $this->theme_name = $theme_name;
     $this->theme_uri = $theme_uri;
     $this->description = $description;
@@ -156,6 +157,7 @@ class Theme
   {
     $themeConfig = new Template('theme-config', [
       '{TEMPLATE_ENGINE}' => $this->template_engine,
+      '{NAMESPACE}' => $this->namespace,
       '{TEXT_DOMAIN}' => $this->text_domain
     ]);
     $content = $themeConfig->getContent();

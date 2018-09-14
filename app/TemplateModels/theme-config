@@ -1,5 +1,6 @@
 {
 	"template-engine": "{TEMPLATE_ENGINE}",
+	"namespace": "{NAMESPACE}",
 	"text-domain": "{TEXT_DOMAIN}",
 	"post-types": ["post"],
 	"taxonomies": {
