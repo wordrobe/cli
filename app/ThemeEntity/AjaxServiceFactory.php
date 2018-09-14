@@ -9,7 +9,7 @@ namespace Wordrobe\ThemeEntity;
 class AjaxServiceFactory implements ThemeEntityFactory
 {
   /**
-   * @param $args
+   * @param array $args
    * @return null|AjaxService
    */
   public static function create($args)

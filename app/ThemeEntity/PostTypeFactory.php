@@ -9,7 +9,7 @@ namespace Wordrobe\ThemeEntity;
 class PostTypeFactory implements ThemeEntityFactory
 {
   /**
-   * @param $args
+   * @param array $args
    * @return null|PostType
    */
   public static function create($args)

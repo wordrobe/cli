@@ -10,7 +10,7 @@ interface ThemeEntityFactory
 {
   /**
    * Handles ThemeEntity creation
-   * @param $args
+   * @param array $args
    * @return null|ThemeEntity
    */
   public static function create($args);

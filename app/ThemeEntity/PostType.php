@@ -15,8 +15,8 @@ class PostType implements ThemeEntity
 
   /**
    * PostType constructor
-   * @param $key
-   * @param $settings
+   * @param string $key
+   * @param array $settings
    */
   public function __construct($key, $settings)
   {

@@ -9,7 +9,7 @@ namespace Wordrobe\ThemeEntity;
 class TaxonomyFactory implements ThemeEntityFactory
 {
   /**
-   * @param $args
+   * @param array $args
    * @return null|Taxonomy
    */
   public static function create($args)

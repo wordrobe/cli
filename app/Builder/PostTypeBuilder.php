@@ -78,22 +78,10 @@ class PostTypeBuilder extends TemplateBuilder implements Builder
       '{SLUG}' => StringsManager::toKebabCase($params['general-name']),
       '{TEXT_DOMAIN}' => $params['text-domain'],
       '{CAPABILITY_TYPE}' => $params['capability-type'],
-      '{HIERARCHICAL}' => $params['capability-type'] === 'page' ? 1 : 0,
-      '{HAS_ARCHIVE}' => $params['has-archive'] ? 1 : 0,
+      '{HIERARCHICAL}' => $params['capability-type'] === 'page' ? 'true' : 'false',
+      '{HAS_ARCHIVE}' => $params['has-archive'] ? 'true' : 'false',
       '{ICON}' => $params['icon'],
-      '{SUPPORTS}' => [
-        'title',
-        'editor',
-        'author',
-        'thumbnail',
-        'excerpt',
-        'trackbacks',
-        'custom-fields',
-        'comments',
-        'revisions',
-        'post-formats',
-        'page-attributes'
-      ],
+      '{SUPPORTS}' => '["title", "editor", "author", "thumbnail", "excerpt", "trackbacks", "custom-fields", "comments", "revisions", "post-formats", "page-attributes"]',
     ]);
     $post_type->save("$theme_path/includes/post-types/" . $params['key'] . ".php", $params['override']);
     Config::add('themes.' . $params['theme'] . '.post-types', $params['key']);
@@ -152,7 +140,7 @@ class PostTypeBuilder extends TemplateBuilder implements Builder
 
   /**
    * Asks for text domain
-   * @param $theme
+   * @param string $theme
    * @return mixed
    * @throws \Exception
    */
@@ -236,6 +224,7 @@ class PostTypeBuilder extends TemplateBuilder implements Builder
     $singular_name = ucwords($params['singular-name']);
     $text_domain = StringsManager::toKebabCase($params['text-domain']);
     $capability_type = strtolower($params['capability-type']);
+    $has_archive = $params['has_archive'];
     $icon = StringsManager::toKebabCase($params['icon']);
     $description = ucfirst($params['description']);
     $theme = StringsManager::toKebabCase($params['theme']);
@@ -255,6 +244,7 @@ class PostTypeBuilder extends TemplateBuilder implements Builder
       'singular-name' => $singular_name,
       'text-domain' => $text_domain,
       'capability-type' => $capability_type,
+      'has-archive' => $has_archive,
       'icon' => $icon,
       'description' => $description,
       'theme' => $theme,

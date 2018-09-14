@@ -9,7 +9,7 @@ namespace Wordrobe\ThemeEntity;
 class MenuFactory implements ThemeEntityFactory
 {
   /**
-   * @param $args
+   * @param array $args
    * @return null|Menu
    */
   public static function create($args)

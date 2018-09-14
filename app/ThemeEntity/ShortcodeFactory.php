@@ -9,7 +9,7 @@ namespace Wordrobe\ThemeEntity;
 class ShortcodeFactory implements ThemeEntityFactory
 {
   /**
-   * @param $args
+   * @param array $args
    * @return null|Shortcode
    */
   public static function create($args)

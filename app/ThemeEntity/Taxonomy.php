@@ -16,9 +16,9 @@ class Taxonomy implements ThemeEntity
 
   /**
    * Taxonomy constructor
-   * @param $key
-   * @param $post_types
-   * @param $settings
+   * @param string $key
+   * @param string $post_types
+   * @param array $settings
    */
   public function __construct($key, $post_types, $settings)
   {

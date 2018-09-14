@@ -9,7 +9,7 @@ namespace Wordrobe\ThemeEntity;
 class TermFactory implements ThemeEntityFactory
 {
   /**
-   * @param $args
+   * @param array $args
    * @return null|Term
    */
   public static function create($args)

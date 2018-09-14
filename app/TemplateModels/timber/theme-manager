@@ -68,7 +68,7 @@ class ThemeManager {
    */
   public static function addStringLoaderExtension($twig)
   {
-    $twig->addExtension(new Twig_Extension_StringLoader());
+    $twig->addExtension(new \Twig_Extension_StringLoader());
     return $twig;
   }
 

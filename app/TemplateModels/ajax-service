@@ -3,7 +3,7 @@
 use Wordrobe\ThemeEntity\Factory;
 
 Factory::create("AjaxService", [
-  "action => "{ACTION}",
+  "action" => "{ACTION}",
   "logic" => function() {
     /*
      * Define service's logic here to make a response and send it to client.

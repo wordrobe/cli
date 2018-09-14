@@ -49,19 +49,20 @@ class StringsManager
   {
     return trim(preg_replace('/\s+/', ' ', $string));
   }
-  
+
   /**
    * Sanitizes a string
    * @param string $string
-   * @return string
+   * @param bool $lowercase
+   * @return null|string|string[]
    */
-  public static function sanitize($string)
+  public static function sanitize($string, $lowercase = true)
   {
     $string = self::removeAccents($string);
     $string = self::removeDashes($string);
     $string = self::removeMultipleSpaces($string);
     $string = preg_replace('/[^a-zA-Z0-9\.\s]/', '', $string);
-    return strtolower($string);
+    return $lowercase ? strtolower($string) : $string;
   }
   
   /**
@@ -93,7 +94,7 @@ class StringsManager
    */
   public static function toPascalCase($string)
   {
-    $sanitized = self::sanitize($string);
+    $sanitized = self::sanitize($string, false);
     return str_replace(' ', '', ucwords($sanitized));
   }
   

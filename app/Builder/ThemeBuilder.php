@@ -186,7 +186,7 @@ class ThemeBuilder implements Builder
 
   /**
    * Asks for theme's namespace
-   * @param $theme_name
+   * @param string $theme_name
    * @return mixed
    */
   protected static function askForNamespace($theme_name)
