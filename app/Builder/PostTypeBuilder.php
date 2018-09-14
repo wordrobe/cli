@@ -224,7 +224,7 @@ class PostTypeBuilder extends TemplateBuilder implements Builder
     $singular_name = ucwords($params['singular-name']);
     $text_domain = StringsManager::toKebabCase($params['text-domain']);
     $capability_type = strtolower($params['capability-type']);
-    $has_archive = $params['has_archive'];
+    $has_archive = $params['has-archive'];
     $icon = StringsManager::toKebabCase($params['icon']);
     $description = ucfirst($params['description']);
     $theme = StringsManager::toKebabCase($params['theme']);
