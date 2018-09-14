@@ -1,5 +1,11 @@
 <?php
 
-use Wordrobe\ThemeEntity\Term;
+use Wordrobe\ThemeEntity\Factory;
 
-$terms['{TAXONOMY}']['{SLUG}'] = new Term('{NAME}', '{TAXONOMY}', '{SLUG}', '{DESCRIPTION}', '{PARENT}');
+Factory::create("Term", [
+  "name" => "{NAME}",
+  "taxonomy" => "{TAXONOMY}",
+  "slug" => "{SLUG}",
+  "description" => "{DESCRIPTION}",
+  "parent" => "{PARENT}"
+]);

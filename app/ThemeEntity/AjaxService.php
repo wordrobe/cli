@@ -10,20 +10,20 @@ use Wordrobe\Helper\StringsManager;
  */
 class AjaxService implements ThemeEntity
 {
-  private $name;
+  private $action;
   private $logic;
   
   /**
    * AjaxService constructor.
-   * @param string $name
+   * @param string $action
    * @param null|callable $logic
    */
-  public function __construct($name, $logic)
+  public function __construct($action, $logic)
   {
-    $this->name = StringsManager::toSnakeCase($name);
+    $this->action = StringsManager::toSnakeCase($action);
     $this->logic = is_callable($logic) ? $logic : null;
-    add_action("wp_ajax_nopriv_$this->name", [$this, 'register']);
-    add_action("wp_ajax_$this->name", [$this, 'register']);
+    add_action("wp_ajax_nopriv_$this->action", [$this, 'register']);
+    add_action("wp_ajax_$this->action", [$this, 'register']);
   }
 
   /**
