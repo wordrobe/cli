@@ -67,7 +67,7 @@ class TaxonomyBuilder extends TemplateBuilder implements Builder
       '{SINGULAR_NAME}' => $params['singular-name'],
       '{TEXT_DOMAIN}' => $params['text-domain'],
       '{POST_TYPES}' => $params['post-types'],
-      '{HIERARCHICAL}' => $params['hierarchical']
+      '{HIERARCHICAL}' => $params['hierarchical'] ? 1 : 0
     ]);
     $taxonomy->save("$theme_path/includes/taxonomies/" . $params['key'] . ".php", $params['override']);
     Config::set('themes.' . $params['theme'] . '.taxonomies.' . $params['key'], [

@@ -7,11 +7,11 @@ Factory::create("Taxonomy", [
   "post_types" => "{POST_TYPES}",
   "settings" => [
     "hierarchical" => {HIERARCHICAL},
-    "public" => true,
-    "show_ui" => true,
-    "show_admin_column" => true,
-    "show_in_nav_menus" => true,
-    "show_tagcloud" => true,
+    "public" => 1,
+    "show_ui" => 1,
+    "show_admin_column" => 1,
+    "show_in_nav_menus" => 1,
+    "show_tagcloud" => 1,
     "labels" => [
       "name" => _x("{GENERAL_NAME}", "{SINGULAR_NAME} General Name", "{TEXT_DOMAIN}"),
       "singular_name" => _x("{SINGULAR_NAME}", "{SINGULAR_NAME} Singular Name", "{TEXT_DOMAIN}"),

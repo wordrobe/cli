@@ -78,8 +78,8 @@ class PostTypeBuilder extends TemplateBuilder implements Builder
       '{SLUG}' => StringsManager::toKebabCase($params['general-name']),
       '{TEXT_DOMAIN}' => $params['text-domain'],
       '{CAPABILITY_TYPE}' => $params['capability-type'],
-      '{HIERARCHICAL}' => $params['capability-type'] === 'page',
-      '{HAS_ARCHIVE}' => $params['has-archive'],
+      '{HIERARCHICAL}' => $params['capability-type'] === 'page' ? 1 : 0,
+      '{HAS_ARCHIVE}' => $params['has-archive'] ? 1 : 0,
       '{ICON}' => $params['icon'],
       '{SUPPORTS}' => [
         'title',
