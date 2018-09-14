@@ -119,11 +119,12 @@ class TaxonomyBuilder extends TemplateBuilder implements Builder
     $singular_name = Dialog::getAnswer("Singular name [$default]:", $default);
     return $singular_name ?: self::askForSingularName($general_name);
   }
-  
+
   /**
    * Asks for text domain
-   * @param string $theme
+   * @param $theme
    * @return mixed
+   * @throws \Exception
    */
   private static function askForTextDomain($theme)
   {

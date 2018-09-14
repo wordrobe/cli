@@ -74,11 +74,26 @@ class PostTypeBuilder extends TemplateBuilder implements Builder
       '{KEY}' => $params['key'],
       '{GENERAL_NAME}' => $params['general-name'],
       '{SINGULAR_NAME}' => $params['singular-name'],
+      '{DESCRIPTION}' => $params['description'],
+      '{SLUG}' => StringsManager::toKebabCase($params['general-name']),
       '{TEXT_DOMAIN}' => $params['text-domain'],
       '{CAPABILITY_TYPE}' => $params['capability-type'],
+      '{HIERARCHICAL}' => $params['capability-type'] === 'page',
       '{HAS_ARCHIVE}' => $params['has-archive'],
       '{ICON}' => $params['icon'],
-      '{DESCRIPTION}' => $params['description']
+      '{SUPPORTS}' => [
+        'title',
+        'editor',
+        'author',
+        'thumbnail',
+        'excerpt',
+        'trackbacks',
+        'custom-fields',
+        'comments',
+        'revisions',
+        'post-formats',
+        'page-attributes'
+      ],
     ]);
     $post_type->save("$theme_path/includes/post-types/" . $params['key'] . ".php", $params['override']);
     Config::add('themes.' . $params['theme'] . '.post-types', $params['key']);
