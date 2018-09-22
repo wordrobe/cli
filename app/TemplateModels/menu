@@ -1,8 +1,0 @@
-<?php
-
-Wordrobe\ThemeEntity\Factory::create("Menu", [
-  "location" => "{LOCATION}",
-  "name" => "{NAME}",
-  "description" => "{DESCRIPTION}",
-  "text_domain" => "{TEXT_DOMAIN}"
-]);

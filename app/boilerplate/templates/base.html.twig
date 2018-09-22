@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="{{ site.language }}">
+<head>
+  <title>{{ site.name }}</title>
+  <meta name="description" content="{{ site.description }}">
+  <meta charset="{{ site.charset }}">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="application-name" content="">
+  <meta name="msapplication-TileColor" content="#FFFFFF">
+  <meta name="msapplication-TileImage" content="{{ theme.link }}/assets/images/favicon/mstile-144x144.png">
+  <link rel="apple-touch-icon-precomposed" sizes="57x57" href="{{ theme.link }}/assets/images/favicon/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon-precomposed" sizes="114x114" href="{{ theme.link }}/assets/images/favicon/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon-precomposed" sizes="72x72" href="{{ theme.link }}/assets/images/favicon/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="{{ theme.link }}/assets/images/favicon/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon-precomposed" sizes="120x120" href="{{ theme.link }}/assets/images/favicon/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon-precomposed" sizes="152x152" href="{{ theme.link }}/assets/images/favicon/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="{{ theme.link }}/assets/images/favicon/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="{{ theme.link }}/assets/images/favicon/favicon-16x16.png" sizes="16x16">
+  {% block head %}{% endblock %}
+  {{ function('wp_head') }}
+</head>
+<body {{ function('body_class') }}>
+
+  <div class="app-wrapper">
+    {% include 'partials/header.html.twig' %}
+
+    <main class="content">
+      {% block content %}{% endblock %}
+    </main>
+
+    {% include 'partials/footer.html.twig' %}
+  </div>
+
+  {% include 'partials/analytics.html.twig' %}
+
+  {% block scripts %}{% endblock %}
+
+  {{ function('wp_footer') }}
+</body>
+</html>

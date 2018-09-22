@@ -24,7 +24,6 @@ class Theme
   protected $namespace;
   protected $text_domain;
   protected $folder_name;
-  protected $template_engine;
   protected $path;
 
   /**
@@ -41,10 +40,9 @@ class Theme
    * @param string $namespace
    * @param string $text_domain
    * @param string $folder_name
-   * @param string $template_engine
    * @throws \Exception
    */
-  public function __construct($theme_name, $theme_uri, $description, $tags, $version, $author, $author_uri, $license, $license_uri, $namespace, $text_domain, $folder_name, $template_engine)
+  public function __construct($theme_name, $theme_uri, $description, $tags, $version, $author, $author_uri, $license, $license_uri, $namespace, $text_domain, $folder_name)
   {
     $themes_path = Config::get('themes-path', true);
     $this->theme_name = $theme_name;
@@ -59,7 +57,6 @@ class Theme
     $this->namespace = $namespace;
     $this->text_domain = $text_domain;
     $this->folder_name = $folder_name;
-    $this->template_engine = $template_engine;
     $this->path = Config::getRootPath() . "/$themes_path/$this->folder_name";
   }
 
@@ -108,11 +105,12 @@ class Theme
    */
   protected function addThemeManager()
   {
-    $functions = new Template("$this->template_engine/theme-manager", [
+    $functions = new Template('theme-manager', [
       '{NAMESPACE}' => $this->namespace,
+      '{TEXT_DOMAIN}' => $this->text_domain,
       '{ROOT_PATH}' => Config::getRelativeRootPath($this->path)
     ]);
-    $functions->save("$this->path/includes/ThemeManager.php", 'force');
+    $functions->save("$this->path/app/ThemeManager.php", 'force');
   }
 
   /**
@@ -156,7 +154,6 @@ class Theme
   protected function updateConfig()
   {
     $themeConfig = new Template('theme-config', [
-      '{TEMPLATE_ENGINE}' => $this->template_engine,
       '{NAMESPACE}' => $this->namespace,
       '{TEXT_DOMAIN}' => $this->text_domain
     ]);
@@ -170,10 +167,7 @@ class Theme
    */
   private function copyBoilerplate()
   {
-    $themeBoilerplatesPath = dirname(__DIR__) . '/ThemeBoilerplates';
-    $commonBoilerplateFiles = "$themeBoilerplatesPath/commons";
-    $specificBoilerplateFiles = "$themeBoilerplatesPath/$this->template_engine";
-    FilesManager::copyFiles($commonBoilerplateFiles, $this->path);
-    FilesManager::copyFiles($specificBoilerplateFiles, $this->path);
+    $boilerplatePath = dirname(__DIR__) . '/boilerplate';
+    FilesManager::copyFiles($boilerplatePath, $this->path);
   }
 }

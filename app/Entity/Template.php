@@ -92,6 +92,6 @@ class Template
    */
   private static function getModelContent($model)
   {
-    return FilesManager::readFile(dirname(__DIR__) . '/TemplateModels/' . $model);
+    return FilesManager::readFile(dirname(__DIR__) . '/templates/' . $model);
   }
 }

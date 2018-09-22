@@ -43,15 +43,10 @@ class SingleBuilder extends TemplateBuilder implements Builder
   {
     $params = self::checkParams($params);
     $filename = 'single-' . $params['post-type'];
-    $template_engine = Config::get('themes.' . $params['theme'] . '.template-engine', true);
     $theme_path = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $params['theme'];
-    $single_ctrl = new Template("$template_engine/single", ['{POST_TYPE}' => $params['post-type']]);
-    
-    if ($template_engine === 'timber') {
-      self::buildView($single_ctrl, $filename, $theme_path, $params['override']);
-    }
-  
+    $single_ctrl = new Template('single', ['{POST_TYPE}' => $params['post-type']]);
     $single_ctrl->save("$theme_path/$filename.php", $params['override']);
+    self::buildView($single_ctrl, $filename, $theme_path, $params['override']);
   }
   
   /**
@@ -65,8 +60,8 @@ class SingleBuilder extends TemplateBuilder implements Builder
   private static function buildView($controller, $filename, $theme_path, $override)
   {
     $controller->fill('{VIEW_FILENAME}', $filename);
-    $view = new Template('timber/view');
-    $view->save("$theme_path/views/default/$filename.html.twig", $override);
+    $view = new Template('view');
+    $view->save("$theme_path/templates/default/$filename.html.twig", $override);
   }
   
   /**

@@ -83,7 +83,7 @@ class PostTypeBuilder extends TemplateBuilder implements Builder
       '{ICON}' => $params['icon'],
       '{SUPPORTS}' => '["title", "editor", "author", "thumbnail", "excerpt", "trackbacks", "custom-fields", "comments", "revisions", "post-formats", "page-attributes"]',
     ]);
-    $post_type->save("$theme_path/includes/post-types/" . $params['key'] . ".php", $params['override']);
+    $post_type->save("$theme_path/app/post-type/" . $params['key'] . ".php", $params['override']);
     Config::add('themes.' . $params['theme'] . '.post-types', $params['key']);
     
     if ($params['build-single']) {

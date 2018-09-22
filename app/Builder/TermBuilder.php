@@ -65,7 +65,7 @@ class TermBuilder extends TemplateBuilder implements Builder
       '{DESCRIPTION}' => $params['description'],
       '{PARENT}' => $params['parent']
     ]);
-    $term->save("$theme_path/includes/terms/" . $params['taxonomy'] . "/" . $params['slug'] . ".php", $params['override']);
+    $term->save("$theme_path/app/term/" . $params['taxonomy'] . "/" . $params['slug'] . ".php", $params['override']);
     Config::add('themes.' . $params['theme'] . '.taxonomies.' . $params['taxonomy'] . '.terms', $params['slug']);
     
     if ($params['build-archive']) {

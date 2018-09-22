@@ -43,15 +43,10 @@ class PageBuilder extends TemplateBuilder implements Builder
   {
     $params = self::checkParams($params);
     $filename = StringsManager::toKebabCase($params['name']);
-    $template_engine = Config::get('themes.' . $params['theme'] . '.template-engine', true);
     $theme_path = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $params['theme'];
-    $page_ctrl = new Template("$template_engine/page", ['{TEMPLATE_NAME}' => $params['name']]);
-    
-    if ($template_engine === 'timber') {
-      self::buildView($page_ctrl, $filename, $theme_path, $params['override']);
-    }
-  
+    $page_ctrl = new Template('page', ['{TEMPLATE_NAME}' => $params['name']]);
     $page_ctrl->save("$theme_path/pages/$filename.php", $params['override']);
+    self::buildView($page_ctrl, $filename, $theme_path, $params['override']);
   }
   
   /**
@@ -65,8 +60,8 @@ class PageBuilder extends TemplateBuilder implements Builder
   private static function buildView($controller, $filename, $theme_path, $override)
   {
     $controller->fill('{VIEW_FILENAME}', $filename);
-    $view = new Template('timber/view');
-    $view->save("$theme_path/views/pages/$filename.html.twig", $override);
+    $view = new Template('view');
+    $view->save("$theme_path/templates/pages/$filename.html.twig", $override);
   }
   
   /**

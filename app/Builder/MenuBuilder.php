@@ -59,7 +59,7 @@ class MenuBuilder extends TemplateBuilder implements Builder
       '{DESCRIPTION}' => $params['description'],
       '{TEXT_DOMAIN}' => $params['text-domain']
     ]);
-    $menu->save("$theme_path/includes/menu/$filename.php", $params['override']);
+    $menu->save("$theme_path/app/menu/$filename.php", $params['override']);
   }
   
   /**

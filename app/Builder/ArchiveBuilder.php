@@ -70,16 +70,11 @@ class ArchiveBuilder extends TemplateBuilder implements Builder
     $params = self::checkParams($params);
     $basename = $params['type'] === 'post-type' ? 'archive' : $params['type'];
     $filename = $params['key'] ? $basename . '-' . $params['key'] : $basename;
-    $template_engine = Config::get('themes.' . $params['theme'] . '.template-engine', true);
     $theme_path = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $params['theme'];
     $type_and_key = trim(str_replace("''", '', $params['type'] . ($params['type'] === 'taxonomy' ? '(-term)' : '') . " '" . $params['key'] . "'"));
-    $archive_ctrl = new Template("$template_engine/archive", ['{TYPE_AND_KEY}' => $type_and_key]);
-    
-    if ($template_engine === 'timber') {
-       self::buildView($archive_ctrl, $filename, $theme_path, $params['override']);
-    }
-  
+    $archive_ctrl = new Template('archive', ['{TYPE_AND_KEY}' => $type_and_key]);
     $archive_ctrl->save("$theme_path/$filename.php", $params['override']);
+    self::buildView($archive_ctrl, $filename, $theme_path, $params['override']);
   }
   
   /**
@@ -93,8 +88,8 @@ class ArchiveBuilder extends TemplateBuilder implements Builder
   private static function buildView($controller, $filename, $theme_path, $override)
   {
     $controller->fill('{VIEW_FILENAME}', $filename);
-    $view = new Template('timber/view');
-    $view->save("$theme_path/views/default/$filename.html.twig", $override);
+    $view = new Template('view');
+    $view->save("$theme_path/templates/default/$filename.html.twig", $override);
   }
   
   /**

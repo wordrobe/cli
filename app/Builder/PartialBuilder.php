@@ -43,19 +43,9 @@ class PartialBuilder extends TemplateBuilder implements Builder
   {
     $params = self::checkParams($params);
     $filename = StringsManager::toKebabCase($params['class-name']);
-    $template_engine = Config::get('themes.' . $params['theme'] . '.template-engine', true);
     $theme_path = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $params['theme'];
     $partial = new Template('partial', ['{CLASS_NAME}' => $params['class-name']]);
-    
-    if ($template_engine === 'timber') {
-      $file_type = 'html.twig';
-      $partials_path = 'views/partials';
-    } else {
-      $file_type = 'php';
-      $partials_path = 'partials';
-    }
-    
-    $partial->save("$theme_path/$partials_path/$filename.$file_type", $params['override']);
+    $partial->save("$theme_path/templates/partials/$filename.html.twig", $params['override']);
   }
   
   /**

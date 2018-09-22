@@ -8,7 +8,7 @@ use Wordrobe\Entity\Template;
 
 /**
  * Class Config
- * @package Wordrobe\Helper\Config
+ * @package Wordrobe\Helper
  */
 class Config
 {

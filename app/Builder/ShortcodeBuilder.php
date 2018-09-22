@@ -60,8 +60,8 @@ class ShortcodeBuilder extends TemplateBuilder implements Builder
       '{SHORTCODE}' => $params['key'],
       '{ATTRIBUTES}' => $params['attributes']
     ]);
-    $shortcode_ctrl->save("$theme_path/includes/shortcodes/" . $params['key'] . "/index.php", $params['override']);
-    $shortcode_plugin->save("$theme_path/includes/shortcodes/" . $params['key'] . "/index.js", $params['override']);
+    $shortcode_ctrl->save("$theme_path/app/shortcodes/" . $params['key'] . "/index.php", $params['override']);
+    $shortcode_plugin->save("$theme_path/app/shortcodes/" . $params['key'] . "/index.js", $params['override']);
   }
 
   /**

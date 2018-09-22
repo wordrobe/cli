@@ -2,7 +2,6 @@ parameters:
 	ignoreErrors:
 		- '#Function add_action not found#'
 		- '#Function add_filter not found#'
-		- '#Function _x not found#'
 		- '#Function __ not found#'
 		- '#Function get_template_directory_uri not found#'
 		- '#Function register_post_type not found#'

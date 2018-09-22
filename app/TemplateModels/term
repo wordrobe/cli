@@ -1,9 +1,0 @@
-<?php
-
-Wordrobe\ThemeEntity\Factory::create("Term", [
-  "name" => "{NAME}",
-  "taxonomy" => "{TAXONOMY}",
-  "slug" => "{SLUG}",
-  "description" => "{DESCRIPTION}",
-  "parent" => "{PARENT}"
-]);

@@ -69,7 +69,7 @@ class TaxonomyBuilder extends TemplateBuilder implements Builder
       '{POST_TYPES}' => $params['post-types'],
       '{HIERARCHICAL}' => $params['hierarchical'] ? 'true' : 'false'
     ]);
-    $taxonomy->save("$theme_path/includes/taxonomies/" . $params['key'] . ".php", $params['override']);
+    $taxonomy->save("$theme_path/app/taxonomy/" . $params['key'] . ".php", $params['override']);
     Config::set('themes.' . $params['theme'] . '.taxonomies.' . $params['key'], [
       'post-types' => explode(',', $params['post-types']),
       'hierarchical' => $params['hierarchical'],

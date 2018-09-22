@@ -12,11 +12,6 @@ use Wordrobe\Helper\StringsManager;
  */
 class ThemeBuilder implements Builder
 {
-  const TEMPLATE_ENGINES = [
-    'timber',
-    'standard'
-  ];
-
   /**
    * Handles theme creation wizard
    */
@@ -35,7 +30,6 @@ class ThemeBuilder implements Builder
       $namespace = self::askForNamespace($theme_name);
       $text_domain = self::askForTextDomain($theme_name);
       $folder_name = self::askForFolderName($theme_name);
-      $template_engine = self::askForTemplateEngine();
       self::build([
         'theme-name' => $theme_name,
         'theme-uri' => $theme_uri,
@@ -49,7 +43,6 @@ class ThemeBuilder implements Builder
         'namespace' => $namespace,
         'text-domain' => $text_domain,
         'folder-name' => $folder_name,
-        'template-engine' => $template_engine,
         'override' => 'ask'
       ]);
     } catch (\Exception $e) {
@@ -76,7 +69,6 @@ class ThemeBuilder implements Builder
    *  'namespace' => $namespace,
    *  'text-domain' => $text_domain,
    *  'folder-name' => $folder_name,
-   *  'template-engine' => $template_engine,
    *  'override' => $override
    * ]);
    * @throws \Exception
@@ -96,8 +88,7 @@ class ThemeBuilder implements Builder
       $params['license-uri'],
       $params['namespace'],
       $params['text-domain'],
-      $params['folder-name'],
-      $params['template-engine']
+      $params['folder-name']
     );
     $theme->install($params['override']);
   }
@@ -218,20 +209,6 @@ class ThemeBuilder implements Builder
   }
 
   /**
-   * Asks for theme's template engine
-   * @return mixed
-   */
-  protected static function askForTemplateEngine()
-  {
-    $template_engines = [
-      'Twig (Timber)' => 'timber',
-      'PHP (Standard Wordpress)' => 'standard'
-    ];
-    $choice = Dialog::getChoice('Template engine:', array_keys($template_engines), null);
-    return $template_engines[$choice];
-  }
-
-  /**
    * Checks params existence and normalizes them
    * @param array $params
    * @return mixed
@@ -240,7 +217,7 @@ class ThemeBuilder implements Builder
   private static function checkParams($params)
   {
     // checking existence
-    if (!$params['theme-name'] || !$params['text-domain'] || !$params['folder-name'] || !$params['template-engine']) {
+    if (!$params['theme-name'] || !$params['text-domain'] || !$params['folder-name']) {
       throw new \Exception('Error: unable to create theme because of missing parameters.');
     }
 
@@ -257,15 +234,10 @@ class ThemeBuilder implements Builder
     $namespace = StringsManager::toPascalCase($params['namespace'] ? $params['namespace'] : $theme_name);
     $text_domain = StringsManager::toKebabCase($params['text-domain']);
     $folder_name = StringsManager::toKebabCase($params['folder-name']);
-    $template_engine = strtolower($params['template-engine']);
     $override = strtolower($params['override']);
 
     if ($override !== 'ask' && $override !== 'force') {
       $override = false;
-    }
-
-    if (!in_array($template_engine, self::TEMPLATE_ENGINES)) {
-      throw new \Exception("Error: template engine '$template_engine' is not defined.");
     }
 
     return [
@@ -281,7 +253,6 @@ class ThemeBuilder implements Builder
       'namespace' => $namespace,
       'text-domain' => $text_domain,
       'folder-name' => $folder_name,
-      'template-engine' => $template_engine,
       'override' => $override
     ];
   }
