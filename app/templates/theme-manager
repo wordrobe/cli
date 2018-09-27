@@ -102,6 +102,7 @@ class ThemeManager {
   public static function setGlobalContext($context)
   {
     $context['env'] = defined('WP_ENV') ? WP_ENV : 'production';
+    $context['options'] = function_exists('acf_add_options_page') ? get_fields('theme-options') : [];
     return $context;
   }
 

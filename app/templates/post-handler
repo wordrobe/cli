@@ -1,0 +1,54 @@
+<?php
+
+namespace {NAMESPACE}\Handler;
+
+use Timber\Timber;
+use {NAMESPACE}\Entity\{ENTITY_NAME};
+
+/**
+ * Class {ENTITY_NAME}Handler
+ * @package {NAMESPACE}\Handler
+ */
+class {ENTITY_NAME}Handler
+{
+  /**
+   * Post getter
+   * @return \{NAMESPACE}\Entity\{ENTITY_NAME}
+   */
+  public static function getPost($pid = null)
+  {
+    return new {ENTITY_NAME}($pid);
+  }
+
+  /**
+   * Posts getter
+   * @return \{NAMESPACE}\Entity\{ENTITY_NAME}[]
+   */
+  public static function getPosts()
+  {
+    $args = ['post_type' => '{POST_TYPE}'];
+    return Timber::get_posts($args, __NAMESPACE__ . '\\Entity\\{ENTITY_NAME}');
+  }
+
+  /**
+   * Post's dto getter
+   * @return array
+   */
+  public static function postToDTO($pid = null)
+  {
+    $post = new {ENTITY_NAME}($pid);
+    return $post->toDTO();
+  }
+
+  /**
+   * Posts' dto getter
+   * @return array
+   */
+  public static function postsToDTO()
+  {
+    $posts = self::getPosts();
+    return array_map(function($post) {
+      return $post->toDTO();
+    }, $posts);
+  }
+}

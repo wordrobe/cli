@@ -21,7 +21,7 @@ $ascii = '
 |__/|__/\___/_/  \_,_/_/  \___/_.__/\__/ 
                                    ';
 
-$wordrobe = new Application($ascii, 'v1.1');
+$wordrobe = new Application($ascii, 'v1.0');
 
 $wordrobe->add(new AddAjaxServiceCommand());
 $wordrobe->add(new AddArchiveCommand());

@@ -1,0 +1,41 @@
+<?php
+
+namespace {NAMESPACE}\Entity;
+
+use Wordrobe\Feature\PostEntity;
+
+/**
+ * Class {ENTITY_NAME}
+ * @package {NAMESPACE}\Entity
+ */
+class {ENTITY_NAME} extends PostEntity
+{
+  // variables here
+  // e.g. public $hero_image;
+
+  /**
+   * {ENTITY_NAME} constructor
+   * @param mixed $pid
+   */
+  public function __construct($pid = null)
+  {
+    parent::__construct($pid);
+
+    // extending data here
+    // e.g. $this->hero_image = $this->get_field('hero_image');
+  }
+
+  /**
+   * Handles entity to dto conversion
+   * @return array
+   */
+  public function toDTO()
+  {
+    return [
+      // mapping data here
+      // e.g. "heroImage" => $this->hero_image
+    ];
+  }
+
+  // custom methods here
+}

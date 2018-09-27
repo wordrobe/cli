@@ -42,10 +42,17 @@ class PageBuilder extends TemplateBuilder implements Builder
   public static function build($params)
   {
     $params = self::checkParams($params);
+    $entity_name = StringsManager::toPascalCase($params['name']);
     $filename = StringsManager::toKebabCase($params['name']);
     $theme_path = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $params['theme'];
+    $namespace = Config::get('themes.' . $params['theme'] . '.namespace', true);
     $page_ctrl = new Template('page', ['{TEMPLATE_NAME}' => $params['name']]);
+    $page_entity = new Template('post-entity', [
+      '{NAMESPACE}' => $namespace,
+      '{ENTITY_NAME}' => StringsManager::toPascalCase($params['name'])
+    ]);
     $page_ctrl->save("$theme_path/pages/$filename.php", $params['override']);
+    $page_entity->save("$theme_path/app/entity/$entity_name.php", $params['override']);
     self::buildView($page_ctrl, $filename, $theme_path, $params['override']);
   }
   

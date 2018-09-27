@@ -91,11 +91,12 @@ class MenuBuilder extends TemplateBuilder implements Builder
     $default = ucwords(StringsManager::removeDashes($name));
     return Dialog::getAnswer("Description [$default]:", $default);
   }
-  
+
   /**
    * Asks for text domain
-   * @param string $theme
+   * @param $theme
    * @return mixed
+   * @throws \Exception
    */
   private static function askForTextDomain($theme)
   {

@@ -69,7 +69,9 @@ class PostTypeBuilder extends TemplateBuilder implements Builder
   public static function build($params)
   {
     $params = self::checkParams($params);
+    $entity_name = StringsManager::toPascalCase($params['key']);
     $theme_path = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $params['theme'];
+    $namespace = Config::get('themes.' . $params['theme'] . '.namespace', true);
     $post_type = new Template('post-type', [
       '{KEY}' => $params['key'],
       '{GENERAL_NAME}' => $params['general-name'],
@@ -83,7 +85,18 @@ class PostTypeBuilder extends TemplateBuilder implements Builder
       '{ICON}' => $params['icon'],
       '{SUPPORTS}' => '["title", "editor", "author", "thumbnail", "excerpt", "trackbacks", "custom-fields", "comments", "revisions", "post-formats", "page-attributes"]',
     ]);
+    $post_entity = new Template('post-entity', [
+      '{NAMESPACE}' => $namespace,
+      '{ENTITY_NAME}' => $entity_name
+    ]);
+    $post_handler = new Template('post-handler', [
+      '{NAMESPACE}' => $namespace,
+      '{ENTITY_NAME}' => $entity_name,
+      '{POST_TYPE}' => $params['key']
+    ]);
     $post_type->save("$theme_path/app/post-type/" . $params['key'] . ".php", $params['override']);
+    $post_entity->save("$theme_path/app/entity/$entity_name.php", $params['override']);
+    $post_handler->save("$theme_path/app/handler/" . $entity_name . "Handler.php", $params['override']);
     Config::add('themes.' . $params['theme'] . '.post-types', $params['key']);
     
     if ($params['build-single']) {

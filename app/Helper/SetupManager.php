@@ -13,6 +13,7 @@ class SetupManager
 {
   /**
    * Handles first time setup
+   * @throws \Exception
    */
   public static function install()
   {
