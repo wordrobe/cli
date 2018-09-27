@@ -13,6 +13,7 @@ class {ENTITY_NAME}Handler
 {
   /**
    * Post getter
+   * @param mixed $pid
    * @return \{NAMESPACE}\Entity\{ENTITY_NAME}
    */
   public static function getPost($pid = null)
@@ -32,6 +33,7 @@ class {ENTITY_NAME}Handler
 
   /**
    * Post's dto getter
+   * @param mixed $pid
    * @return array
    */
   public static function postToDTO($pid = null)

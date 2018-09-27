@@ -94,7 +94,7 @@ class MenuBuilder extends TemplateBuilder implements Builder
 
   /**
    * Asks for text domain
-   * @param $theme
+   * @param string $theme
    * @return mixed
    * @throws \Exception
    */
