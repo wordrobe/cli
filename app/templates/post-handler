@@ -3,7 +3,8 @@
 namespace {NAMESPACE}\Handler;
 
 use Timber\Timber;
-use {NAMESPACE}\Entity\{ENTITY_NAME};
+use {ENTITY_NAMESPACE}\{ENTITY_NAME};
+use {NAMESPACE}\DTO\{ENTITY_NAME}DTO;
 
 /**
  * Class {ENTITY_NAME}Handler
@@ -14,7 +15,7 @@ class {ENTITY_NAME}Handler
   /**
    * Post getter
    * @param mixed $pid
-   * @return \{NAMESPACE}\Entity\{ENTITY_NAME}
+   * @return \{ENTITY_NAMESPACE}\{ENTITY_NAME}
    */
   public static function getPost($pid = null)
   {
@@ -23,34 +24,41 @@ class {ENTITY_NAME}Handler
 
   /**
    * Posts getter
-   * @return \{NAMESPACE}\Entity\{ENTITY_NAME}[]
+   * @param array $query_args (wp_query format)
+   * @return \{ENTITY_NAMESPACE}\{ENTITY_NAME}[]
    */
-  public static function getPosts()
+  public static function getPosts($query_args = [])
   {
-    $args = ['post_type' => '{POST_TYPE}'];
-    return Timber::get_posts($args, __NAMESPACE__ . '\\Entity\\{ENTITY_NAME}');
+    $args = array_unique(array_merge($query_args, ['post_type' => '{POST_TYPE}']));
+    return Timber::get_posts($args, '\{ENTITY_NAMESPACE}\{ENTITY_NAME}');
   }
 
   /**
    * Post's dto getter
-   * @param mixed $pid
+   * @param mixed $post
    * @return array
    */
-  public static function postToDTO($pid = null)
+  public static function getPostDTO($post = null)
   {
-    $post = new {ENTITY_NAME}($pid);
-    return $post->toDTO();
+    if (!$post instanceof {ENTITY_NAME}) {
+      $post = new {ENTITY_NAME}($post);
+    }
+
+    $dto = new {ENTITY_NAME}DTO($post);
+    return $dto->getData();
   }
 
   /**
    * Posts' dto getter
+   * @param array $query_args (wp_query format)
    * @return array
    */
-  public static function postsToDTO()
+  public static function getPostsDTO($query_args = [])
   {
-    $posts = self::getPosts();
+    $posts = self::getPosts($query_args);
     return array_map(function($post) {
-      return $post->toDTO();
+      $dto = new {ENTITY_NAME}DTO($post);
+      return $dto->getData();
     }, $posts);
   }
 }

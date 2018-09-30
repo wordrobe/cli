@@ -1,12 +1,9 @@
 <?php
 
-/*
- * Archive template for {TYPE_AND_KEY}
- */
-
 use Timber\Timber;
+use {NAMESPACE}\Handler\{ENTITY_NAME}Handler;
 
 $context = Timber::get_context();
-$context['posts'] = Timber::get_posts();
+$context['posts'] = {ENTITY_NAME}Handler::getPostsDTO();
 
-Timber::render('views/default/{VIEW_FILENAME}.html.twig', $context);
+Timber::render('templates/default/{VIEW_FILENAME}.html.twig', $context);

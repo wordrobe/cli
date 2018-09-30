@@ -7,7 +7,7 @@ use Wordrobe\Helper\Dialog;
 use Wordrobe\Helper\StringsManager;
 use Wordrobe\Entity\Template;
 
-class TaxonomyBuilder extends TemplateBuilder implements Builder
+class TaxonomyBuilder extends TemplateBuilder implements WizardBuilder
 {
   /**
    * Handles taxonomy creation wizard
@@ -59,8 +59,7 @@ class TaxonomyBuilder extends TemplateBuilder implements Builder
    */
   public static function build($params)
   {
-    $params = self::checkParams($params);
-    $theme_path = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $params['theme'];
+    $params = self::prepareParams($params);
     $taxonomy = new Template('taxonomy', [
       '{KEY}' => $params['key'],
       '{GENERAL_NAME}' => $params['general-name'],
@@ -69,12 +68,9 @@ class TaxonomyBuilder extends TemplateBuilder implements Builder
       '{POST_TYPES}' => $params['post-types'],
       '{HIERARCHICAL}' => $params['hierarchical'] ? 'true' : 'false'
     ]);
-    $taxonomy->save("$theme_path/app/taxonomy/" . $params['key'] . ".php", $params['override']);
-    Config::set('themes.' . $params['theme'] . '.taxonomies.' . $params['key'], [
-      'post-types' => explode(',', $params['post-types']),
-      'hierarchical' => $params['hierarchical'],
-      'terms' => []
-    ]);
+    $taxonomy->save($params['filepath'], $params['override']);
+
+    Config::set($params['config-path'], explode(',', $params['post-types']));
     
     if ($params['build-archive']) {
       ArchiveBuilder::build([
@@ -169,7 +165,7 @@ class TaxonomyBuilder extends TemplateBuilder implements Builder
    * @return mixed
    * @throws \Exception
    */
-  private static function checkParams($params)
+  private static function prepareParams($params)
   {
     // checking existence
     if (!$params['key'] || !$params['general-name'] || !$params['singular-name'] || !$params['text-domain'] || !$params['post-types'] || !$params['theme']) {
@@ -198,6 +194,11 @@ class TaxonomyBuilder extends TemplateBuilder implements Builder
         throw new \Exception("Error: post type '$post_type' not found in '$theme' theme.");
       }
     }
+
+    // paths
+    $theme_path = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $theme;
+    $filepath = "$theme_path/app/taxonomy/$key.php";
+    $config_path = "themes.$theme.taxonomies.$key";
     
     return [
       'key' => $key,
@@ -206,9 +207,11 @@ class TaxonomyBuilder extends TemplateBuilder implements Builder
       'text-domain' => $text_domain,
       'post-types' => $post_types,
       'hierarchical' => $hierarchical,
-      'theme' => $theme,
+      'filepath' => $filepath,
       'build-archive' => $build_archive,
-      'override' => $override
+      'override' => $override,
+      'config-path' => $config_path,
+      'theme' => $theme
     ];
   }
 }

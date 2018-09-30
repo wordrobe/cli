@@ -7,7 +7,7 @@ use Wordrobe\Helper\Dialog;
 use Wordrobe\Helper\StringsManager;
 use Wordrobe\Entity\Template;
 
-class PostTypeBuilder extends TemplateBuilder implements Builder
+class PostTypeBuilder extends TemplateBuilder implements WizardBuilder
 {
   /**
    * Handles post type creation wizard
@@ -21,23 +21,21 @@ class PostTypeBuilder extends TemplateBuilder implements Builder
       $singular_name = self::askForSingularName($general_name);
       $text_domain = self::askForTextDomain($theme);
       $capability_type = self::askForCapabilityType();
-      $has_archive = $capability_type === 'post' ? self::askForArchive() : false;
+      $public = self::askForPublicity();
+      $has_archive = $capability_type === 'post' && $public ? self::askForArchive() : false;
       $icon = self::askForIcon();
       $description = self::askForDescription();
-      $build_single = self::askForSingleTemplateBuild($key);
-      $build_archive = $has_archive ? self::askForArchiveTemplateBuild($key) : false;
       self::build([
         'key' => $key,
         'general-name' => $general_name,
         'singular-name' => $singular_name,
         'text-domain' => $text_domain,
         'capability-type' => $capability_type,
+        'public' => $public,
         'has-archive' => $has_archive,
         'icon' => $icon,
         'description' => $description,
         'theme' => $theme,
-        'build-single' => $build_single,
-        'build-archive' => $build_archive,
         'override' => 'ask'
       ]);
       Dialog::write('Post type added!', 'green');
@@ -56,64 +54,72 @@ class PostTypeBuilder extends TemplateBuilder implements Builder
    *  'singular-name' => $singular_name,
    *  'text-domain' => $text_domain,
    *  'capability-type' => $capability_type,
+   *  'public' => $public,
    *  'has-archive' => $has_archive,
    *  'icon' => $icon,
    *  'description' => $description,
    *  'theme' => $theme,
-   *  'build-single' => $build_single,
-   *  'build-archive' => $build_archive,
    *  'override' => 'ask'|'force'|false
    * ]);
    * @throws \Exception
    */
   public static function build($params)
   {
-    $params = self::checkParams($params);
-    $entity_name = StringsManager::toPascalCase($params['key']);
-    $theme_path = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $params['theme'];
-    $namespace = Config::get('themes.' . $params['theme'] . '.namespace', true);
+    $params = self::prepareParams($params);
     $post_type = new Template('post-type', [
       '{KEY}' => $params['key'],
       '{GENERAL_NAME}' => $params['general-name'],
       '{SINGULAR_NAME}' => $params['singular-name'],
       '{DESCRIPTION}' => $params['description'],
-      '{SLUG}' => StringsManager::toKebabCase($params['general-name']),
+      '{REWRITE}' => $params['rewrite'],
       '{TEXT_DOMAIN}' => $params['text-domain'],
       '{CAPABILITY_TYPE}' => $params['capability-type'],
-      '{HIERARCHICAL}' => $params['capability-type'] === 'page' ? 'true' : 'false',
-      '{HAS_ARCHIVE}' => $params['has-archive'] ? 'true' : 'false',
+      '{PUBLIC}' => $params['public'] ? 'true' : 'false',
+      '{HIERARCHICAL}' => $params['hierarchical'] ? 'true' : 'false',
+      '{HAS_ARCHIVE}' => $params['has-archive'],
       '{ICON}' => $params['icon'],
-      '{SUPPORTS}' => '["title", "editor", "author", "thumbnail", "excerpt", "trackbacks", "custom-fields", "comments", "revisions", "post-formats", "page-attributes"]',
+      '{SUPPORTS}' => $params['supports']
     ]);
-    $post_entity = new Template('post-entity', [
-      '{NAMESPACE}' => $namespace,
-      '{ENTITY_NAME}' => $entity_name
+    $post_type->save($params['filepath'], $params['override']);
+
+    Config::add($params['config-path'], $params['key']);
+
+    PostDTOBuilder::build([
+      'entity-name' => $params['entity-name'],
+      'theme' => $params['theme'],
+      'override' => $params['override']
     ]);
-    $post_handler = new Template('post-handler', [
-      '{NAMESPACE}' => $namespace,
-      '{ENTITY_NAME}' => $entity_name,
-      '{POST_TYPE}' => $params['key']
+
+    PostEntityBuilder::build([
+      'name' => $params['entity-name'],
+      'theme' => $params['theme'],
+      'override' => $params['override']
     ]);
-    $post_type->save("$theme_path/app/post-type/" . $params['key'] . ".php", $params['override']);
-    $post_entity->save("$theme_path/app/entity/$entity_name.php", $params['override']);
-    $post_handler->save("$theme_path/app/handler/" . $entity_name . "Handler.php", $params['override']);
-    Config::add('themes.' . $params['theme'] . '.post-types', $params['key']);
-    
-    if ($params['build-single']) {
+
+    PostHandlerBuilder::build([
+      'post-type' => $params['key'],
+      'entity-name' => $params['entity-name'],
+      'theme' => $params['theme'],
+      'override' => $params['override']
+    ]);
+
+    if ($params['public']) {
       SingleBuilder::build([
         'post-type' => $params['key'],
+        'entity-name' => $params['entity-name'],
         'theme' => $params['theme'],
         'override' => $params['override']
       ]);
-    }
-    
-    if ($params['build-archive']) {
-      ArchiveBuilder::build([
-        'type' => 'post-type',
-        'key' => $params['key'],
-        'theme' => $params['theme'],
-        'override' => $params['override']
-      ]);
+
+      if ($params['has-archive']) {
+        ArchiveBuilder::build([
+          'type' => 'post-type',
+          'key' => $params['key'],
+          'entity-name' => $params['entity-name'],
+          'theme' => $params['theme'],
+          'override' => $params['override']
+        ]);
+      }
     }
   }
   
@@ -173,7 +179,17 @@ class PostTypeBuilder extends TemplateBuilder implements Builder
   }
 
   /**
+   * Asks for publicity
+   * @return bool
+   */
+  private static function askForPublicity()
+  {
+    return Dialog::getConfirmation('Is post type public?', true, 'yellow');
+  }
+
+  /**
    * Asks for archive
+   * @return bool
    */
   private static function askForArchive()
   {
@@ -199,32 +215,12 @@ class PostTypeBuilder extends TemplateBuilder implements Builder
   }
   
   /**
-   * Asks for single template auto-build confirmation
-   * @param string $key
-   * @return mixed
-   */
-  private static function askForSingleTemplateBuild($key)
-  {
-    return Dialog::getConfirmation("Do you want to automatically create a single template for '$key' post type?", true, 'yellow');
-  }
-  
-  /**
-   * Asks for archive template auto-build confirmation
-   * @param string $key
-   * @return mixed
-   */
-  private static function askForArchiveTemplateBuild($key)
-  {
-    return Dialog::getConfirmation("Do you want to automatically create an archive template for '$key' post type?", true, 'yellow');
-  }
-  
-  /**
    * Checks params existence and normalizes them
    * @param array $params
    * @return mixed
    * @throws \Exception
    */
-  private static function checkParams($params)
+  private static function prepareParams($params)
   {
     // checking existence
     if (!$params['key'] || !$params['general-name'] || !$params['singular-name'] || !$params['text-domain'] || !$params['capability-type'] || !$params['theme']) {
@@ -233,16 +229,19 @@ class PostTypeBuilder extends TemplateBuilder implements Builder
     
     // normalizing
     $key = StringsManager::toKebabCase($params['key']);
+    $entity_name = StringsManager::toPascalCase($params['key']);
     $general_name = ucwords($params['general-name']);
     $singular_name = ucwords($params['singular-name']);
     $text_domain = StringsManager::toKebabCase($params['text-domain']);
     $capability_type = strtolower($params['capability-type']);
-    $has_archive = $params['has-archive'];
+    $public = $params['public'];
+    $hierarchical = $params['capability-type'] === 'page';
+    $has_archive = $public && !$hierarchical && $params['has-archive'] ? 'true' : 'false';
     $icon = StringsManager::toKebabCase($params['icon']);
     $description = ucfirst($params['description']);
+    $rewrite = $public ? '["slug" => "' . StringsManager::toKebabCase($params['general-name']) . '", "with_front" => false]' : false;
+    $supports = '["title", "editor", "author", "thumbnail", "excerpt", "trackbacks", "custom-fields", "comments", "revisions", "post-formats", "page-attributes"]';
     $theme = StringsManager::toKebabCase($params['theme']);
-    $build_single = $params['build-single'] || false;
-    $build_archive = $params['build-archive'] || false;
     $override = strtolower($params['override']);
   
     if ($override !== 'ask' && $override !== 'force') {
@@ -250,20 +249,30 @@ class PostTypeBuilder extends TemplateBuilder implements Builder
     }
   
     Config::check("themes.$theme", 'array', "Error: theme '$theme' doesn't exist.");
+
+    // paths
+    $theme_path = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $theme;
+    $filepath = "$theme_path/app/post-type/$key.php";
+    $config_path = "themes.$theme.post-types";
     
     return [
       'key' => $key,
+      'entity-name' => $entity_name,
       'general-name' => $general_name,
       'singular-name' => $singular_name,
       'text-domain' => $text_domain,
       'capability-type' => $capability_type,
+      'public' => $public,
       'has-archive' => $has_archive,
+      'hierarchical' => $hierarchical,
       'icon' => $icon,
       'description' => $description,
-      'theme' => $theme,
-      'build-single' => $build_single,
-      'build-archive' => $build_archive,
-      'override' => $override
+      'rewrite' => $rewrite,
+      'supports' => $supports,
+      'filepath' => $filepath,
+      'override' => $override,
+      'config-path' => $config_path,
+      'theme' => $theme
     ];
   }
 }

@@ -11,7 +11,7 @@ use Wordrobe\Helper\StringsManager;
  * Class ConfigBuilder
  * @package Wordrobe\Builder
  */
-class ArchiveBuilder extends TemplateBuilder implements Builder
+class ArchiveBuilder extends TemplateBuilder implements WizardBuilder
 {
   const TYPES = [
     'post-type',
@@ -32,18 +32,28 @@ class ArchiveBuilder extends TemplateBuilder implements Builder
       switch ($type) {
         case 'post-type':
           $key = self::askForPostType($theme);
+          $post_type = $key;
+          $taxonomy = null;
           break;
         case 'taxonomy':
           $key = self::askForTaxonomy($theme);
+          $post_type = self::askForPostType($theme);
+          $taxonomy = $key;
           break;
         default:
           $key = self::askForTerm();
+          $post_type = self::askForPostType($theme);
+          $taxonomy = self::askForTaxonomy($theme);
           break;
       }
+
+      $entity_name = self::askForEntityName($post_type);
       
       self::build([
-        'type' => $type,
         'key' => $key,
+        'post-type' => $post_type,
+        'taxonomy' => $taxonomy,
+        'entity-name' => $entity_name,
         'theme' => $theme,
         'override' => 'ask'
       ]);
@@ -58,8 +68,10 @@ class ArchiveBuilder extends TemplateBuilder implements Builder
    * Builds archive
    * @param array $params
    * @example ArchiveBuilder::create([
-   *  'type' => $type,
    *  'key' => $key,
+   *  'post-type' => $post_type,
+   *  'taxonomy' => $taxonomy,
+   *  'entity-name' => $entity_name,
    *  'theme' => $theme,
    *  'override' => 'ask'|'force'|false
    * ]);
@@ -67,29 +79,17 @@ class ArchiveBuilder extends TemplateBuilder implements Builder
    */
   public static function build($params)
   {
-    $params = self::checkParams($params);
-    $basename = $params['type'] === 'post-type' ? 'archive' : $params['type'];
-    $filename = $params['key'] ? $basename . '-' . $params['key'] : $basename;
-    $theme_path = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $params['theme'];
-    $type_and_key = trim(str_replace("''", '', $params['type'] . ($params['type'] === 'taxonomy' ? '(-term)' : '') . " '" . $params['key'] . "'"));
-    $archive_ctrl = new Template('archive', ['{TYPE_AND_KEY}' => $type_and_key]);
-    $archive_ctrl->save("$theme_path/$filename.php", $params['override']);
-    self::buildView($archive_ctrl, $filename, $theme_path, $params['override']);
-  }
-  
-  /**
-   * Builds archive view
-   * @param Template $controller
-   * @param string $filename
-   * @param string $theme_path
-   * @param mixed $override
-   * @throws \Exception
-   */
-  private static function buildView($controller, $filename, $theme_path, $override)
-  {
-    $controller->fill('{VIEW_FILENAME}', $filename);
-    $view = new Template('view');
-    $view->save("$theme_path/templates/default/$filename.html.twig", $override);
+    $params = self::prepareParams($params);
+    $archive_ctrl = new Template('archive', [
+      '{TITLE}' => $params['title'],
+      '{NAMESPACE}' => $params['namespace'],
+      '{ENTITY_NAME}' => $params['entity-name'],
+      '{QUERY}' => $params['query'],
+      '{VIEW_FILENAME}' => $params['filename']
+    ]);
+    $archive_view = new Template('view');
+    $archive_ctrl->save($params['ctrl-filepath'], $params['override']);
+    $archive_view->save($params['view-filepath'], $params['override']);
   }
   
   /**
@@ -128,7 +128,7 @@ class ArchiveBuilder extends TemplateBuilder implements Builder
    */
   private static function askForTaxonomy($theme)
   {
-    $taxonomies = Config::get("themes.$theme.taxonomies", ['tyep' => 'array']);
+    $taxonomies = Config::get("themes.$theme.taxonomies", ['type' => 'array']);
     $taxonomies = array_diff($taxonomies, ['category', 'tag']);
     
     if (!empty($taxonomies)) {
@@ -148,6 +148,18 @@ class ArchiveBuilder extends TemplateBuilder implements Builder
     $term = Dialog::getAnswer('Term:');
     return $term ?: self::askForTerm();
   }
+
+  /**
+   * Asks for entity name
+   * @param string $key
+   * @return mixed
+   */
+  private static function askForEntityName($key)
+  {
+    $default = StringsManager::toPascalCase($key);
+    $entity_name = Dialog::getAnswer("Entity name [$default]:", $default);
+    return StringsManager::toPascalCase($entity_name);
+  }
   
   /**
    * Checks params existence and normalizes them
@@ -155,16 +167,23 @@ class ArchiveBuilder extends TemplateBuilder implements Builder
    * @return array
    * @throws \Exception
    */
-  private static function checkParams($params)
+  private static function prepareParams($params)
   {
     // checking existence
-    if (!$params['type'] || !$params['key'] || !$params['theme']) {
+    if (!$params['type'] || !$params['key'] || !$params['entity-name'] || !$params['theme']) {
       throw new \Exception('Error: unable to create archive template because of missing parameters.');
     }
     
     // normalizing
     $type = StringsManager::toKebabCase($params['type']);
     $key = StringsManager::toKebabCase($params['key']);
+    $title = trim(str_replace("''", '', $params['type'] . " '" . $params['key'] . "'"));
+    $entity_name = StringsManager::toPascalCase($params['entity-name']);
+
+    $query = $params['type'] === 'post-type' ? "'post_type=$key'" : [
+
+    ];
+
     $theme = StringsManager::toKebabCase($params['theme']);
     $override = strtolower($params['override']);
   
@@ -181,12 +200,26 @@ class ArchiveBuilder extends TemplateBuilder implements Builder
     if ($type === 'archive' && !in_array($key, Config::get("themes.$theme.post-types", ['type' => 'array']))) {
       throw new \Exception("Error: post type '$key' not found in '$theme' theme.");
     }
+
+    // paths
+    $basename = $type === 'post-type' ? 'archive' : $type;
+    $filename = $key ? $basename . '-' . $key : $basename;
+    $theme_path = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $theme;
+    $namespace = Config::get("themes.$theme.namespace", true);
+    $ctrl_filepath = "$theme_path/$filename.php";
+    $view_filepath = "$theme_path/templates/default/$filename.html.twig";
     
     return [
       'type' => $type,
       'key' => $key,
-      'theme' => $theme,
-      'override' => $override
+      'title' => $title,
+      'namespace' => $namespace,
+      'entity-name' => $entity_name,
+      'filename' => $filename,
+      'ctrl-filepath' => $ctrl_filepath,
+      'view-filepath' => $view_filepath,
+      'override' => $override,
+      'theme' => $theme
     ];
   }
 }

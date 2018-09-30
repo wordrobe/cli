@@ -7,7 +7,7 @@ use Wordrobe\Helper\Dialog;
 use Wordrobe\Helper\StringsManager;
 use Wordrobe\Entity\Template;
 
-class MenuBuilder extends TemplateBuilder implements Builder
+class MenuBuilder extends TemplateBuilder implements WizardBuilder
 {
   /**
    * Handles menu template creation wizard
@@ -50,16 +50,14 @@ class MenuBuilder extends TemplateBuilder implements Builder
    */
   public static function build($params)
   {
-    $params = self::checkParams($params);
-    $filename = $params['location'];
-    $theme_path = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $params['theme'];
+    $params = self::prepareParams($params);
     $menu = new Template('menu', [
       '{LOCATION}' => $params['location'],
       '{NAME}' => $params['name'],
       '{DESCRIPTION}' => $params['description'],
       '{TEXT_DOMAIN}' => $params['text-domain']
     ]);
-    $menu->save("$theme_path/app/menu/$filename.php", $params['override']);
+    $menu->save($params['filepath'], $params['override']);
   }
   
   /**
@@ -110,7 +108,7 @@ class MenuBuilder extends TemplateBuilder implements Builder
    * @return mixed
    * @throws \Exception
    */
-  private static function checkParams($params)
+  private static function prepareParams($params)
   {
     // checking existence
     if (!$params['location'] || !$params['name'] || !$params['theme'] || !$params['description']) {
@@ -130,14 +128,19 @@ class MenuBuilder extends TemplateBuilder implements Builder
     }
   
     Config::check("themes.$theme", 'array', "Error: theme '$theme' doesn't exist.");
+
+    // paths
+    $theme_path = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $theme;
+    $filepath = "$theme_path/app/menu/$location.php";
     
     return [
       'location' => $location,
       'name' => $name,
       'description' => $description,
       'text-domain' => $text_domain,
-      'theme' => $theme,
-      'override' => $override
+      'filepath' => $filepath,
+      'override' => $override,
+      'theme' => $theme
     ];
   }
 }

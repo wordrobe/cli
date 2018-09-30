@@ -7,7 +7,7 @@ use Wordrobe\Helper\Dialog;
 use Wordrobe\Helper\StringsManager;
 use Wordrobe\Entity\Template;
 
-class PageBuilder extends TemplateBuilder implements Builder
+class PageBuilder extends TemplateBuilder implements WizardBuilder
 {
   /**
    * Handles page template creation wizard
@@ -41,34 +41,35 @@ class PageBuilder extends TemplateBuilder implements Builder
    */
   public static function build($params)
   {
-    $params = self::checkParams($params);
-    $entity_name = StringsManager::toPascalCase($params['name']);
-    $filename = StringsManager::toKebabCase($params['name']);
-    $theme_path = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $params['theme'];
-    $namespace = Config::get('themes.' . $params['theme'] . '.namespace', true);
-    $page_ctrl = new Template('page', ['{TEMPLATE_NAME}' => $params['name']]);
-    $page_entity = new Template('post-entity', [
-      '{NAMESPACE}' => $namespace,
-      '{ENTITY_NAME}' => StringsManager::toPascalCase($params['name'])
+    $params = self::prepareParams($params);
+    $page_ctrl = new Template('page', [
+      '{TEMPLATE_NAME}' => $params['name'],
+      '{NAMESPACE}' => $params['namespace'],
+      '{ENTITY_NAME}' => $params['entity-name'],
+      '{VIEW_FILENAME}' => $params['filename']
     ]);
-    $page_ctrl->save("$theme_path/pages/$filename.php", $params['override']);
-    $page_entity->save("$theme_path/app/entity/$entity_name.php", $params['override']);
-    self::buildView($page_ctrl, $filename, $theme_path, $params['override']);
-  }
-  
-  /**
-   * Builds page view
-   * @param Template $controller
-   * @param string $filename
-   * @param string $theme_path
-   * @param mixed $override
-   * @throws \Exception
-   */
-  private static function buildView($controller, $filename, $theme_path, $override)
-  {
-    $controller->fill('{VIEW_FILENAME}', $filename);
-    $view = new Template('view');
-    $view->save("$theme_path/templates/pages/$filename.html.twig", $override);
+    $page_view = new Template('view');
+    $page_ctrl->save($params['ctrl-filepath'], $params['override']);
+    $page_view->save($params['view-filepath'], $params['override']);
+
+    PostDTOBuilder::build([
+      'entity-name' => $params['entity-name'],
+      'theme' => $params['theme'],
+      'override' => $params['override']
+    ]);
+
+    PostEntityBuilder::build([
+      'name' => $params['entity-name'],
+      'theme' => $params['theme'],
+      'override' => $params['override']
+    ]);
+
+    PostHandlerBuilder::build([
+      'post-type' => 'page',
+      'entity-name' => $params['entity-name'],
+      'theme' => $params['theme'],
+      'override' => $params['override']
+    ]);
   }
   
   /**
@@ -87,7 +88,7 @@ class PageBuilder extends TemplateBuilder implements Builder
    * @return mixed
    * @throws \Exception
    */
-  private static function checkParams($params)
+  private static function prepareParams($params)
   {
     // checking existence
     if (!$params['name'] || !$params['theme']) {
@@ -96,6 +97,7 @@ class PageBuilder extends TemplateBuilder implements Builder
     
     // normalizing
     $name = ucwords($params['name']);
+    $entity_name = StringsManager::toPascalCase($params['name']);
     $theme = StringsManager::toKebabCase($params['theme']);
     $override = strtolower($params['override']);
   
@@ -104,11 +106,23 @@ class PageBuilder extends TemplateBuilder implements Builder
     }
   
     Config::check("themes.$theme", 'array', "Error: theme '$theme' doesn't exist.");
+
+    // paths
+    $filename = StringsManager::toKebabCase($name);
+    $theme_path = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $theme;
+    $namespace = Config::get("themes.$theme.namespace", true);
+    $ctrl_filepath = "$theme_path/pages/$filename.php";
+    $view_filepath = "$theme_path/templates/pages/$filename.html.twig";
     
     return [
       'name' => $name,
-      'theme' => $theme,
-      'override' => $override
+      'namespace' => $namespace,
+      'entity-name' => $entity_name,
+      'filename' => $filename,
+      'ctrl-filepath' => $ctrl_filepath,
+      'view-filepath' => $view_filepath,
+      'override' => $override,
+      'theme' => $theme
     ];
   }
 }

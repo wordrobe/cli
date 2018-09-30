@@ -1,15 +1,16 @@
 {
 	"namespace": "{NAMESPACE}",
 	"text-domain": "{TEXT_DOMAIN}",
-	"post-types": ["post"],
+	"post-types": [
+	  "post",
+	  "page"
+  ],
 	"taxonomies": {
-	  "category": {
-	    "hierarchical": true,
-	    "terms": []
-	  },
-	  "tag": {
-	    "hierarchical": false,
-      "terms": []
-	  }
+	  "category": [
+      "post"
+    ],
+	  "tag": [
+      "post"
+    ]
   }
 }

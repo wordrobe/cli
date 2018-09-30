@@ -7,14 +7,14 @@ use Wordrobe\Helper\Dialog;
 use Wordrobe\Helper\StringsManager;
 use Wordrobe\Entity\Template;
 
-class SingleBuilder extends TemplateBuilder implements Builder
+class PostHandlerBuilder extends TemplateBuilder implements Builder
 {
   /**
-   * Builds single template
+   * Builds post handler
    * @param array $params
-   * @example SingleBuilder::create([
-   *  'post-type' => $post_type,
+   * @example PostHandlerBuilder::create([
    *  'entity-name' => $entity_name,
+   *  'post-type' => $post_type,
    *  'theme' => $theme,
    *  'override' => 'ask'|'force'|false
    * ]);
@@ -23,17 +23,15 @@ class SingleBuilder extends TemplateBuilder implements Builder
   public static function build($params)
   {
     $params = self::prepareParams($params);
-    $single_ctrl = new Template('single', [
+    $handler = new Template('post-handler', [
       '{NAMESPACE}' => $params['namespace'],
+      '{ENTITY_NAMESPACE}' => $params['entity-namespace'],
       '{ENTITY_NAME}' => $params['entity-name'],
       '{POST_TYPE}' => $params['post-type'],
-      '{VIEW_FILENAME}' => $params['filename']
     ]);
-    $single_view = new Template('view');
-    $single_ctrl->save($params['ctrl-filepath'], $params['override']);
-    $single_view->save($params['view-filepath'], $params['override']);
+    $handler->save($params['filepath'], $params['override']);
   }
-  
+
   /**
    * Checks params existence and normalizes them
    * @param array $params
@@ -43,39 +41,35 @@ class SingleBuilder extends TemplateBuilder implements Builder
   private static function prepareParams($params)
   {
     // checking existence
-    if (!$params['post-type'] || !$params['theme']) {
-      throw new \Exception('Error: unable to create single template because of missing parameters.');
+    if (!$params['entity-name'] || !$params['post-type'] || !$params['theme']) {
+      throw new \Exception('Error: unable to create post handler because of missing parameters.');
     }
-    
+
     // normalizing
+    $entity_name = StringsManager::toPascalCase($params['entity-name']);
     $post_type = StringsManager::toKebabCase($params['post-type']);
-    $entity_name = $params['entity-name'] ? StringsManager::toPascalCase($params['entity-name']) : StringsManager::toPascalCase($params['post-type']);
     $theme = StringsManager::toKebabCase($params['theme']);
     $override = strtolower($params['override']);
-  
+
     if ($override !== 'ask' && $override !== 'force') {
       $override = false;
     }
-  
+
     Config::check("themes.$theme", 'array', "Error: theme '$theme' doesn't exist.");
-    
-    if (!in_array($post_type, Config::get("themes.$theme.post-types", ['type' => 'array']))) {
-      throw new \Exception("Error: post type '$post_type' not found in '$theme' theme.");
-    }
 
     // paths
-    $filename = 'single-' . $post_type;
+    $filename = $entity_name . 'Handler';
     $theme_path = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $theme;
     $namespace = Config::get("themes.$theme.namespace", true);
-    $ctrl_filepath = "$theme_path/$filename.php";
-    $view_filepath = "$theme_path/templates/default/$filename.html.twig";
-    
+    $entity_namespace = $entity_name === 'Post' ? 'Timber' : $namespace . '\Entity';
+    $filepath = "$theme_path/app/handler/$filename.php";
+
     return [
       'namespace' => $namespace,
-      'post-type' => $post_type,
+      'entity-namespace' => $entity_namespace,
       'entity-name' => $entity_name,
-      'ctrl-filepath' => $ctrl_filepath,
-      'view-filepath' => $view_filepath,
+      'post-type' => $post_type,
+      'filepath' => $filepath,
       'override' => $override,
       'theme' => $theme
     ];

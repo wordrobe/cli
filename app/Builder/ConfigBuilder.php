@@ -9,7 +9,7 @@ use Wordrobe\Helper\Dialog;
  * Class ConfigBuilder
  * @package Wordrobe\Builder
  */
-class ConfigBuilder implements Builder
+class ConfigBuilder implements WizardBuilder
 {
   /**
    * Handles config creation wizard
@@ -37,7 +37,7 @@ class ConfigBuilder implements Builder
    */
   public static function build($params)
   {
-    $params = self::checkParams($params);
+    $params = self::prepareParams($params);
     Config::init(['{THEMES_PATH}' => $params['themes-path']]);
   }
   
@@ -57,7 +57,7 @@ class ConfigBuilder implements Builder
    * @return mixed
    * @throws \Exception
    */
-  private static function checkParams($params)
+  private static function prepareParams($params)
   {
     // checking existence
     if (!$params['themes-path']) {

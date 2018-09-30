@@ -5,9 +5,9 @@
  */
 
 use Timber\Timber;
-use Timber\Post;
+use {NAMESPACE}\Handler\{ENTITY_NAME}Handler;
 
 $context = Timber::get_context();
-$context['page'] = new Post();
+$context['contents'] = {ENTITY_NAME}Handler::getPostDTO();
 
-Timber::render('views/pages/{VIEW_FILENAME}.html.twig', $context);
+Timber::render('templates/pages/{VIEW_FILENAME}.html.twig', $context);

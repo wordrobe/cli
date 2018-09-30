@@ -3,16 +3,11 @@
 namespace Wordrobe\Builder;
 
 /**
- * Class Builder
+ * Interface Builder
  * @package Wordrobe\Builder
  */
 interface Builder
 {
-  /**
-   * Handles entity creation wizard
-   */
-  public static function startWizard();
-  
   /**
    * Builds entity
    * @param array $params

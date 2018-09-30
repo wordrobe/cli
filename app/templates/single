@@ -1,13 +1,9 @@
 <?php
 
-/*
- * Template for post type "{POST_TYPE}" single
- */
-
 use Timber\Timber;
-use Timber\Post;
+use {NAMESPACE}\Handler\{ENTITY_NAME}Handler;
 
 $context = Timber::get_context();
-$context['post'] = new Post();
+$context['contents'] = {ENTITY_NAME}Handler::getPostDTO();
 
-Timber::render('views/default/{VIEW_FILENAME}.html.twig', $context);
+Timber::render('templates/default/single-{POST_TYPE}.html.twig', $context);

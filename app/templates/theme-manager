@@ -66,10 +66,10 @@ class ThemeManager {
    */
   public static function initCustomFields()
   {
-    add_filter('acf/settings/load_json', __NAMESPACE__ . '\\ThemeManager::enableCustomFieldsAutoload');
+    add_filter('acf/settings/load_json', __NAMESPACE__ . '\ThemeManager::enableCustomFieldsAutoload');
 
     if (defined('ACF_AUTOSAVE') && ACF_AUTOSAVE) {
-      add_filter('acf/settings/save_json', __NAMESPACE__ . '\\ThemeManager::enableCustomFieldsAutosave');
+      add_filter('acf/settings/save_json', __NAMESPACE__ . '\ThemeManager::enableCustomFieldsAutosave');
     }
 
     if (function_exists('acf_add_options_page')) {
@@ -79,7 +79,7 @@ class ThemeManager {
         'menu_slug' => 'theme-options',
         'capability' => 'edit_posts',
         'redirect' => false
-      ));
+      ]);
     }
   }
 
@@ -92,6 +92,14 @@ class ThemeManager {
   {
     $twig->addExtension(new \Twig_Extension_StringLoader());
     return $twig;
+  }
+
+  /**
+   * Templates directory setter
+   */
+  public static function setTemplatesDirectory()
+  {
+    Timber::$dirname = 'templates';
   }
 
   /**
@@ -123,11 +131,12 @@ class ThemeManager {
     self::loadFeature('shortcode/**');
 
     // setting theme's configurations
-    add_filter('timber/twig', __NAMESPACE__ . '\\ThemeManager::addStringLoaderExtension');
-    add_filter('timber/context', __NAMESPACE__ . '\\ThemeManager::setGlobalContext');
-    add_action('init', __NAMESPACE__ . '\\ThemeManager::setSupport');
-    add_action('admin_menu', __NAMESPACE__ . '\\ThemeManager::hideMenuPages');
-    add_action('wp_enqueue_scripts', __NAMESPACE__ . '\\ThemeManager::enqueueAssets');
+    self::setTemplatesDirectory();
+    add_filter('timber/twig', __NAMESPACE__ . '\ThemeManager::addStringLoaderExtension');
+    add_filter('timber/context', __NAMESPACE__ . '\ThemeManager::setGlobalContext');
+    add_action('init', __NAMESPACE__ . '\ThemeManager::setSupport');
+    add_action('admin_menu', __NAMESPACE__ . '\ThemeManager::hideMenuPages');
+    add_action('wp_enqueue_scripts', __NAMESPACE__ . '\ThemeManager::enqueueAssets');
 
     if (class_exists('acf')) {
       self::initCustomFields();

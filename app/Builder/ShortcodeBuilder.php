@@ -7,7 +7,7 @@ use Wordrobe\Helper\Dialog;
 use Wordrobe\Helper\StringsManager;
 use Wordrobe\Entity\Template;
 
-class ShortcodeBuilder extends TemplateBuilder implements Builder
+class ShortcodeBuilder extends TemplateBuilder implements WizardBuilder
 {
   /**
    * Handles single template creation wizard
@@ -50,8 +50,7 @@ class ShortcodeBuilder extends TemplateBuilder implements Builder
    */
   public static function build($params)
   {
-    $params = self::checkParams($params);
-    $theme_path = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $params['theme'];
+    $params = self::prepareParams($params);
     $shortcode_ctrl = new Template('shortcode', ['{KEY}' => $params['key']]);
     $shortcode_plugin = new Template('shortcode-plugin', [
       '{TITLE}' => $params['title'],
@@ -60,8 +59,13 @@ class ShortcodeBuilder extends TemplateBuilder implements Builder
       '{SHORTCODE}' => $params['key'],
       '{ATTRIBUTES}' => $params['attributes']
     ]);
-    $shortcode_ctrl->save("$theme_path/app/shortcodes/" . $params['key'] . "/index.php", $params['override']);
-    $shortcode_plugin->save("$theme_path/app/shortcodes/" . $params['key'] . "/index.js", $params['override']);
+    $shortcode_view = new Template('partial', [
+      '{CLASS_NAME}' => $params['key'],
+      '{CONTENT}' => '{{ content|shortcodes }}'
+    ]);
+    $shortcode_ctrl->save($params['ctrl-filepath'], $params['override']);
+    $shortcode_plugin->save($params['plugin-filepath'], $params['override']);
+    $shortcode_view->save($params['view-filepath'], $params['override']);
   }
 
   /**
@@ -109,7 +113,7 @@ class ShortcodeBuilder extends TemplateBuilder implements Builder
    * @return mixed
    * @throws \Exception
    */
-  private static function checkParams($params)
+  private static function prepareParams($params)
   {
     // checking existence
     if (!$params['key'] || !$params['theme']) {
@@ -141,14 +145,23 @@ class ShortcodeBuilder extends TemplateBuilder implements Builder
 
     Config::check("themes.$theme", 'array', "Error: theme '$theme' doesn't exist.");
 
+    // paths
+    $theme_path = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $theme;
+    $ctrl_filepath = "$theme_path/app/shortcodes/$key/index.php";
+    $plugin_filepath = "$theme_path/app/shortcodes/$key/index.js";
+    $view_filepath = "$theme_path/templates/partials/shortcodes/$key.html.twig";
+
     return [
       'key' => $key,
       'plugin-key' => $plugin_key,
       'attributes' => $attributes,
       'title' => ucwords($title),
       'icon' => $icon,
-      'theme' => $theme,
-      'override' => $override
+      'ctrl-filepath' => $ctrl_filepath,
+      'plugin-filepath' => $plugin_filepath,
+      'view-filepath' => $view_filepath,
+      'override' => $override,
+      'theme' => $theme
     ];
   }
 }

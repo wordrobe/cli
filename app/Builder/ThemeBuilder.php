@@ -10,7 +10,7 @@ use Wordrobe\Helper\StringsManager;
  * Class ThemeBuilder
  * @package Wordrobe\Builder
  */
-class ThemeBuilder implements Builder
+class ThemeBuilder implements WizardBuilder
 {
   /**
    * Handles theme creation wizard
@@ -75,7 +75,7 @@ class ThemeBuilder implements Builder
    */
   public static function build($params)
   {
-    $params = self::checkParams($params);
+    $params = self::prepareParams($params);
     $theme = new Theme(
       $params['theme-name'],
       $params['theme-uri'],
@@ -214,7 +214,7 @@ class ThemeBuilder implements Builder
    * @return mixed
    * @throws \Exception
    */
-  private static function checkParams($params)
+  private static function prepareParams($params)
   {
     // checking existence
     if (!$params['theme-name'] || !$params['text-domain'] || !$params['folder-name']) {

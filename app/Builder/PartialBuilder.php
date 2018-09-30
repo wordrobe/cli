@@ -7,7 +7,7 @@ use Wordrobe\Helper\Dialog;
 use Wordrobe\Helper\StringsManager;
 use Wordrobe\Entity\Template;
 
-class PartialBuilder extends TemplateBuilder implements Builder
+class PartialBuilder extends TemplateBuilder implements WizardBuilder
 {
   /**
    * Handles partial template creation wizard
@@ -41,11 +41,12 @@ class PartialBuilder extends TemplateBuilder implements Builder
    */
   public static function build($params)
   {
-    $params = self::checkParams($params);
-    $filename = StringsManager::toKebabCase($params['class-name']);
-    $theme_path = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $params['theme'];
-    $partial = new Template('partial', ['{CLASS_NAME}' => $params['class-name']]);
-    $partial->save("$theme_path/templates/partials/$filename.html.twig", $params['override']);
+    $params = self::prepareParams($params);
+    $partial = new Template('partial', [
+      '{CLASS_NAME}' => $params['class-name'],
+      '{CONTENT}' => $params['content']
+    ]);
+    $partial->save($params['filepath'], $params['override']);
   }
   
   /**
@@ -64,7 +65,7 @@ class PartialBuilder extends TemplateBuilder implements Builder
    * @return mixed
    * @throws \Exception
    */
-  private static function checkParams($params)
+  private static function prepareParams($params)
   {
     // checking existence
     if (!$params['class-name'] || !$params['theme']) {
@@ -73,6 +74,7 @@ class PartialBuilder extends TemplateBuilder implements Builder
     
     // normalizing
     $theme = StringsManager::toKebabCase($params['theme']);
+    $content = $params['content'] || '';
     $override = strtolower($params['override']);
   
     if ($override !== 'ask' && $override !== 'force') {
@@ -80,11 +82,18 @@ class PartialBuilder extends TemplateBuilder implements Builder
     }
   
     Config::check("themes.$theme", 'array', "Error: theme '$theme' doesn't exist.");
+
+    // paths
+    $filename = StringsManager::toKebabCase($params['class-name']);
+    $theme_path = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $theme;
+    $filepath = "$theme_path/templates/partials/$filename.html.twig";
     
     return [
       'class-name' => $params['class-name'],
-      'theme' => $theme,
-      'override' => $override
+      'content' => $content,
+      'filepath' => $filepath,
+      'override' => $override,
+      'theme' => $theme
     ];
   }
 }

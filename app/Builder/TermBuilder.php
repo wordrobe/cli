@@ -7,7 +7,7 @@ use Wordrobe\Helper\Dialog;
 use Wordrobe\Helper\StringsManager;
 use Wordrobe\Entity\Template;
 
-class TermBuilder extends TemplateBuilder implements Builder
+class TermBuilder extends TemplateBuilder implements WizardBuilder
 {
   /**
    * Handles term creation wizard
@@ -56,8 +56,7 @@ class TermBuilder extends TemplateBuilder implements Builder
    */
   public static function build($params)
   {
-    $params = self::checkParams($params);
-    $theme_path = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $params['theme'];
+    $params = self::prepareParams($params);
     $term = new Template('term', [
       '{NAME}' => $params['name'],
       '{TAXONOMY}' => $params['taxonomy'],
@@ -65,22 +64,12 @@ class TermBuilder extends TemplateBuilder implements Builder
       '{DESCRIPTION}' => $params['description'],
       '{PARENT}' => $params['parent']
     ]);
-    $term->save("$theme_path/app/term/" . $params['taxonomy'] . "/" . $params['slug'] . ".php", $params['override']);
-    Config::add('themes.' . $params['theme'] . '.taxonomies.' . $params['taxonomy'] . '.terms', $params['slug']);
+    $term->save($params['filepath'], $params['override']);
     
     if ($params['build-archive']) {
-      
-      if ($params['taxonomy'] === 'category' || $params['taxonomy'] === 'tag') {
-        $type = $params['taxonomy'];
-        $key = $params['slug'];
-      } else {
-        $type = 'taxonomy';
-        $key = $params['taxonomy'] . '-' . $params['slug'];
-      }
-      
       ArchiveBuilder::build([
-        'type' => $type,
-        'key' => $key,
+        'type' => $params['type'],
+        'key' => $params['key'],
         'theme' => $params['theme'],
         'override' => $params['override']
       ]);
@@ -155,7 +144,7 @@ class TermBuilder extends TemplateBuilder implements Builder
    * @return mixed
    * @throws \Exception
    */
-  private static function checkParams($params)
+  private static function prepareParams($params)
   {
     // checking existence
     if (!$params['name'] || !$params['taxonomy'] || !$params['theme']) {
@@ -181,16 +170,23 @@ class TermBuilder extends TemplateBuilder implements Builder
     if (!in_array($taxonomy, array_keys(Config::get("themes.$theme.taxonomies", ['type' => 'array'])))) {
       throw new \Exception("Error: taxonomy '$taxonomy' not found in '$theme' theme.");
     }
-    
+
+    // paths
+    $theme_path = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $theme;
+    $filepath = "$theme_path/app/term/$taxonomy/$slug.php";
+
     return [
       'name' => $name,
       'taxonomy' => $taxonomy,
       'slug' => $slug,
       'description' => $description,
       'parent' => $parent,
-      'theme' => $theme,
+      'type' => $taxonomy === 'category' || $taxonomy === 'tag' ? $taxonomy : 'taxonomy',
+      'key' => $taxonomy === 'category' || $taxonomy === 'tag' ? $slug : $taxonomy . '-' . $slug,
+      'filepath' => $filepath,
       'build-archive' => $build_archive,
-      'override' => $override
+      'override' => $override,
+      'theme' => $theme
     ];
   }
 }
