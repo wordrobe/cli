@@ -7,10 +7,14 @@ use Wordrobe\Helper\Dialog;
 use Wordrobe\Helper\StringsManager;
 use Wordrobe\Entity\Template;
 
+/**
+ * Class PageBuilder
+ * @package Wordrobe\Builder
+ */
 class PageBuilder extends TemplateBuilder implements WizardBuilder
 {
   /**
-   * Handles page template creation wizard
+   * Handles page template build wizard
    */
   public static function startWizard()
   {
@@ -90,7 +94,11 @@ class PageBuilder extends TemplateBuilder implements WizardBuilder
    */
   private static function prepareParams($params)
   {
-    // checking existence
+    // checking theme
+    $theme = StringsManager::toKebabCase($params['theme']);
+    Config::check("themes.$theme", 'array', "Error: theme '$theme' doesn't exist.");
+
+    // checking params
     if (!$params['name'] || !$params['theme']) {
       throw new \Exception('Error: unable to create page template because of missing parameters.');
     }
@@ -98,14 +106,11 @@ class PageBuilder extends TemplateBuilder implements WizardBuilder
     // normalizing
     $name = ucwords($params['name']);
     $entity_name = StringsManager::toPascalCase($params['name']);
-    $theme = StringsManager::toKebabCase($params['theme']);
     $override = strtolower($params['override']);
   
     if ($override !== 'ask' && $override !== 'force') {
       $override = false;
     }
-  
-    Config::check("themes.$theme", 'array', "Error: theme '$theme' doesn't exist.");
 
     // paths
     $filename = StringsManager::toKebabCase($name);

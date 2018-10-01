@@ -21,7 +21,7 @@ class ArchiveBuilder extends TemplateBuilder implements WizardBuilder
   ];
   
   /**
-   * Handles config creation wizard
+   * Handles archive template build wizard
    */
   public static function startWizard()
   {
@@ -65,9 +65,9 @@ class ArchiveBuilder extends TemplateBuilder implements WizardBuilder
   }
   
   /**
-   * Builds archive
+   * Builds archive template
    * @param array $params
-   * @example ArchiveBuilder::create([
+   * @example ArchiveBuilder::build([
    *  'key' => $key,
    *  'post-type' => $post_type,
    *  'taxonomy' => $taxonomy,
@@ -169,7 +169,11 @@ class ArchiveBuilder extends TemplateBuilder implements WizardBuilder
    */
   private static function prepareParams($params)
   {
-    // checking existence
+    // checking theme
+    $theme = StringsManager::toKebabCase($params['theme']);
+    Config::check("themes.$theme", 'array', "Error: theme '$theme' doesn't exist.");
+
+    // checking params
     if (!$params['type'] || !$params['key'] || !$params['entity-name'] || !$params['theme']) {
       throw new \Exception('Error: unable to create archive template because of missing parameters.');
     }
@@ -179,12 +183,6 @@ class ArchiveBuilder extends TemplateBuilder implements WizardBuilder
     $key = StringsManager::toKebabCase($params['key']);
     $title = trim(str_replace("''", '', $params['type'] . " '" . $params['key'] . "'"));
     $entity_name = StringsManager::toPascalCase($params['entity-name']);
-
-    $query = $params['type'] === 'post-type' ? "'post_type=$key'" : [
-
-    ];
-
-    $theme = StringsManager::toKebabCase($params['theme']);
     $override = strtolower($params['override']);
   
     if ($override !== 'ask' && $override !== 'force') {
@@ -194,8 +192,6 @@ class ArchiveBuilder extends TemplateBuilder implements WizardBuilder
     if (!in_array($type, self::TYPES)) {
       throw new \Exception("Error: archive type '$type' not found.");
     }
-  
-    Config::check("themes.$theme", 'array', "Error: theme '$theme' doesn't exist.");
     
     if ($type === 'archive' && !in_array($key, Config::get("themes.$theme.post-types", ['type' => 'array']))) {
       throw new \Exception("Error: post type '$key' not found in '$theme' theme.");

@@ -5,6 +5,10 @@ namespace Wordrobe\Builder;
 use Wordrobe\Helper\Config;
 use Wordrobe\Helper\Dialog;
 
+/**
+ * Class TemplateBuilder
+ * @package Wordrobe\Builder
+ */
 abstract class TemplateBuilder
 {
   /**
@@ -28,8 +32,7 @@ abstract class TemplateBuilder
         $theme = Dialog::getChoice('Please choose the theme you want to add the content to:', array_keys($themes), null, false, 'yellow');
         break;
     }
-    
-    Config::check("themes.$theme", 'array');
+
     return $theme;
   }
 }

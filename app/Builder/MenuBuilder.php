@@ -7,10 +7,14 @@ use Wordrobe\Helper\Dialog;
 use Wordrobe\Helper\StringsManager;
 use Wordrobe\Entity\Template;
 
+/**
+ * Class MenuBuilder
+ * @package Wordrobe\Builder
+ */
 class MenuBuilder extends TemplateBuilder implements WizardBuilder
 {
   /**
-   * Handles menu template creation wizard
+   * Handles menu template build wizard
    */
   public static function startWizard()
   {
@@ -38,7 +42,7 @@ class MenuBuilder extends TemplateBuilder implements WizardBuilder
   /**
    * Builds menu template
    * @param array $params
-   * @example MenuBuilder::create([
+   * @example MenuBuilder::build([
    *  'location' => $location,
    *  'name' => $name,
    *  'description' => $description,
@@ -110,7 +114,11 @@ class MenuBuilder extends TemplateBuilder implements WizardBuilder
    */
   private static function prepareParams($params)
   {
-    // checking existence
+    // checking theme
+    $theme = StringsManager::toKebabCase($params['theme']);
+    Config::check("themes.$theme", 'array', "Error: theme '$theme' doesn't exist.");
+
+    // checking params
     if (!$params['location'] || !$params['name'] || !$params['theme'] || !$params['description']) {
       throw new \Exception('Error: unable to create menu because of missing parameters.');
     }
@@ -120,14 +128,11 @@ class MenuBuilder extends TemplateBuilder implements WizardBuilder
     $name = ucwords($params['name']);
     $description = ucfirst($params['description']);
     $text_domain = $params['text-domain'] ? StringsManager::toKebabCase($params['text-domain']) : 'default';
-    $theme = StringsManager::toKebabCase($params['theme']);
     $override = strtolower($params['override']);
   
     if ($override !== 'ask' && $override !== 'force') {
       $override = false;
     }
-  
-    Config::check("themes.$theme", 'array', "Error: theme '$theme' doesn't exist.");
 
     // paths
     $theme_path = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $theme;

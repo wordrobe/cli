@@ -42,7 +42,6 @@ class ThemeManager {
 
   /**
    * Overrides ACF exports directory
-   * @param $path
    * @return string
    */
   public static function enableCustomFieldsAutosave()
@@ -123,12 +122,12 @@ class ThemeManager {
     self::$timber = new Timber();
 
     // loading theme's features
-    self::loadFeature('post-type');
-    self::loadFeature('taxonomy');
-    self::loadFeature('term/**');
-    self::loadFeature('service/**');
+    self::loadFeature('post-types');
+    self::loadFeature('taxonomies');
+    self::loadFeature('terms/**');
+    self::loadFeature('services/**');
     self::loadFeature('menu');
-    self::loadFeature('shortcode/**');
+    self::loadFeature('shortcodes/**');
 
     // setting theme's configurations
     self::setTemplatesDirectory();
@@ -145,6 +144,7 @@ class ThemeManager {
 
   /**
    * Theme's features loader
+   * @param string $path
    */
   private static function loadFeature($path)
   {

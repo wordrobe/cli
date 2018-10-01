@@ -7,12 +7,16 @@ use Wordrobe\Helper\Dialog;
 use Wordrobe\Helper\StringsManager;
 use Wordrobe\Entity\Template;
 
+/**
+ * Class PostEntityBuilder
+ * @package Wordrobe\Builder
+ */
 class PostEntityBuilder extends TemplateBuilder implements Builder
 {
   /**
-   * Builds post entity
+   * Builds post entity template
    * @param array $params
-   * @example PostEntityBuilder::create([
+   * @example PostEntityBuilder::build([
    *  'post-type' => $post_type,
    *  'name' => $name,
    *  'theme' => $theme,
@@ -38,26 +42,27 @@ class PostEntityBuilder extends TemplateBuilder implements Builder
    */
   private static function prepareParams($params)
   {
-    // checking existence
+    // checking theme
+    $theme = StringsManager::toKebabCase($params['theme']);
+    Config::check("themes.$theme", 'array', "Error: theme '$theme' doesn't exist.");
+
+    // checking params
     if (!$params['name'] || !$params['theme']) {
       throw new \Exception('Error: unable to create post entity because of missing parameters.');
     }
 
     // normalizing
     $name = StringsManager::toPascalCase($params['name']);
-    $theme = StringsManager::toKebabCase($params['theme']);
     $override = strtolower($params['override']);
 
     if ($override !== 'ask' && $override !== 'force') {
       $override = false;
     }
 
-    Config::check("themes.$theme", 'array', "Error: theme '$theme' doesn't exist.");
-
     // paths
     $theme_path = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $theme;
     $namespace = Config::get("themes.$theme.namespace", true);
-    $filepath = "$theme_path/app/entity/" . $name . ".php";
+    $filepath = "$theme_path/app/Entity/" . $name . ".php";
 
     return [
       'namespace' => $namespace,

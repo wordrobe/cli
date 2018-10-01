@@ -7,10 +7,14 @@ use Wordrobe\Helper\Dialog;
 use Wordrobe\Helper\StringsManager;
 use Wordrobe\Entity\Template;
 
+/**
+ * Class TermBuilder
+ * @package Wordrobe\Builder
+ */
 class TermBuilder extends TemplateBuilder implements WizardBuilder
 {
   /**
-   * Handles term creation wizard
+   * Handles term template build wizard
    */
   public static function startWizard()
   {
@@ -40,9 +44,9 @@ class TermBuilder extends TemplateBuilder implements WizardBuilder
   }
   
   /**
-   * Builds term
+   * Builds term template
    * @param array $params
-   * @example TermBuilder::create([
+   * @example TermBuilder::build([
    *  'name' => $name,
    *  'taxonomy' => $taxonomy,
    *  'slug' => $slug,
@@ -146,7 +150,11 @@ class TermBuilder extends TemplateBuilder implements WizardBuilder
    */
   private static function prepareParams($params)
   {
-    // checking existence
+    // checking theme
+    $theme = StringsManager::toKebabCase($params['theme']);
+    Config::check("themes.$theme", 'array', "Error: theme '$theme' doesn't exist.");
+
+    // checking params
     if (!$params['name'] || !$params['taxonomy'] || !$params['theme']) {
       throw new \Exception('Error: unable to create term because of missing parameters.');
     }
@@ -157,15 +165,12 @@ class TermBuilder extends TemplateBuilder implements WizardBuilder
     $slug = StringsManager::toKebabCase($params['slug']);
     $description = ucfirst($params['description']);
     $parent = Config::get("themes." . $params['theme'] . ".taxonomies.$taxonomy.hierarchical") ? StringsManager::toKebabCase($params['parent']) : '';
-    $theme = StringsManager::toKebabCase($params['theme']);
     $build_archive = $params['build-archive'] || false;
     $override = strtolower($params['override']);
     
     if ($override !== 'ask' && $override !== 'force') {
       $override = false;
     }
-  
-    Config::check("themes.$theme", 'array', "Error: theme '$theme' doesn't exist.");
     
     if (!in_array($taxonomy, array_keys(Config::get("themes.$theme.taxonomies", ['type' => 'array'])))) {
       throw new \Exception("Error: taxonomy '$taxonomy' not found in '$theme' theme.");
@@ -173,7 +178,7 @@ class TermBuilder extends TemplateBuilder implements WizardBuilder
 
     // paths
     $theme_path = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $theme;
-    $filepath = "$theme_path/app/term/$taxonomy/$slug.php";
+    $filepath = "$theme_path/app/terms/$taxonomy/$slug.php";
 
     return [
       'name' => $name,

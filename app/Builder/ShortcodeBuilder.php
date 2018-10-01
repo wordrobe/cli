@@ -7,10 +7,14 @@ use Wordrobe\Helper\Dialog;
 use Wordrobe\Helper\StringsManager;
 use Wordrobe\Entity\Template;
 
+/**
+ * Class ShortcodeBuilder
+ * @package Wordrobe\Builder
+ */
 class ShortcodeBuilder extends TemplateBuilder implements WizardBuilder
 {
   /**
-   * Handles single template creation wizard
+   * Handles shortcode template build wizard
    */
   public static function startWizard()
   {
@@ -36,9 +40,9 @@ class ShortcodeBuilder extends TemplateBuilder implements WizardBuilder
   }
 
   /**
-   * Builds shortcode
+   * Builds shortcode template
    * @param array $params
-   * @example ShortcodeBuilder::create([
+   * @example ShortcodeBuilder::build([
    *  'key' => $key,
    *  'attributes' => $attributes,
    *  'title' => $title,
@@ -115,7 +119,11 @@ class ShortcodeBuilder extends TemplateBuilder implements WizardBuilder
    */
   private static function prepareParams($params)
   {
-    // checking existence
+    // checking theme
+    $theme = StringsManager::toKebabCase($params['theme']);
+    Config::check("themes.$theme", 'array', "Error: theme '$theme' doesn't exist.");
+
+    // checking params
     if (!$params['key'] || !$params['theme']) {
       throw new \Exception('Error: unable to create shortcode because of missing parameters.');
     }
@@ -125,7 +133,6 @@ class ShortcodeBuilder extends TemplateBuilder implements WizardBuilder
     $plugin_key = StringsManager::toSnakeCase($key);
     $title = $params['title'] ? StringsManager::removeMultipleSpaces($params['title']) : StringsManager::removeDashes($key, ' ');
     $icon = $params['icon'] ? StringsManager::toKebabCase($params['icon']) : 'dashicons-editor-code';
-    $theme = StringsManager::toKebabCase($params['theme']);
     $override = strtolower($params['override']);
     $attributes = '';
 
@@ -142,8 +149,6 @@ class ShortcodeBuilder extends TemplateBuilder implements WizardBuilder
     if ($override !== 'ask' && $override !== 'force') {
       $override = false;
     }
-
-    Config::check("themes.$theme", 'array', "Error: theme '$theme' doesn't exist.");
 
     // paths
     $theme_path = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $theme;

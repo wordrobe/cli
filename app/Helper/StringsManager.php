@@ -54,14 +54,15 @@ class StringsManager
    * Sanitizes a string
    * @param string $string
    * @param bool $lowercase
+   * @param string $exclude
    * @return null|string|string[]
    */
-  public static function sanitize($string, $lowercase = true)
+  public static function sanitize($string, $lowercase = true, $exclude = '')
   {
     $string = self::removeAccents($string);
     $string = self::removeDashes($string);
     $string = self::removeMultipleSpaces($string);
-    $string = preg_replace('/[^a-zA-Z0-9\.\s]/', '', $string);
+    $string = preg_replace("/[^a-zA-Z0-9\.\s$exclude]/", '', $string);
     return $lowercase ? strtolower($string) : $string;
   }
   

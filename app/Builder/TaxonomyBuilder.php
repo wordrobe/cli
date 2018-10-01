@@ -7,10 +7,14 @@ use Wordrobe\Helper\Dialog;
 use Wordrobe\Helper\StringsManager;
 use Wordrobe\Entity\Template;
 
+/**
+ * Class TaxonomyBuilder
+ * @package Wordrobe\Builder
+ */
 class TaxonomyBuilder extends TemplateBuilder implements WizardBuilder
 {
   /**
-   * Handles taxonomy creation wizard
+   * Handles taxonomy build wizard
    */
   public static function startWizard()
   {
@@ -42,9 +46,9 @@ class TaxonomyBuilder extends TemplateBuilder implements WizardBuilder
   }
   
   /**
-   * Builds taxonomy
+   * Builds taxonomy template
    * @param array $params
-   * @example TaxonomyBuilder::create([
+   * @example TaxonomyBuilder::build([
    *  'key' => $key,
    *  'general-name' => $general_name,
    *  'singular-name' => $singular_name,
@@ -167,7 +171,11 @@ class TaxonomyBuilder extends TemplateBuilder implements WizardBuilder
    */
   private static function prepareParams($params)
   {
-    // checking existence
+    // checking theme
+    $theme = StringsManager::toKebabCase($params['theme']);
+    Config::check("themes.$theme", 'array', "Error: theme '$theme' doesn't exist.");
+
+    // checking params
     if (!$params['key'] || !$params['general-name'] || !$params['singular-name'] || !$params['text-domain'] || !$params['post-types'] || !$params['theme']) {
       throw new \Exception('Error: unable to create taxonomy because of missing parameters.');
     }
@@ -179,15 +187,12 @@ class TaxonomyBuilder extends TemplateBuilder implements WizardBuilder
     $text_domain = StringsManager::toKebabCase($params['text-domain']);
     $post_types = strtolower(StringsManager::removeSpaces($params['post-types']));
     $hierarchical = $params['hierarchical'] ? 1 : 0;
-    $theme = StringsManager::toKebabCase($params['theme']);
     $build_archive = $params['build-archive'] || false;
     $override = strtolower($params['override']);
   
     if ($override !== 'ask' && $override !== 'force') {
       $override = false;
     }
-  
-    Config::check("themes.$theme", 'array', "Error: theme '$theme' doesn't exist.");
     
     foreach (explode(',', $post_types) as $post_type) {
       if (!in_array($post_type, Config::get("themes.$theme.post-types", ['type' => 'array']))) {
@@ -197,7 +202,7 @@ class TaxonomyBuilder extends TemplateBuilder implements WizardBuilder
 
     // paths
     $theme_path = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $theme;
-    $filepath = "$theme_path/app/taxonomy/$key.php";
+    $filepath = "$theme_path/app/taxonomies/$key.php";
     $config_path = "themes.$theme.taxonomies.$key";
     
     return [

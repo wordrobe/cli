@@ -3,24 +3,24 @@
 namespace Wordrobe\Feature;
 
 /**
- * Class AjaxServiceFactory
+ * Class ServiceFactory
  * @package Wordrobe\Feature
  */
-class AjaxServiceFactory implements FeatureFactory
+class ServiceFactory implements FeatureFactory
 {
   /**
    * @param array $args
-   * @return null|AjaxService
+   * @return null|Service
    */
   public static function create($args)
   {
     try {
-      $ajax_service = new AjaxService($args['action'], $args['logic']);
+      $service = new Service($args['namespace'], $args['route'], $args['options'], $args['override']);
     } catch (\Exception $e) {
       echo $e->getMessage();
       return null;
     }
 
-    return $ajax_service;
+    return $service;
   }
 }

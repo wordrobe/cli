@@ -7,12 +7,16 @@ use Wordrobe\Helper\Dialog;
 use Wordrobe\Helper\StringsManager;
 use Wordrobe\Entity\Template;
 
+/**
+ * Class PostDTOBuilder
+ * @package Wordrobe\Builder
+ */
 class PostDTOBuilder extends TemplateBuilder implements Builder
 {
   /**
-   * Builds post DTO
+   * Builds post DTO template
    * @param array $params
-   * @example PostDTOBuilder::create([
+   * @example PostDTOBuilder::build([
    *  'entity-name' => $entity_name,
    *  'theme' => $theme,
    *  'override' => 'ask'|'force'|false
@@ -38,28 +42,29 @@ class PostDTOBuilder extends TemplateBuilder implements Builder
    */
   private static function prepareParams($params)
   {
-    // checking existence
+    // checking theme
+    $theme = StringsManager::toKebabCase($params['theme']);
+    Config::check("themes.$theme", 'array', "Error: theme '$theme' doesn't exist.");
+
+    // checking params
     if (!$params['entity-name'] || !$params['theme']) {
       throw new \Exception('Error: unable to create post DTO because of missing parameters.');
     }
 
     // normalizing
     $entity_name = StringsManager::toPascalCase($params['entity-name']);
-    $theme = StringsManager::toKebabCase($params['theme']);
     $override = strtolower($params['override']);
 
     if ($override !== 'ask' && $override !== 'force') {
       $override = false;
     }
 
-    Config::check("themes.$theme", 'array', "Error: theme '$theme' doesn't exist.");
-
     // paths
     $filename = $entity_name . 'DTO';
     $theme_path = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $theme;
     $namespace = Config::get("themes.$theme.namespace", true);
     $entity_namespace = $entity_name === 'Post' ? 'Timber' : $namespace . '\Entity';
-    $filepath = "$theme_path/app/dto/$filename.php";
+    $filepath = "$theme_path/app/DTO/$filename.php";
 
     return [
       'namespace' => $namespace,

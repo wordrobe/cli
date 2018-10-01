@@ -7,12 +7,16 @@ use Wordrobe\Helper\Dialog;
 use Wordrobe\Helper\StringsManager;
 use Wordrobe\Entity\Template;
 
+/**
+ * Class SingleBuilder
+ * @package Wordrobe\Builder
+ */
 class SingleBuilder extends TemplateBuilder implements Builder
 {
   /**
-   * Builds single template
+   * Builds single post template
    * @param array $params
-   * @example SingleBuilder::create([
+   * @example SingleBuilder::build([
    *  'post-type' => $post_type,
    *  'entity-name' => $entity_name,
    *  'theme' => $theme,
@@ -42,7 +46,11 @@ class SingleBuilder extends TemplateBuilder implements Builder
    */
   private static function prepareParams($params)
   {
-    // checking existence
+    // checking theme
+    $theme = StringsManager::toKebabCase($params['theme']);
+    Config::check("themes.$theme", 'array', "Error: theme '$theme' doesn't exist.");
+
+    // checking params
     if (!$params['post-type'] || !$params['theme']) {
       throw new \Exception('Error: unable to create single template because of missing parameters.');
     }
@@ -50,14 +58,11 @@ class SingleBuilder extends TemplateBuilder implements Builder
     // normalizing
     $post_type = StringsManager::toKebabCase($params['post-type']);
     $entity_name = $params['entity-name'] ? StringsManager::toPascalCase($params['entity-name']) : StringsManager::toPascalCase($params['post-type']);
-    $theme = StringsManager::toKebabCase($params['theme']);
     $override = strtolower($params['override']);
   
     if ($override !== 'ask' && $override !== 'force') {
       $override = false;
     }
-  
-    Config::check("themes.$theme", 'array', "Error: theme '$theme' doesn't exist.");
     
     if (!in_array($post_type, Config::get("themes.$theme.post-types", ['type' => 'array']))) {
       throw new \Exception("Error: post type '$post_type' not found in '$theme' theme.");

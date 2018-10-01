@@ -12,7 +12,7 @@ use Wordrobe\Helper\Dialog;
 class ConfigBuilder implements WizardBuilder
 {
   /**
-   * Handles config creation wizard
+   * Handles config template build wizard
    */
   public static function startWizard()
   {
@@ -27,9 +27,9 @@ class ConfigBuilder implements WizardBuilder
   }
   
   /**
-   * Builds config
+   * Builds config template
    * @param array $params
-   * @example ConfigBuilder::create([
+   * @example ConfigBuilder::build([
    *  'themes-path' => $themes_path
    *  'plugins-path' => $plugins_path
    * ]);

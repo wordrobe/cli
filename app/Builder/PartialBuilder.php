@@ -7,10 +7,14 @@ use Wordrobe\Helper\Dialog;
 use Wordrobe\Helper\StringsManager;
 use Wordrobe\Entity\Template;
 
+/**
+ * Class PartialBuilder
+ * @package Wordrobe\Builder
+ */
 class PartialBuilder extends TemplateBuilder implements WizardBuilder
 {
   /**
-   * Handles partial template creation wizard
+   * Handles partial template build wizard
    */
   public static function startWizard()
   {
@@ -32,7 +36,7 @@ class PartialBuilder extends TemplateBuilder implements WizardBuilder
   /**
    * Builds partial template
    * @param array $params
-   * @example PartialBuilder::create([
+   * @example PartialBuilder::build([
    *  'class-name' => $class_name,
    *  'theme' => $theme,
    *  'override' => 'ask'|'force'|false
@@ -67,21 +71,22 @@ class PartialBuilder extends TemplateBuilder implements WizardBuilder
    */
   private static function prepareParams($params)
   {
-    // checking existence
+    // checking theme
+    $theme = StringsManager::toKebabCase($params['theme']);
+    Config::check("themes.$theme", 'array', "Error: theme '$theme' doesn't exist.");
+
+    // checking params
     if (!$params['class-name'] || !$params['theme']) {
       throw new \Exception('Error: unable to create partial template because of missing parameters.');
     }
     
     // normalizing
-    $theme = StringsManager::toKebabCase($params['theme']);
     $content = $params['content'] || '';
     $override = strtolower($params['override']);
   
     if ($override !== 'ask' && $override !== 'force') {
       $override = false;
     }
-  
-    Config::check("themes.$theme", 'array', "Error: theme '$theme' doesn't exist.");
 
     // paths
     $filename = StringsManager::toKebabCase($params['class-name']);

@@ -13,7 +13,7 @@ use Wordrobe\Helper\StringsManager;
 class ThemeBuilder implements WizardBuilder
 {
   /**
-   * Handles theme creation wizard
+   * Handles theme build wizard
    */
   public static function startWizard()
   {
@@ -56,7 +56,7 @@ class ThemeBuilder implements WizardBuilder
   /**
    * Builds theme
    * @param array $params
-   * @example ThemeBuilder::create([
+   * @example ThemeBuilder::build([
    *  'theme-name' => $theme_name,
    *  'theme-uri' => $theme_uri,
    *  'description' => $description,

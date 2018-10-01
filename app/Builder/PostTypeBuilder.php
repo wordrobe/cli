@@ -7,10 +7,14 @@ use Wordrobe\Helper\Dialog;
 use Wordrobe\Helper\StringsManager;
 use Wordrobe\Entity\Template;
 
+/**
+ * Class PostTypeBuilder
+ * @package Wordrobe\Builder
+ */
 class PostTypeBuilder extends TemplateBuilder implements WizardBuilder
 {
   /**
-   * Handles post type creation wizard
+   * Handles post type build wizard
    */
   public static function startWizard()
   {
@@ -46,9 +50,9 @@ class PostTypeBuilder extends TemplateBuilder implements WizardBuilder
   }
   
   /**
-   * Builds post type
+   * Builds post type template
    * @param array $params
-   * @example PostTypeBuilder::create([
+   * @example PostTypeBuilder::build([
    *  'key' => $key,
    *  'general-name' => $general_name,
    *  'singular-name' => $singular_name,
@@ -222,7 +226,11 @@ class PostTypeBuilder extends TemplateBuilder implements WizardBuilder
    */
   private static function prepareParams($params)
   {
-    // checking existence
+    // checking theme
+    $theme = StringsManager::toKebabCase($params['theme']);
+    Config::check("themes.$theme", 'array', "Error: theme '$theme' doesn't exist.");
+
+    // checking params
     if (!$params['key'] || !$params['general-name'] || !$params['singular-name'] || !$params['text-domain'] || !$params['capability-type'] || !$params['theme']) {
       throw new \Exception('Error: unable to create post type because of missing parameters.');
     }
@@ -241,18 +249,15 @@ class PostTypeBuilder extends TemplateBuilder implements WizardBuilder
     $description = ucfirst($params['description']);
     $rewrite = $public ? '["slug" => "' . StringsManager::toKebabCase($params['general-name']) . '", "with_front" => false]' : false;
     $supports = '["title", "editor", "author", "thumbnail", "excerpt", "trackbacks", "custom-fields", "comments", "revisions", "post-formats", "page-attributes"]';
-    $theme = StringsManager::toKebabCase($params['theme']);
     $override = strtolower($params['override']);
   
     if ($override !== 'ask' && $override !== 'force') {
       $override = false;
     }
-  
-    Config::check("themes.$theme", 'array', "Error: theme '$theme' doesn't exist.");
 
     // paths
     $theme_path = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $theme;
-    $filepath = "$theme_path/app/post-type/$key.php";
+    $filepath = "$theme_path/app/post-types/$key.php";
     $config_path = "themes.$theme.post-types";
     
     return [
