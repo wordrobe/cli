@@ -62,7 +62,7 @@ class PostEntityBuilder extends TemplateBuilder implements Builder
     // paths
     $theme_path = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $theme;
     $namespace = Config::get("themes.$theme.namespace", true);
-    $filepath = "$theme_path/app/Entity/" . $name . ".php";
+    $filepath = "$theme_path/core/Entity/" . $name . ".php";
 
     return [
       'namespace' => $namespace,

@@ -152,8 +152,8 @@ class ShortcodeBuilder extends TemplateBuilder implements WizardBuilder
 
     // paths
     $theme_path = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $theme;
-    $ctrl_filepath = "$theme_path/app/shortcodes/$key/index.php";
-    $plugin_filepath = "$theme_path/app/shortcodes/$key/index.js";
+    $ctrl_filepath = "$theme_path/core/shortcodes/$key/index.php";
+    $plugin_filepath = "$theme_path/core/shortcodes/$key/index.js";
     $view_filepath = "$theme_path/templates/partials/shortcodes/$key.html.twig";
 
     return [

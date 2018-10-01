@@ -202,7 +202,7 @@ class TaxonomyBuilder extends TemplateBuilder implements WizardBuilder
 
     // paths
     $theme_path = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $theme;
-    $filepath = "$theme_path/app/taxonomies/$key.php";
+    $filepath = "$theme_path/core/taxonomies/$key.php";
     $config_path = "themes.$theme.taxonomies.$key";
     
     return [

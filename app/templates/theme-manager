@@ -46,7 +46,7 @@ class ThemeManager {
    */
   public static function enableCustomFieldsAutosave()
   {
-    return get_stylesheet_directory() . '/app/fields';
+    return get_stylesheet_directory() . '/core/fields';
   }
 
   /**
@@ -56,7 +56,7 @@ class ThemeManager {
    */
   public static function enableCustomFieldsAutoload($paths)
   {
-    $paths[0] = get_stylesheet_directory() . '/app/fields';
+    $paths[0] = get_stylesheet_directory() . '/core/fields';
     return $paths;
   }
 

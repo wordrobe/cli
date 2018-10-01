@@ -176,7 +176,7 @@ class ServiceBuilder extends TemplateBuilder implements WizardBuilder
     // paths
     $filename = self::getRouteName($params['route']);
     $theme_path = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $theme;
-    $filepath = "$theme_path/app/services/$namespace/$filename.php";
+    $filepath = "$theme_path/core/services/$namespace/$filename.php";
 
     return [
       'namespace' => $namespace,

@@ -7,17 +7,16 @@ use Wordrobe\Helper\StringsManager;
 use Wordrobe\Entity\Template;
 
 /**
- * Class PostHandlerBuilder
+ * Class PageHandlerBuilder
  * @package Wordrobe\Builder
  */
-class PostHandlerBuilder extends TemplateBuilder implements Builder
+class PageHandlerBuilder extends TemplateBuilder implements Builder
 {
   /**
-   * Builds post handler template
+   * Builds page handler template
    * @param array $params
-   * @example PostHandlerBuilder::build([
+   * @example PageHandlerBuilder::build([
    *  'entity-name' => $entity_name,
-   *  'post-type' => $post_type,
    *  'theme' => $theme,
    *  'override' => 'ask'|'force'|false
    * ]);
@@ -26,11 +25,10 @@ class PostHandlerBuilder extends TemplateBuilder implements Builder
   public static function build($params)
   {
     $params = self::prepareParams($params);
-    $handler = new Template('post-handler', [
+    $handler = new Template('page-handler', [
       '{NAMESPACE}' => $params['namespace'],
       '{ENTITY_NAMESPACE}' => $params['namespace'] . '\Entity',
-      '{ENTITY_NAME}' => $params['entity-name'],
-      '{POST_TYPE}' => $params['post-type'],
+      '{ENTITY_NAME}' => $params['entity-name']
     ]);
     $handler->save($params['filepath'], $params['override']);
   }
@@ -48,13 +46,12 @@ class PostHandlerBuilder extends TemplateBuilder implements Builder
     Config::check("themes.$theme", 'array', "Error: theme '$theme' doesn't exist.");
 
     // checking params
-    if (!$params['entity-name'] || !$params['post-type'] || !$params['theme']) {
-      throw new \Exception('Error: unable to create post handler because of missing parameters.');
+    if (!$params['entity-name'] || !$params['theme']) {
+      throw new \Exception('Error: unable to create page handler because of missing parameters.');
     }
 
     // normalizing
     $entity_name = StringsManager::toPascalCase($params['entity-name']);
-    $post_type = StringsManager::toKebabCase($params['post-type']);
     $override = strtolower($params['override']);
 
     if ($override !== 'ask' && $override !== 'force') {
@@ -70,7 +67,6 @@ class PostHandlerBuilder extends TemplateBuilder implements Builder
     return [
       'namespace' => $namespace,
       'entity-name' => $entity_name,
-      'post-type' => $post_type,
       'filepath' => $filepath,
       'override' => $override,
       'theme' => $theme

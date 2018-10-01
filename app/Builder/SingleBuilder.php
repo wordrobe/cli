@@ -63,8 +63,8 @@ class SingleBuilder extends TemplateBuilder implements Builder
     if ($override !== 'ask' && $override !== 'force') {
       $override = false;
     }
-    
-    if (!in_array($post_type, Config::get("themes.$theme.post-types", ['type' => 'array']))) {
+
+    if (!Config::get("themes.$theme.post-types.$post_type")) {
       throw new \Exception("Error: post type '$post_type' not found in '$theme' theme.");
     }
 

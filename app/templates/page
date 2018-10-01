@@ -8,6 +8,6 @@ use Timber\Timber;
 use {NAMESPACE}\Handler\{ENTITY_NAME}Handler;
 
 $context = Timber::get_context();
-$context['contents'] = {ENTITY_NAME}Handler::getPostDTO();
+$context['contents'] = {ENTITY_NAME}Handler::getPageDTO();
 
 Timber::render('templates/pages/{VIEW_FILENAME}.html.twig', $context);

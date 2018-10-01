@@ -86,7 +86,8 @@ class PostTypeBuilder extends TemplateBuilder implements WizardBuilder
     ]);
     $post_type->save($params['filepath'], $params['override']);
 
-    Config::add($params['config-path'], $params['key']);
+    Config::set($params['config-path'], []);
+    Config::set($params['config-path'] . '.has-archive', (bool) $params['has-archive']);
 
     PostDTOBuilder::build([
       'entity-name' => $params['entity-name'],
@@ -257,8 +258,8 @@ class PostTypeBuilder extends TemplateBuilder implements WizardBuilder
 
     // paths
     $theme_path = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $theme;
-    $filepath = "$theme_path/app/post-types/$key.php";
-    $config_path = "themes.$theme.post-types";
+    $filepath = "$theme_path/core/post-types/$key.php";
+    $config_path = "themes.$theme.post-types.$key";
     
     return [
       'key' => $key,

@@ -12,7 +12,7 @@ class {ENTITY_NAME}DTO implements DTOInterface
 
   /**
    * {ENTITY_NAME}DTO constructor
-   * @param {ENTITY_NAME} $post
+   * @param \{ENTITY_NAMESPACE}\{ENTITY_NAME} $post
    */
   public function __construct({ENTITY_NAME} $post)
   {

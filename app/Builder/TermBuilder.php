@@ -178,7 +178,7 @@ class TermBuilder extends TemplateBuilder implements WizardBuilder
 
     // paths
     $theme_path = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $theme;
-    $filepath = "$theme_path/app/terms/$taxonomy/$slug.php";
+    $filepath = "$theme_path/core/terms/$taxonomy/$slug.php";
 
     return [
       'name' => $name,

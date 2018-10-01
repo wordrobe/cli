@@ -29,7 +29,7 @@ class Menu implements Feature
     $this->name = ucwords($name);
     $this->description = ucfirst($description);
     $this->text_domain = StringsManager::toKebabCase($text_domain);
-    add_action('after_setup_theme', [$this, 'register']);
+    add_action('init', [$this, 'register']);
   }
   
   /**

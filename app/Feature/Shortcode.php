@@ -61,7 +61,7 @@ class Shortcode implements Feature
   public function registerPlugin($plugin_array)
   {
     if (!is_null($this->key)) {
-      $plugin_array[$this->key] = get_template_directory_uri() . '/app/shortcodes/' . $this->key . '/index.js';
+      $plugin_array[$this->key] = get_template_directory_uri() . '/core/shortcodes/' . $this->key . '/index.js';
     }
 
     return $plugin_array;

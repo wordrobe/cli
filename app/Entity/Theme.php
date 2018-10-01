@@ -110,7 +110,7 @@ class Theme
       '{TEXT_DOMAIN}' => $this->text_domain,
       '{ROOT_PATH}' => Config::getRelativeRootPath($this->path)
     ]);
-    $functions->save("$this->path/app/ThemeManager.php", 'force');
+    $functions->save("$this->path/core/ThemeManager.php", 'force');
   }
 
   /**

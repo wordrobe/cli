@@ -59,7 +59,7 @@ class PartialBuilder extends TemplateBuilder implements WizardBuilder
    */
   private static function askForClassName()
   {
-    $class_name = Dialog::getAnswer('Class name (e.g. my-partial):');
+    $class_name = Dialog::getAnswer('CSS class (e.g. my-partial):');
     return $class_name ?: self::askForClassName();
   }
   

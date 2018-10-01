@@ -64,7 +64,7 @@ class PostDTOBuilder extends TemplateBuilder implements Builder
     $theme_path = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $theme;
     $namespace = Config::get("themes.$theme.namespace", true);
     $entity_namespace = $entity_name === 'Post' ? 'Timber' : $namespace . '\Entity';
-    $filepath = "$theme_path/app/DTO/$filename.php";
+    $filepath = "$theme_path/core/DTO/$filename.php";
 
     return [
       'namespace' => $namespace,

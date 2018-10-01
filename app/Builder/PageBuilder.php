@@ -68,8 +68,7 @@ class PageBuilder extends TemplateBuilder implements WizardBuilder
       'override' => $params['override']
     ]);
 
-    PostHandlerBuilder::build([
-      'post-type' => 'page',
+    PageHandlerBuilder::build([
       'entity-name' => $params['entity-name'],
       'theme' => $params['theme'],
       'override' => $params['override']

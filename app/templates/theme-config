@@ -2,8 +2,9 @@
 	"namespace": "{NAMESPACE}",
 	"text-domain": "{TEXT_DOMAIN}",
 	"post-types": [
-	  "post",
-	  "page"
+	  "post": [
+	    "has-archive": true
+	  ]
   ],
 	"taxonomies": {
 	  "category": [
