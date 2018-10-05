@@ -1,0 +1,97 @@
+<?php
+
+namespace {NAMESPACE}\Repository;
+
+use Timber\Timber;
+use Timber\Post;
+use Wordrobe\Feature\RepositoryInterface;
+use {NAMESPACE}\Entity\{ENTITY_NAME};
+use {NAMESPACE}\DTO\{ENTITY_NAME}DTO;
+
+/**
+ * Class {ENTITY_NAME}Repository
+ * @package {NAMESPACE}\Repository
+ */
+class {ENTITY_NAME}Repository implements RepositoryInterface
+{
+  /**
+   * Returns a {ENTITY_NAME} entity from a Timber\Post
+   * @param mixed $post
+   * @return \{NAMESPACE}\Entity\{ENTITY_NAME}
+   */
+  public static function getEntityByPost($post = null)
+  {
+    if (!$post instanceof Post) {
+      $post = new Post($post);
+    }
+
+    $title = $post->title();
+    $url = $post->link();
+    // other properties here
+    // e.g. $my_custom_field = $post->get_field('my_custom_field');
+
+    return {ENTITY_NAME}::construct($title, $url);
+  }
+
+  /**
+   * Returns all {ENTITY_NAME} entities from query
+   * @param array $query_args (wp_query format)
+   * @return \{NAMESPACE}\Entity\{ENTITY_NAME}[]
+   */
+  public static function getAllEntities($query_args = [])
+  {
+    $args = array_unique(array_merge($query_args, ['post_type' => '{POST_TYPE}']));
+    $posts = Timber::get_posts($args);
+    return array_map(function($post) {
+      return self::getEntityByPost($post);
+    }, $posts);
+  }
+
+ /**
+  * Returns a {ENTITY_NAME}DTO from a Timber\Post
+  * @param mixed $post
+  * @return \Wordrobe\Feature\DTOInterface
+  */
+  public static function getDTOByPost($post = null)
+  {
+    $entity = self::getEntityByPost();
+    return {ENTITY_NAME}DTO::construct($entity);
+  }
+
+  /**
+   * Returns all {ENTITY_NAME}DTO
+   * @param array $query_args (wp_query format)
+   * @return \Wordrobe\Feature\DTOInterface[]
+   */
+  public static function getAllDTO($query_args = [])
+  {
+    $entities = self::getAllEntities($query_args);
+    return array_map(function($entity) {
+      return {ENTITY_NAME}DTO::construct($entity);
+    }, $entities);
+  }
+
+  /**
+   * Returns {ENTITY_NAME} data formatted by {ENTITY_NAME}DTO
+   * @param mixed $post
+   * @return array
+   */
+  public static function getFormattedDataByPost($post = null)
+  {
+    $dto = self::getDTOByPost($post);
+    return $dto->getData();
+  }
+
+  /**
+   * Returns all {ENTITY_NAME} data formatted by {ENTITY_NAME}DTO
+   * @param array $query_args (wp_query format)
+   * @return array
+   */
+  public static function getAllFormattedData($query_args = [])
+  {
+    $dtos = self::getAllDTO($query_args);
+    return array_map(function($dto) {
+      return $dto->getData();
+    }, $dtos);
+  }
+}

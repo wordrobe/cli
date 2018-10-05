@@ -8,16 +8,17 @@ use Wordrobe\Helper\StringsManager;
 use Wordrobe\Entity\Template;
 
 /**
- * Class PostDTOBuilder
+ * Class EntityBuilder
  * @package Wordrobe\Builder
  */
-class PostDTOBuilder extends TemplateBuilder implements Builder
+class EntityBuilder extends TemplateBuilder implements Builder
 {
   /**
-   * Builds post DTO template
+   * Builds post entity template
    * @param array $params
-   * @example PostDTOBuilder::build([
-   *  'entity-name' => $entity_name,
+   * @example EntityBuilder::build([
+   *  'post-type' => $post_type,
+   *  'name' => $name,
    *  'theme' => $theme,
    *  'override' => 'ask'|'force'|false
    * ]);
@@ -26,12 +27,11 @@ class PostDTOBuilder extends TemplateBuilder implements Builder
   public static function build($params)
   {
     $params = self::prepareParams($params);
-    $dto = new Template('post-dto', [
+    $entity = new Template('entity', [
       '{NAMESPACE}' => $params['namespace'],
-      '{ENTITY_NAMESPACE}' => $params['entity-namespace'],
-      '{ENTITY_NAME}' => $params['entity-name']
+      '{NAME}' => $params['name']
     ]);
-    $dto->save($params['filepath'], $params['override']);
+    $entity->save($params['filepath'], $params['override']);
   }
 
   /**
@@ -47,12 +47,12 @@ class PostDTOBuilder extends TemplateBuilder implements Builder
     Config::check("themes.$theme", 'array', "Error: theme '$theme' doesn't exist.");
 
     // checking params
-    if (!$params['entity-name'] || !$params['theme']) {
-      throw new \Exception('Error: unable to create post DTO because of missing parameters.');
+    if (!$params['name'] || !$params['theme']) {
+      throw new \Exception('Error: unable to create post entity because of missing parameters.');
     }
 
     // normalizing
-    $entity_name = StringsManager::toPascalCase($params['entity-name']);
+    $name = StringsManager::toPascalCase($params['name']);
     $override = strtolower($params['override']);
 
     if ($override !== 'ask' && $override !== 'force') {
@@ -60,16 +60,13 @@ class PostDTOBuilder extends TemplateBuilder implements Builder
     }
 
     // paths
-    $filename = $entity_name . 'DTO';
     $theme_path = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $theme;
     $namespace = Config::get("themes.$theme.namespace", true);
-    $entity_namespace = $entity_name === 'Post' ? 'Timber' : $namespace . '\Entity';
-    $filepath = "$theme_path/core/DTO/$filename.php";
+    $filepath = "$theme_path/core/Entity/" . $name . ".php";
 
     return [
       'namespace' => $namespace,
-      'entity-namespace' => $entity_namespace,
-      'entity-name' => $entity_name,
+      'name' => $name,
       'filepath' => $filepath,
       'override' => $override,
       'theme' => $theme

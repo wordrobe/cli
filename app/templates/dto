@@ -1,0 +1,40 @@
+<?php
+
+namespace {NAMESPACE}\DTO;
+
+use Wordrobe\Feature\DTOInterface;
+use {NAMESPACE}\Entity\{ENTITY_NAME};
+
+class {ENTITY_NAME}DTO implements DTOInterface
+{
+  // variables here
+  // e.g. private $title;
+
+  /**
+   * {ENTITY_NAME}DTO private constructor
+   * @param \{NAMESPACE}\Entity\{ENTITY_NAME} $entity
+   */
+  private function __construct({ENTITY_NAME} $entity)
+  {
+    // setting data here
+    // e.g. $this->title = $entity->getTitle();
+  }
+
+  /**
+   * {ENTITY_NAME} data getter
+   */
+  public function getData()
+  {
+    return (array) $this; // or map data like you want
+  }
+
+  /**
+   * {ENTITY_NAME}DTO public constructor
+   * @param \{NAMESPACE}\Entity\{ENTITY_NAME} $entity
+   * @return self
+   */
+  public static function construct({ENTITY_NAME} $entity)
+  {
+    return new self($entity);
+  }
+}

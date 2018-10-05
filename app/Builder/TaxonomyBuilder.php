@@ -70,7 +70,8 @@ class TaxonomyBuilder extends TemplateBuilder implements WizardBuilder
       '{SINGULAR_NAME}' => $params['singular-name'],
       '{TEXT_DOMAIN}' => $params['text-domain'],
       '{POST_TYPES}' => $params['post-types'],
-      '{HIERARCHICAL}' => $params['hierarchical'] ? 'true' : 'false'
+      '{HIERARCHICAL}' => $params['hierarchical'] ? 'true' : 'false',
+      '{REWRITE}' => $params['rewrite'],
     ]);
     $taxonomy->save($params['filepath'], $params['override']);
 
@@ -187,6 +188,7 @@ class TaxonomyBuilder extends TemplateBuilder implements WizardBuilder
     $text_domain = StringsManager::toKebabCase($params['text-domain']);
     $post_types = strtolower(StringsManager::removeSpaces($params['post-types']));
     $hierarchical = $params['hierarchical'] ? 1 : 0;
+    $rewrite = '["slug" => "' . StringsManager::toKebabCase($params['general-name']) . '", "with_front" => false]';
     $build_archive = $params['build-archive'] || false;
     $override = strtolower($params['override']);
   
@@ -212,6 +214,7 @@ class TaxonomyBuilder extends TemplateBuilder implements WizardBuilder
       'text-domain' => $text_domain,
       'post-types' => $post_types,
       'hierarchical' => $hierarchical,
+      'rewrite' => $rewrite,
       'filepath' => $filepath,
       'build-archive' => $build_archive,
       'override' => $override,

@@ -3,19 +3,20 @@
 namespace Wordrobe\Builder;
 
 use Wordrobe\Helper\Config;
+use Wordrobe\Helper\Dialog;
 use Wordrobe\Helper\StringsManager;
 use Wordrobe\Entity\Template;
 
 /**
- * Class PageHandlerBuilder
+ * Class DTOBuilder
  * @package Wordrobe\Builder
  */
-class PageHandlerBuilder extends TemplateBuilder implements Builder
+class DTOBuilder extends TemplateBuilder implements Builder
 {
   /**
-   * Builds page handler template
+   * Builds post DTO template
    * @param array $params
-   * @example PageHandlerBuilder::build([
+   * @example DTOBuilder::build([
    *  'entity-name' => $entity_name,
    *  'theme' => $theme,
    *  'override' => 'ask'|'force'|false
@@ -25,12 +26,11 @@ class PageHandlerBuilder extends TemplateBuilder implements Builder
   public static function build($params)
   {
     $params = self::prepareParams($params);
-    $handler = new Template('page-handler', [
+    $dto = new Template('dto', [
       '{NAMESPACE}' => $params['namespace'],
-      '{ENTITY_NAMESPACE}' => $params['namespace'] . '\Entity',
       '{ENTITY_NAME}' => $params['entity-name']
     ]);
-    $handler->save($params['filepath'], $params['override']);
+    $dto->save($params['filepath'], $params['override']);
   }
 
   /**
@@ -47,7 +47,7 @@ class PageHandlerBuilder extends TemplateBuilder implements Builder
 
     // checking params
     if (!$params['entity-name'] || !$params['theme']) {
-      throw new \Exception('Error: unable to create page handler because of missing parameters.');
+      throw new \Exception('Error: unable to create post DTO because of missing parameters.');
     }
 
     // normalizing
@@ -59,10 +59,10 @@ class PageHandlerBuilder extends TemplateBuilder implements Builder
     }
 
     // paths
-    $filename = $entity_name . 'Handler';
+    $filename = $entity_name . 'DTO';
     $theme_path = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $theme;
     $namespace = Config::get("themes.$theme.namespace", true);
-    $filepath = "$theme_path/core/Handler/$filename.php";
+    $filepath = "$theme_path/core/DTO/$filename.php";
 
     return [
       'namespace' => $namespace,

@@ -1,9 +1,9 @@
 <?php
 
 use Timber\Timber;
-use {NAMESPACE}\Handler\{ENTITY_NAME}Handler;
+use {NAMESPACE}\Repository\{ENTITY_NAME}Repository;
 
 $context = Timber::get_context();
-$context['posts'] = {ENTITY_NAME}Handler::getPostsDTO();
+$context['posts'] = {ENTITY_NAME}Repository::getAllFormattedData();
 
 Timber::render('templates/default/{VIEW_FILENAME}.html.twig', $context);

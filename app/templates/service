@@ -1,6 +1,6 @@
 <?php
 
-// require handlers here
+// require data handlers here
 
 Wordrobe\Feature\Factory::create("Service", [
   "namespace" => "{NAMESPACE}",

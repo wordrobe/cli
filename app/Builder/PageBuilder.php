@@ -56,19 +56,20 @@ class PageBuilder extends TemplateBuilder implements WizardBuilder
     $page_ctrl->save($params['ctrl-filepath'], $params['override']);
     $page_view->save($params['view-filepath'], $params['override']);
 
-    PostDTOBuilder::build([
+    DTOBuilder::build([
       'entity-name' => $params['entity-name'],
       'theme' => $params['theme'],
       'override' => $params['override']
     ]);
 
-    PostEntityBuilder::build([
+    EntityBuilder::build([
       'name' => $params['entity-name'],
       'theme' => $params['theme'],
       'override' => $params['override']
     ]);
 
-    PageHandlerBuilder::build([
+    RepositoryBuilder::build([
+      'post-type' => 'page',
       'entity-name' => $params['entity-name'],
       'theme' => $params['theme'],
       'override' => $params['override']

@@ -1,0 +1,56 @@
+<?php
+
+namespace {NAMESPACE}\Repository;
+
+use Timber\Post;
+use Wordrobe\Feature\RepositoryInterface;
+use {NAMESPACE}\Entity\{ENTITY_NAME};
+use {NAMESPACE}\DTO\{ENTITY_NAME}DTO;
+
+/**
+ * Class {ENTITY_NAME}Repository
+ * @package {NAMESPACE}\Repository
+ */
+class {ENTITY_NAME}Repository implements RepositoryInterface
+{
+  /**
+   * Returns a {ENTITY_NAME} entity from a Timber\Post
+   * @param mixed $post
+   * @return \{NAMESPACE}\Entity\{ENTITY_NAME}
+   */
+  public static function getEntityByPost($post = null)
+  {
+    if (!$post instanceof Post) {
+      $post = new Post($post);
+    }
+
+    $title = $post->title();
+    $url = $post->link();
+    // other properties here
+    // e.g. $my_custom_field = $post->get_field('my_custom_field');
+
+    return {ENTITY_NAME}::construct($title, $url);
+  }
+
+  /**
+   * Returns a {ENTITY_NAME}DTO from a Timber\Post
+   * @param mixed $post
+   * @return \Wordrobe\Feature\DTOInterface
+   */
+  public static function getDTOByPost($post = null)
+  {
+    $entity = self::getEntityByPost();
+    return {ENTITY_NAME}DTO::construct($entity);
+  }
+
+  /**
+   * Returns {ENTITY_NAME} data formatted by {ENTITY_NAME}DTO
+   * @param mixed $post
+   * @return array
+   */
+  public static function getFormattedDataByPost($post = null)
+  {
+    $dto = self::getDTOByPost($post);
+    return $dto->getData();
+  }
+}

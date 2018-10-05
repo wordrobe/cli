@@ -86,22 +86,24 @@ class PostTypeBuilder extends TemplateBuilder implements WizardBuilder
     ]);
     $post_type->save($params['filepath'], $params['override']);
 
-    Config::set($params['config-path'], []);
-    Config::set($params['config-path'] . '.has-archive', (bool) $params['has-archive']);
+    Config::set($params['config-path'], [
+      'capability-type' => $params['capability-type'],
+      'has-archive' => (bool) $params['has-archive']
+    ]);
 
-    PostDTOBuilder::build([
+    DTOBuilder::build([
       'entity-name' => $params['entity-name'],
       'theme' => $params['theme'],
       'override' => $params['override']
     ]);
 
-    PostEntityBuilder::build([
+    EntityBuilder::build([
       'name' => $params['entity-name'],
       'theme' => $params['theme'],
       'override' => $params['override']
     ]);
 
-    PostHandlerBuilder::build([
+    RepositoryBuilder::build([
       'post-type' => $params['key'],
       'entity-name' => $params['entity-name'],
       'theme' => $params['theme'],

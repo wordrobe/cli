@@ -7,15 +7,15 @@ use Wordrobe\Helper\StringsManager;
 use Wordrobe\Entity\Template;
 
 /**
- * Class PostHandlerBuilder
+ * Class RepositoryBuilder
  * @package Wordrobe\Builder
  */
-class PostHandlerBuilder extends TemplateBuilder implements Builder
+class RepositoryBuilder extends TemplateBuilder implements Builder
 {
   /**
    * Builds post handler template
    * @param array $params
-   * @example PostHandlerBuilder::build([
+   * @example RepositoryBuilder::build([
    *  'entity-name' => $entity_name,
    *  'post-type' => $post_type,
    *  'theme' => $theme,
@@ -26,13 +26,13 @@ class PostHandlerBuilder extends TemplateBuilder implements Builder
   public static function build($params)
   {
     $params = self::prepareParams($params);
-    $handler = new Template('post-handler', [
+    $template_model = $params['capability-type'] . '-repository';
+    $repository = new Template($template_model, [
       '{NAMESPACE}' => $params['namespace'],
-      '{ENTITY_NAMESPACE}' => $params['namespace'] . '\Entity',
       '{ENTITY_NAME}' => $params['entity-name'],
       '{POST_TYPE}' => $params['post-type'],
     ]);
-    $handler->save($params['filepath'], $params['override']);
+    $repository->save($params['filepath'], $params['override']);
   }
 
   /**
@@ -55,6 +55,7 @@ class PostHandlerBuilder extends TemplateBuilder implements Builder
     // normalizing
     $entity_name = StringsManager::toPascalCase($params['entity-name']);
     $post_type = StringsManager::toKebabCase($params['post-type']);
+    $capability_type = Config::get("themes.$theme.post-types.$post_type.capability-type");
     $override = strtolower($params['override']);
 
     if ($override !== 'ask' && $override !== 'force') {
@@ -62,13 +63,14 @@ class PostHandlerBuilder extends TemplateBuilder implements Builder
     }
 
     // paths
-    $filename = $entity_name . 'Handler';
+    $filename = $entity_name . 'Repository';
     $theme_path = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $theme;
     $namespace = Config::get("themes.$theme.namespace", true);
-    $filepath = "$theme_path/core/Handler/$filename.php";
+    $filepath = "$theme_path/core/Repository/$filename.php";
 
     return [
       'namespace' => $namespace,
+      'capability-type' => $capability_type,
       'entity-name' => $entity_name,
       'post-type' => $post_type,
       'filepath' => $filepath,

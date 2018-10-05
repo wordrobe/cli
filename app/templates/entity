@@ -1,0 +1,62 @@
+<?php
+
+namespace {NAMESPACE}\Entity;
+
+use Wordrobe\Feature\EntityInterface;
+
+/**
+ * Class {NAME}
+ * @package {NAMESPACE}\Entity
+ */
+class {NAME} implements EntityInterface
+{
+  /**
+   * @var string $title
+   */
+  private $title;
+
+  /**
+   * @var string $url
+   */
+  private $url;
+
+  /**
+   * {NAME} private constructor
+   * @param string $title
+   * @param string $url
+   * @param mixed ...$params
+   */
+  private function __construct($title, $url, ...$params)
+  {
+    $this->title = $title;
+    $this->url = $url;
+  }
+
+  /**
+   * {NAME} title getter
+   */
+  public function getTitle()
+  {
+    return $this->title;
+  }
+
+  /**
+   * {NAME} url getter
+   */
+  public function getUrl()
+  {
+    return $this->url;
+  }
+
+  /**
+   * {NAME} public constructor
+   * @param string $title
+   * @param string $url
+   * @param mixed ...$params
+   * @return self
+   */
+  public static function construct($title, $url, ...$params)
+  {
+    return new self($title, $url, ...$params);
+  }
+}
