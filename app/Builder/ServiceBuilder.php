@@ -59,8 +59,8 @@ class ServiceBuilder extends TemplateBuilder implements WizardBuilder
       '{ROUTE}' => $params['route'],
       '{METHOD}' => $params['method'],
       '{TEXT_DOMAIN}' => $params['text-domain']
-    ]);
-    $service->save($params['filepath'], $params['override']);
+    ], $params['basepath']);
+    $service->save($params['filename'], $params['override']);
   }
 
   /**
@@ -151,7 +151,7 @@ class ServiceBuilder extends TemplateBuilder implements WizardBuilder
     Config::check("themes.$theme", 'array', "Error: theme '$theme' doesn't exist.");
 
     // checking params
-    if (!$params['namespace'] || !$params['route'] || !$params['theme']) {
+    if (!$params['namespace'] || !$params['route']) {
       throw new \Exception('Error: unable to create shortcode because of missing parameters.');
     }
 
@@ -174,15 +174,15 @@ class ServiceBuilder extends TemplateBuilder implements WizardBuilder
     }
 
     // paths
-    $filename = self::getRouteName($params['route']);
-    $theme_path = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $theme;
-    $filepath = "$theme_path/core/services/$namespace/$filename.php";
+    $basepath = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $theme . '/core/services';
+    $filename = $namespace . '/' . self::getRouteName($params['route']) . '.php';
 
     return [
       'namespace' => $namespace,
       'route' => rtrim($route, '/'),
       'method' => $method,
-      'filepath' => $filepath,
+      'basepath' => $basepath,
+      'filename' => $filename,
       'override' => $override,
       'theme' => $theme,
       'text-domain' => Config::get("themes.$theme.text-domain")

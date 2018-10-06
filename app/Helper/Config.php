@@ -33,8 +33,8 @@ class Config
  */
   public static function init($params = null)
   {
-    $template = new Template('project-config', $params);
-    $template->save(self::getRootPath() . '/' . self::FILENAME);
+    $template = new Template('config-project', $params, self::getRootPath());
+    $template->save(self::FILENAME);
   }
   
   /**

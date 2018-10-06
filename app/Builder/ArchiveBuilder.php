@@ -86,10 +86,10 @@ class ArchiveBuilder extends TemplateBuilder implements WizardBuilder
       '{ENTITY_NAME}' => $params['entity-name'],
       '{QUERY}' => $params['query'],
       '{VIEW_FILENAME}' => $params['filename']
-    ]);
-    $archive_view = new Template('view');
-    $archive_ctrl->save($params['ctrl-filepath'], $params['override']);
-    $archive_view->save($params['view-filepath'], $params['override']);
+    ], $params['basepath']);
+    $archive_view = new Template('view', null, $params['basepath'] . '/templates/default');
+    $archive_ctrl->save($params['ctrl-filename'], $params['override']);
+    $archive_view->save($params['view-filename'], $params['override']);
   }
   
   /**
@@ -109,7 +109,7 @@ class ArchiveBuilder extends TemplateBuilder implements WizardBuilder
    */
   private static function askForPostType($theme)
   {
-    $post_types = Config::get("themes.$theme.post-types", ['type' => 'array']);
+    $post_types = array_keys(Config::get("themes.$theme.post-types", ['type' => 'array']));
     $post_types = array_diff($post_types, ['post']);
     
     if (!empty($post_types)) {
@@ -193,17 +193,17 @@ class ArchiveBuilder extends TemplateBuilder implements WizardBuilder
       throw new \Exception("Error: archive type '$type' not found.");
     }
     
-    if ($type === 'archive' && !in_array($key, Config::get("themes.$theme.post-types", ['type' => 'array']))) {
+    if ($type === 'archive' && !in_array($key, array_keys(Config::get("themes.$theme.post-types", ['type' => 'array'])))) {
       throw new \Exception("Error: post type '$key' not found in '$theme' theme.");
     }
 
     // paths
+    $namespace = Config::get("themes.$theme.namespace", true);
+    $basepath = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $theme;
     $basename = $type === 'post-type' ? 'archive' : $type;
     $filename = $key ? $basename . '-' . $key : $basename;
-    $theme_path = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $theme;
-    $namespace = Config::get("themes.$theme.namespace", true);
-    $ctrl_filepath = "$theme_path/$filename.php";
-    $view_filepath = "$theme_path/templates/default/$filename.html.twig";
+    $ctrl_filename = "$filename.php";
+    $view_filename = "$filename.html.twig";
     
     return [
       'type' => $type,
@@ -212,8 +212,9 @@ class ArchiveBuilder extends TemplateBuilder implements WizardBuilder
       'namespace' => $namespace,
       'entity-name' => $entity_name,
       'filename' => $filename,
-      'ctrl-filepath' => $ctrl_filepath,
-      'view-filepath' => $view_filepath,
+      'basepath' => $basepath,
+      'ctrl-filename' => $ctrl_filename,
+      'view-filename' => $view_filename,
       'override' => $override,
       'theme' => $theme
     ];

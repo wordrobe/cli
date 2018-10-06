@@ -55,21 +55,21 @@ class ShortcodeBuilder extends TemplateBuilder implements WizardBuilder
   public static function build($params)
   {
     $params = self::prepareParams($params);
-    $shortcode_ctrl = new Template('shortcode', ['{KEY}' => $params['key']]);
+    $shortcode_ctrl = new Template('shortcode', ['{KEY}' => $params['key']], $params['basepath'] . '/core/shortcodes');
     $shortcode_plugin = new Template('shortcode-plugin', [
       '{TITLE}' => $params['title'],
       '{KEY}' => $params['plugin-key'],
       '{ICON}' => $params['icon'],
       '{SHORTCODE}' => $params['key'],
       '{ATTRIBUTES}' => $params['attributes']
-    ]);
+    ], $params['basepath'] . '/core/shortcodes');
     $shortcode_view = new Template('partial', [
       '{CLASS_NAME}' => $params['key'],
       '{CONTENT}' => '{{ content|shortcodes }}'
-    ]);
-    $shortcode_ctrl->save($params['ctrl-filepath'], $params['override']);
-    $shortcode_plugin->save($params['plugin-filepath'], $params['override']);
-    $shortcode_view->save($params['view-filepath'], $params['override']);
+    ], $params['basepath'] . '/templates/partials/shortcodes');
+    $shortcode_ctrl->save($params['ctrl-filename'], $params['override']);
+    $shortcode_plugin->save($params['plugin-filename'], $params['override']);
+    $shortcode_view->save($params['view-filename'], $params['override']);
   }
 
   /**
@@ -124,7 +124,7 @@ class ShortcodeBuilder extends TemplateBuilder implements WizardBuilder
     Config::check("themes.$theme", 'array', "Error: theme '$theme' doesn't exist.");
 
     // checking params
-    if (!$params['key'] || !$params['theme']) {
+    if (!$params['key']) {
       throw new \Exception('Error: unable to create shortcode because of missing parameters.');
     }
 
@@ -151,10 +151,10 @@ class ShortcodeBuilder extends TemplateBuilder implements WizardBuilder
     }
 
     // paths
-    $theme_path = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $theme;
-    $ctrl_filepath = "$theme_path/core/shortcodes/$key/index.php";
-    $plugin_filepath = "$theme_path/core/shortcodes/$key/index.js";
-    $view_filepath = "$theme_path/templates/partials/shortcodes/$key.html.twig";
+    $basepath = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $theme;
+    $ctrl_filename = "$key/index.php";
+    $plugin_filename = "$key/index.js";
+    $view_filename = "$key.html.twig";
 
     return [
       'key' => $key,
@@ -162,9 +162,10 @@ class ShortcodeBuilder extends TemplateBuilder implements WizardBuilder
       'attributes' => $attributes,
       'title' => ucwords($title),
       'icon' => $icon,
-      'ctrl-filepath' => $ctrl_filepath,
-      'plugin-filepath' => $plugin_filepath,
-      'view-filepath' => $view_filepath,
+      'basepath' => $basepath,
+      'ctrl-filename' => $ctrl_filename,
+      'plugin-filename' => $plugin_filename,
+      'view-filename' => $view_filename,
       'override' => $override,
       'theme' => $theme
     ];

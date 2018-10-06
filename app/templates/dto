@@ -3,38 +3,28 @@
 namespace {NAMESPACE}\DTO;
 
 use Wordrobe\Feature\DTOInterface;
-use {NAMESPACE}\Entity\{ENTITY_NAME};
+use {NAMESPACE}\Entity\Entity;
 
-class {ENTITY_NAME}DTO implements DTOInterface
+class DTO implements DTOInterface
 {
-  // variables here
+  // properties here
   // e.g. private $title;
 
   /**
-   * {ENTITY_NAME}DTO private constructor
-   * @param \{NAMESPACE}\Entity\{ENTITY_NAME} $entity
+   * DTO's protected constructor
+   * @param \{NAMESPACE}\Entity\Entity $entity
    */
-  private function __construct({ENTITY_NAME} $entity)
+  public function __construct(Entity $entity)
   {
     // setting data here
     // e.g. $this->title = $entity->getTitle();
   }
 
   /**
-   * {ENTITY_NAME} data getter
+   * DTO's data getter
    */
   public function getData()
   {
     return (array) $this; // or map data like you want
-  }
-
-  /**
-   * {ENTITY_NAME}DTO public constructor
-   * @param \{NAMESPACE}\Entity\{ENTITY_NAME} $entity
-   * @return self
-   */
-  public static function construct({ENTITY_NAME} $entity)
-  {
-    return new self($entity);
   }
 }

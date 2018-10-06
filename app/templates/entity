@@ -5,10 +5,10 @@ namespace {NAMESPACE}\Entity;
 use Wordrobe\Feature\EntityInterface;
 
 /**
- * Class {NAME}
+ * Class Entity
  * @package {NAMESPACE}\Entity
  */
-class {NAME} implements EntityInterface
+class Entity implements EntityInterface
 {
   /**
    * @var string $title
@@ -21,19 +21,19 @@ class {NAME} implements EntityInterface
   private $url;
 
   /**
-   * {NAME} private constructor
+   * Entity's protected constructor
    * @param string $title
    * @param string $url
    * @param mixed ...$params
    */
-  private function __construct($title, $url, ...$params)
+  public function __construct($title, $url, ...$params)
   {
     $this->title = $title;
     $this->url = $url;
   }
 
   /**
-   * {NAME} title getter
+   * Entity's title getter
    */
   public function getTitle()
   {
@@ -41,22 +41,10 @@ class {NAME} implements EntityInterface
   }
 
   /**
-   * {NAME} url getter
+   * Entity's url getter
    */
   public function getUrl()
   {
     return $this->url;
-  }
-
-  /**
-   * {NAME} public constructor
-   * @param string $title
-   * @param string $url
-   * @param mixed ...$params
-   * @return self
-   */
-  public static function construct($title, $url, ...$params)
-  {
-    return new self($title, $url, ...$params);
   }
 }

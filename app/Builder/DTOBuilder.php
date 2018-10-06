@@ -26,11 +26,12 @@ class DTOBuilder extends TemplateBuilder implements Builder
   public static function build($params)
   {
     $params = self::prepareParams($params);
-    $dto = new Template('dto', [
+    $template_model = $params['entity-name'] ? 'dto-extension' : 'dto';
+    $dto = new Template($template_model, [
       '{NAMESPACE}' => $params['namespace'],
       '{ENTITY_NAME}' => $params['entity-name']
-    ]);
-    $dto->save($params['filepath'], $params['override']);
+    ], $params['basepath']);
+    $dto->save($params['filename'], $params['override']);
   }
 
   /**
@@ -45,13 +46,8 @@ class DTOBuilder extends TemplateBuilder implements Builder
     $theme = StringsManager::toKebabCase($params['theme']);
     Config::check("themes.$theme", 'array', "Error: theme '$theme' doesn't exist.");
 
-    // checking params
-    if (!$params['entity-name'] || !$params['theme']) {
-      throw new \Exception('Error: unable to create post DTO because of missing parameters.');
-    }
-
     // normalizing
-    $entity_name = StringsManager::toPascalCase($params['entity-name']);
+    $entity_name = $params['entity-name'] ? StringsManager::toPascalCase($params['entity-name']) : null;
     $override = strtolower($params['override']);
 
     if ($override !== 'ask' && $override !== 'force') {
@@ -59,15 +55,15 @@ class DTOBuilder extends TemplateBuilder implements Builder
     }
 
     // paths
-    $filename = $entity_name . 'DTO';
-    $theme_path = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $theme;
     $namespace = Config::get("themes.$theme.namespace", true);
-    $filepath = "$theme_path/core/DTO/$filename.php";
+    $basepath = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $theme . '/core/DTO';
+    $filename = $entity_name ? $entity_name . 'DTO.php' : 'DTO.php';
 
     return [
       'namespace' => $namespace,
       'entity-name' => $entity_name,
-      'filepath' => $filepath,
+      'basepath' => $basepath,
+      'filename' => $filename,
       'override' => $override,
       'theme' => $theme
     ];

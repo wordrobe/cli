@@ -65,6 +65,8 @@ class ThemeManager {
    */
   public static function initCustomFields()
   {
+    // N.B.: the following features are available on ACF v5 only
+
     add_filter('acf/settings/load_json', __NAMESPACE__ . '\ThemeManager::enableCustomFieldsAutoload');
 
     if (defined('ACF_AUTOSAVE') && ACF_AUTOSAVE) {

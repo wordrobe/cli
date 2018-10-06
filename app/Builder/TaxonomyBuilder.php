@@ -72,8 +72,8 @@ class TaxonomyBuilder extends TemplateBuilder implements WizardBuilder
       '{POST_TYPES}' => $params['post-types'],
       '{HIERARCHICAL}' => $params['hierarchical'] ? 'true' : 'false',
       '{REWRITE}' => $params['rewrite'],
-    ]);
-    $taxonomy->save($params['filepath'], $params['override']);
+    ], $params['basepath']);
+    $taxonomy->save($params['filename'], $params['override']);
 
     Config::set($params['config-path'], explode(',', $params['post-types']));
     
@@ -141,7 +141,7 @@ class TaxonomyBuilder extends TemplateBuilder implements WizardBuilder
    */
   private static function askForPostTypes($theme)
   {
-    $post_types = Dialog::getChoice('Post types:', Config::get("themes.$theme.post-types", ['type' => 'array']), null, true);
+    $post_types = Dialog::getChoice('Post types:', array_keys(Config::get("themes.$theme.post-types", ['type' => 'array'])), null, true);
     return implode(',', $post_types);
     
   }
@@ -177,7 +177,7 @@ class TaxonomyBuilder extends TemplateBuilder implements WizardBuilder
     Config::check("themes.$theme", 'array', "Error: theme '$theme' doesn't exist.");
 
     // checking params
-    if (!$params['key'] || !$params['general-name'] || !$params['singular-name'] || !$params['text-domain'] || !$params['post-types'] || !$params['theme']) {
+    if (!$params['key'] || !$params['general-name'] || !$params['singular-name'] || !$params['text-domain'] || !$params['post-types']) {
       throw new \Exception('Error: unable to create taxonomy because of missing parameters.');
     }
     
@@ -197,15 +197,15 @@ class TaxonomyBuilder extends TemplateBuilder implements WizardBuilder
     }
     
     foreach (explode(',', $post_types) as $post_type) {
-      if (!in_array($post_type, Config::get("themes.$theme.post-types", ['type' => 'array']))) {
+      if (!in_array($post_type, array_keys(Config::get("themes.$theme.post-types", ['type' => 'array'])))) {
         throw new \Exception("Error: post type '$post_type' not found in '$theme' theme.");
       }
     }
 
     // paths
-    $theme_path = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $theme;
-    $filepath = "$theme_path/core/taxonomies/$key.php";
     $config_path = "themes.$theme.taxonomies.$key";
+    $basepath = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $theme . '/core/taxonomies';
+    $filename = "$key.php";
     
     return [
       'key' => $key,
@@ -215,10 +215,11 @@ class TaxonomyBuilder extends TemplateBuilder implements WizardBuilder
       'post-types' => $post_types,
       'hierarchical' => $hierarchical,
       'rewrite' => $rewrite,
-      'filepath' => $filepath,
+      'config-path' => $config_path,
+      'basepath' => $basepath,
+      'filename' => $filename,
       'build-archive' => $build_archive,
       'override' => $override,
-      'config-path' => $config_path,
       'theme' => $theme
     ];
   }

@@ -2,9 +2,9 @@
 
 use Timber\Timber;
 
-Wordrobe\Feature\Factory::create("Shortcode", [
-  "key" => "{KEY}",
-  "logic" => function($atts, $content) {
+Wordrobe\Feature\Factory::create('Shortcode', [
+  'key' => '{KEY}',
+  'logic' => function($atts, $content) {
     // define logic and arrange data here to pass custom params to shortcode view
     $data = ['attributes' => $atts, 'content' => $content];
     return Timber::compile('templates/partials/shortcodes/{KEY}.html.twig', $data);

@@ -67,8 +67,8 @@ class TermBuilder extends TemplateBuilder implements WizardBuilder
       '{SLUG}' => $params['slug'],
       '{DESCRIPTION}' => $params['description'],
       '{PARENT}' => $params['parent']
-    ]);
-    $term->save($params['filepath'], $params['override']);
+    ], $params['basepath']);
+    $term->save($params['filename'], $params['override']);
     
     if ($params['build-archive']) {
       ArchiveBuilder::build([
@@ -155,7 +155,7 @@ class TermBuilder extends TemplateBuilder implements WizardBuilder
     Config::check("themes.$theme", 'array', "Error: theme '$theme' doesn't exist.");
 
     // checking params
-    if (!$params['name'] || !$params['taxonomy'] || !$params['theme']) {
+    if (!$params['name'] || !$params['taxonomy']) {
       throw new \Exception('Error: unable to create term because of missing parameters.');
     }
     
@@ -177,8 +177,8 @@ class TermBuilder extends TemplateBuilder implements WizardBuilder
     }
 
     // paths
-    $theme_path = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $theme;
-    $filepath = "$theme_path/core/terms/$taxonomy/$slug.php";
+    $basepath = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $theme . '/core/terms';
+    $filename = "$taxonomy/$slug.php";
 
     return [
       'name' => $name,
@@ -188,7 +188,8 @@ class TermBuilder extends TemplateBuilder implements WizardBuilder
       'parent' => $parent,
       'type' => $taxonomy === 'category' || $taxonomy === 'tag' ? $taxonomy : 'taxonomy',
       'key' => $taxonomy === 'category' || $taxonomy === 'tag' ? $slug : $taxonomy . '-' . $slug,
-      'filepath' => $filepath,
+      'basepath' => $basepath,
+      'filename' => $filename,
       'build-archive' => $build_archive,
       'override' => $override,
       'theme' => $theme

@@ -21,8 +21,10 @@ class PageBuilder extends TemplateBuilder implements WizardBuilder
     try {
       $theme = self::askForTheme();
       $name = self::askForName();
+      $has_framework = self::askForFramework();
       self::build([
         'name' => $name,
+        'has-framework' => $has_framework,
         'theme' => $theme,
         'override' => 'ask'
       ]);
@@ -38,6 +40,7 @@ class PageBuilder extends TemplateBuilder implements WizardBuilder
    * @param array $params
    * @example PageBuilder::create([
    *  'name' => $name,
+   *  'has-framework => $has_framework,
    *  'theme' => $theme,
    *  'override' => 'ask'|'force'|false
    * ]);
@@ -51,29 +54,34 @@ class PageBuilder extends TemplateBuilder implements WizardBuilder
       '{NAMESPACE}' => $params['namespace'],
       '{ENTITY_NAME}' => $params['entity-name'],
       '{VIEW_FILENAME}' => $params['filename']
-    ]);
-    $page_view = new Template('view');
-    $page_ctrl->save($params['ctrl-filepath'], $params['override']);
-    $page_view->save($params['view-filepath'], $params['override']);
+    ], $params['basepath'] . '/pages');
+    $page_view = new Template('view', null, $params['basepath'] . '/templates/pages');
+    $page_ctrl->save($params['ctrl-filename'], $params['override']);
+    $page_view->save($params['view-filename'], $params['override']);
 
-    DTOBuilder::build([
-      'entity-name' => $params['entity-name'],
-      'theme' => $params['theme'],
-      'override' => $params['override']
-    ]);
+    if ($params['has-framework']) {
+      EntityBuilder::build([
+        'name' => $params['entity-name'],
+        'base-entity' => 'Page',
+        'theme' => $params['theme'],
+        'override' => $params['override']
+      ]);
 
-    EntityBuilder::build([
-      'name' => $params['entity-name'],
-      'theme' => $params['theme'],
-      'override' => $params['override']
-    ]);
+      DTOBuilder::build([
+        'entity-name' => $params['entity-name'],
+        'base-entity' => 'Page',
+        'theme' => $params['theme'],
+        'override' => $params['override']
+      ]);
 
-    RepositoryBuilder::build([
-      'post-type' => 'page',
-      'entity-name' => $params['entity-name'],
-      'theme' => $params['theme'],
-      'override' => $params['override']
-    ]);
+      RepositoryBuilder::build([
+        'post-type' => 'page',
+        'entity-name' => $params['entity-name'],
+        'base-entity' => 'Page',
+        'theme' => $params['theme'],
+        'override' => $params['override']
+      ]);
+    }
   }
   
   /**
@@ -84,6 +92,15 @@ class PageBuilder extends TemplateBuilder implements WizardBuilder
   {
     $name = Dialog::getAnswer('Template name (e.g. My Custom Page):');
     return $name ?: self::askForName();
+  }
+
+  /**
+   * Asks for framework installation
+   * @return mixed
+   */
+  private static function askForFramework()
+  {
+    return Dialog::getConfirmation('Do you want to add a custom Entity-DTO-Repository bundle for this page?', true, 'yellow');
   }
   
   /**
@@ -99,12 +116,13 @@ class PageBuilder extends TemplateBuilder implements WizardBuilder
     Config::check("themes.$theme", 'array', "Error: theme '$theme' doesn't exist.");
 
     // checking params
-    if (!$params['name'] || !$params['theme']) {
+    if (!$params['name']) {
       throw new \Exception('Error: unable to create page template because of missing parameters.');
     }
     
     // normalizing
     $name = ucwords($params['name']);
+    $has_framework = (bool) $params['has-framework'] ? true : false;
     $entity_name = StringsManager::toPascalCase($params['name']);
     $override = strtolower($params['override']);
   
@@ -114,18 +132,20 @@ class PageBuilder extends TemplateBuilder implements WizardBuilder
 
     // paths
     $filename = StringsManager::toKebabCase($name);
-    $theme_path = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $theme;
+    $basepath = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $theme;
     $namespace = Config::get("themes.$theme.namespace", true);
-    $ctrl_filepath = "$theme_path/pages/$filename.php";
-    $view_filepath = "$theme_path/templates/pages/$filename.html.twig";
+    $ctrl_filename = "$filename.php";
+    $view_filename = "$filename.html.twig";
     
     return [
       'name' => $name,
       'namespace' => $namespace,
       'entity-name' => $entity_name,
+      'has-framework' => $has_framework,
+      'basepath' => $basepath,
       'filename' => $filename,
-      'ctrl-filepath' => $ctrl_filepath,
-      'view-filepath' => $view_filepath,
+      'ctrl-filename' => $ctrl_filename,
+      'view-filename' => $view_filename,
       'override' => $override,
       'theme' => $theme
     ];

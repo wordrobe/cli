@@ -1,37 +1,37 @@
 <?php
 
-Wordrobe\Feature\Factory::create("Taxonomy", [
-  "key" => "{KEY}",
-  "post_types" => "{POST_TYPES}",
-  "settings" => [
-    "hierarchical" => {HIERARCHICAL},
-    "public" => true,
-    "show_ui" => true,
-    "show_admin_column" => true,
-    "show_in_nav_menus" => true,
-    "show_tagcloud" => true,
-    "rewrite" => {REWRITE},
-    "labels" => [
-      "name" => _x("{GENERAL_NAME}", "{SINGULAR_NAME} General Name", "{TEXT_DOMAIN}"),
-      "singular_name" => _x("{SINGULAR_NAME}", "{SINGULAR_NAME} Singular Name", "{TEXT_DOMAIN}"),
-      "menu_name" => __("{GENERAL_NAME}", "{TEXT_DOMAIN}"),
-      "all_items" => __("All {GENERAL_NAME}", "{TEXT_DOMAIN}"),
-      "parent_item" => __("Parent {SINGULAR_NAME}", "{TEXT_DOMAIN}"),
-      "parent_item_colon" => __("Parent {SINGULAR_NAME}:", "{TEXT_DOMAIN}"),
-      "new_item_name" => __("New {SINGULAR_NAME}", "{TEXT_DOMAIN}"),
-      "add_new_item" => __("Add New {SINGULAR_NAME}", "{TEXT_DOMAIN}"),
-      "edit_item" => __("Edit {SINGULAR_NAME}", "{TEXT_DOMAIN}"),
-      "update_item" => __("Update {SINGULAR_NAME}", "{TEXT_DOMAIN}"),
-      "view_item" => __("View {SINGULAR_NAME}", "{TEXT_DOMAIN}"),
-      "separate_items_with_commas" => __("Separate {GENERAL_NAME} with commas", "{TEXT_DOMAIN}"),
-      "add_or_remove_items" => __("Add or remove {GENERAL_NAME}", "{TEXT_DOMAIN}"),
-      "choose_from_most_used" => __("Choose from the most used", "{TEXT_DOMAIN}"),
-      "popular_items" => __("Popular {GENERAL_NAME}", "{TEXT_DOMAIN}"),
-      "search_items" => __("Search {GENERAL_NAME}", "{TEXT_DOMAIN}"),
-      "not_found" => __("Not Found", "{TEXT_DOMAIN}"),
-      "no_terms" => __("No {GENERAL_NAME}", "{TEXT_DOMAIN}"),
-      "items_list" => __("{GENERAL_NAME} list", "{TEXT_DOMAIN}"),
-      "items_list_navigation" => __("{GENERAL_NAME} list navigation", "{TEXT_DOMAIN}")
+Wordrobe\Feature\Factory::create('Taxonomy', [
+  'key' => '{KEY}',
+  'post_types' => '{POST_TYPES}',
+  'settings' => [
+    'hierarchical' => {HIERARCHICAL},
+    'public' => true,
+    'show_ui' => true,
+    'show_admin_column' => true,
+    'show_in_nav_menus' => true,
+    'show_tagcloud' => true,
+    'rewrite' => {REWRITE},
+    'labels' => [
+      'name' => _x("{GENERAL_NAME}", '{SINGULAR_NAME} General Name', '{TEXT_DOMAIN}'),
+      'singular_name' => _x("{SINGULAR_NAME}", '{SINGULAR_NAME} Singular Name', '{TEXT_DOMAIN}'),
+      'menu_name' => __("{GENERAL_NAME}", '{TEXT_DOMAIN}'),
+      'all_items' => __("All {GENERAL_NAME}", '{TEXT_DOMAIN}'),
+      'parent_item' => __("Parent {SINGULAR_NAME}", '{TEXT_DOMAIN}'),
+      'parent_item_colon' => __("Parent {SINGULAR_NAME}:", '{TEXT_DOMAIN}'),
+      'new_item_name' => __("New {SINGULAR_NAME}", '{TEXT_DOMAIN}'),
+      'add_new_item' => __("Add New {SINGULAR_NAME}", '{TEXT_DOMAIN}'),
+      'edit_item' => __("Edit {SINGULAR_NAME}", '{TEXT_DOMAIN}'),
+      'update_item' => __("Update {SINGULAR_NAME}", '{TEXT_DOMAIN}'),
+      'view_item' => __("View {SINGULAR_NAME}", '{TEXT_DOMAIN}'),
+      'separate_items_with_commas' => __("Separate {GENERAL_NAME} with commas", '{TEXT_DOMAIN}'),
+      'add_or_remove_items' => __("Add or remove {GENERAL_NAME}", '{TEXT_DOMAIN}'),
+      'choose_from_most_used' => __("Choose from the most used", '{TEXT_DOMAIN}'),
+      'popular_items' => __("Popular {GENERAL_NAME}", '{TEXT_DOMAIN}'),
+      'search_items' => __("Search {GENERAL_NAME}", '{TEXT_DOMAIN}'),
+      'not_found' => __("Not Found", '{TEXT_DOMAIN}'),
+      'no_terms' => __("No {GENERAL_NAME}", '{TEXT_DOMAIN}'),
+      'items_list' => __("{GENERAL_NAME} list", '{TEXT_DOMAIN}'),
+      'items_list_navigation' => __("{GENERAL_NAME} list navigation", '{TEXT_DOMAIN}')
     ]
   ]
 ]);

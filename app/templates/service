@@ -2,17 +2,17 @@
 
 // require data handlers here
 
-Wordrobe\Feature\Factory::create("Service", [
-  "namespace" => "{NAMESPACE}",
-  "route" => "{ROUTE}",
-  "options" => [
+Wordrobe\Feature\Factory::create('Service', [
+  'namespace' => '{NAMESPACE}',
+  'route' => '{ROUTE}',
+  'options' => [
     /*
      * Code below is just a basic example.
      * For more details about extending wp rest api, check documentation at
      * https://developer.wordpress.org/rest-api/extending-the-rest-api/
      */
-    "methods" => "{METHOD}",
-    "callback" => function(WP_REST_Request $request) {
+    'methods' => '{METHOD}',
+    'callback' => function(WP_REST_Request $request) {
       // reading params from request
       $params = $request->get_params(); // all params
       // $path_params = $params['defaults']; // or $request->get_default_params();
@@ -24,12 +24,12 @@ Wordrobe\Feature\Factory::create("Service", [
       $data = []; // call a handler class here to retrieve data according to request params
 
       // handling response
-      return $data ? new WP_REST_Response($data, 200) : new WP_Error(400, __('Error message', '{TEXT_DOMAIN}'));
+      return $data ? new WP_REST_Response($data, 200) : new WP_Error(400, __("Error message", '{TEXT_DOMAIN}'));
     },
-    "args" => [
+    'args' => [
       // params validation and sanitation here (look at wp rest api documentation for details)
     ],
-    // "permission_callback" => null
+    // 'permission_callback' => null
   ],
-  "override" => true
+  'override' => true
 ]);

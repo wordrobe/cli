@@ -49,42 +49,53 @@ class FilesManager
   
   /**
    * Handles file write
-   * @param string $filepath
+   * @param string $filename
    * @param string $content
    * @param bool $force_override
    * @throws \Exception
    */
-  public static function writeFile($filepath, $content, $force_override = false)
+  public static function writeFile($filename, $content, $force_override = false)
   {
-    $file_exists = self::fileExists($filepath);
+    $file_exists = self::fileExists($filename);
   
     if ($file_exists && !$force_override) {
-      throw new \Exception("Error: $filepath already exists.");
+      throw new \Exception("Error: $filename already exists.");
     }
     
-    self::createDirectory(dirname($filepath));
-    $file = fopen($filepath, 'w');
+    self::createDirectory(dirname($filename));
+    $file = fopen($filename, 'w');
     $written = fwrite($file, $content);
     fclose($file);
     
     if ($written === false) {
-      throw new \Exception("Error: unable to write $filepath.");
+      throw new \Exception("Error: unable to write $filename.");
     }
   }
   
   /**
    * File contents getter
-   * @param string $filepath
+   * @param string $filename
    * @return string
    * @throws \Exception
    */
-  public static function readFile($filepath)
+  public static function readFile($filename)
   {
-    if (!self::fileExists($filepath)) {
-      throw new \Exception("Error: $filepath doesn't exist.");
+    if (!self::fileExists($filename)) {
+      throw new \Exception("Error: $filename doesn't exist.");
     }
     
-    return file_get_contents($filepath);
+    return file_get_contents($filename);
+  }
+
+  /**
+   * Removes file
+   * @param string $filename
+   */
+  public static function deleteFile($filename)
+  {
+    if (self::fileExists($filename)) {
+      unlink($filename);
+    }
   }
   
   /**

@@ -49,8 +49,8 @@ class PartialBuilder extends TemplateBuilder implements WizardBuilder
     $partial = new Template('partial', [
       '{CLASS_NAME}' => $params['class-name'],
       '{CONTENT}' => $params['content']
-    ]);
-    $partial->save($params['filepath'], $params['override']);
+    ], $params['basepath']);
+    $partial->save($params['filename'], $params['override']);
   }
   
   /**
@@ -76,7 +76,7 @@ class PartialBuilder extends TemplateBuilder implements WizardBuilder
     Config::check("themes.$theme", 'array', "Error: theme '$theme' doesn't exist.");
 
     // checking params
-    if (!$params['class-name'] || !$params['theme']) {
+    if (!$params['class-name']) {
       throw new \Exception('Error: unable to create partial template because of missing parameters.');
     }
     
@@ -89,14 +89,14 @@ class PartialBuilder extends TemplateBuilder implements WizardBuilder
     }
 
     // paths
-    $filename = StringsManager::toKebabCase($params['class-name']);
-    $theme_path = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $theme;
-    $filepath = "$theme_path/templates/partials/$filename.html.twig";
+    $filename = StringsManager::toKebabCase($params['class-name']) . '.html.twig';
+    $basepath = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $theme . '/templates/partials';
     
     return [
       'class-name' => $params['class-name'],
       'content' => $content,
-      'filepath' => $filepath,
+      'basepath' => $basepath,
+      'filename' => $filename,
       'override' => $override,
       'theme' => $theme
     ];

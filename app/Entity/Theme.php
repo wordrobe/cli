@@ -5,6 +5,9 @@ namespace Wordrobe\Entity;
 use Wordrobe\Helper\Config;
 use Wordrobe\Helper\Dialog;
 use Wordrobe\Helper\FilesManager;
+use Wordrobe\Builder\EntityBuilder;
+use Wordrobe\Builder\DTOBuilder;
+use Wordrobe\Builder\RepositoryBuilder;
 
 /**
  * Class Theme
@@ -84,11 +87,12 @@ class Theme
 
     if ($can_install) {
       FilesManager::createDirectory($this->path);
+      $this->updateConfig();
       $this->copyBoilerplate();
+      $this->addBasicFramework();
       $this->addThemeManager();
       $this->addFunctions();
       $this->addStylesheet();
-      $this->updateConfig();
     } else {
 
       if (is_null(Config::get("themes.$this->folder_name"))) {
@@ -109,8 +113,30 @@ class Theme
       '{NAMESPACE}' => $this->namespace,
       '{TEXT_DOMAIN}' => $this->text_domain,
       '{ROOT_PATH}' => Config::getRelativeRootPath($this->path)
+    ], "$this->path/core");
+    $functions->save('ThemeManager.php', 'force');
+  }
+
+  /**
+   * Adds basic entities, dtos and repositories to theme
+   * @throws \Exception
+   */
+  protected function addBasicFramework()
+  {
+    EntityBuilder::build([
+      'theme' => $this->folder_name,
+      'override' => 'force'
     ]);
-    $functions->save("$this->path/core/ThemeManager.php", 'force');
+
+    DTOBuilder::build([
+      'theme' => $this->folder_name,
+      'override' => 'force'
+    ]);
+
+    RepositoryBuilder::build([
+      'theme' => $this->folder_name,
+      'override' => 'force'
+    ]);
   }
 
   /**
@@ -122,8 +148,8 @@ class Theme
     $functions = new Template('theme-functions', [
       '{NAMESPACE}' => $this->namespace,
       '{ROOT_PATH}' => Config::getRelativeRootPath($this->path)
-    ]);
-    $functions->save("$this->path/functions.php", 'force');
+    ], $this->path);
+    $functions->save('functions.php', 'force');
   }
 
   /**
@@ -143,8 +169,8 @@ class Theme
       '{LICENSE}' => $this->license,
       '{LICENSE_URI}' => $this->license_uri,
       '{TEXT_DOMAIN}' => $this->text_domain
-    ]);
-    $stylesheet->save("$this->path/style.css", 'force');
+    ], $this->path);
+    $stylesheet->save('style.css', 'force');
   }
 
   /**
@@ -153,10 +179,10 @@ class Theme
    */
   protected function updateConfig()
   {
-    $themeConfig = new Template('theme-config', [
+    $themeConfig = new Template('config-theme', [
       '{NAMESPACE}' => $this->namespace,
       '{TEXT_DOMAIN}' => $this->text_domain
-    ]);
+    ], null);
     $content = $themeConfig->getContent();
     Config::set("themes.$this->folder_name", json_decode($content));
   }
@@ -167,7 +193,7 @@ class Theme
    */
   private function copyBoilerplate()
   {
-    $boilerplatePath = dirname(__DIR__) . '/boilerplate';
+    $boilerplatePath = dirname(__DIR__) . '/boilerplate/theme';
     FilesManager::copyFiles($boilerplatePath, $this->path);
   }
 }

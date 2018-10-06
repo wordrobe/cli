@@ -11,16 +11,19 @@ use Wordrobe\Helper\Dialog;
  */
 class Template
 {
+  protected $basepath;
   protected $content;
   
   /**
    * Template constructor.
    * @param string $model
    * @param null|array $replacements
+   * @param null|string $basepath
    * @throws \Exception
    */
-  public function __construct($model, $replacements = null)
+  public function __construct($model, $replacements, $basepath)
   {
+    $this->basepath = $basepath;
     $this->content = self::getModelContent($model);
     // auto-fill
     if (is_array($replacements)) {
@@ -60,28 +63,32 @@ class Template
   
   /**
    * Saves template in a file
-   * @param string $filepath
+   * @param string $filename
    * @param mixed $override
    * @throws \Exception
    */
-  public function save($filepath, $override = false)
+  public function save($filename, $override = false)
   {
-    $force_override = false;
-    
-    switch ($override) {
-      case 'force':
-        $force_override = true;
-        break;
-      case 'ask':
-        if (FilesManager::fileExists($filepath)) {
-          $force_override = Dialog::getConfirmation('Attention: ' . $filepath . ' already exists! Do you want to override it?', false, 'red');
-        }
-        break;
-      default:
-        break;
+    if ($this->basepath) {
+      $filename = $this->basepath . '/' . $filename;
+      $force_override = false;
+
+      switch ($override) {
+        case 'force':
+          $force_override = true;
+          break;
+        case 'ask':
+          if (FilesManager::fileExists($filename)) {
+            $force_override = Dialog::getConfirmation('Attention: ' . $filename . ' already exists! Do you want to override it?', false, 'red');
+          }
+          break;
+        default:
+          break;
+      }
+
+      FilesManager::writeFile($filename, $this->content, $force_override);
+      FilesManager::deleteFile($this->basepath . '/.gitkeep');
     }
-  
-    FilesManager::writeFile($filepath, $this->content, $force_override);
   }
   
   /**

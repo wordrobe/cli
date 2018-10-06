@@ -29,6 +29,7 @@ class PostTypeBuilder extends TemplateBuilder implements WizardBuilder
       $has_archive = $capability_type === 'post' && $public ? self::askForArchive() : false;
       $icon = self::askForIcon();
       $description = self::askForDescription();
+      $has_framework = self::askForFramework();
       self::build([
         'key' => $key,
         'general-name' => $general_name,
@@ -39,6 +40,7 @@ class PostTypeBuilder extends TemplateBuilder implements WizardBuilder
         'has-archive' => $has_archive,
         'icon' => $icon,
         'description' => $description,
+        'has-framework' => $has_framework,
         'theme' => $theme,
         'override' => 'ask'
       ]);
@@ -62,6 +64,7 @@ class PostTypeBuilder extends TemplateBuilder implements WizardBuilder
    *  'has-archive' => $has_archive,
    *  'icon' => $icon,
    *  'description' => $description,
+   *  'has-framework => $has_framework,
    *  'theme' => $theme,
    *  'override' => 'ask'|'force'|false
    * ]);
@@ -83,32 +86,34 @@ class PostTypeBuilder extends TemplateBuilder implements WizardBuilder
       '{HAS_ARCHIVE}' => $params['has-archive'],
       '{ICON}' => $params['icon'],
       '{SUPPORTS}' => $params['supports']
-    ]);
-    $post_type->save($params['filepath'], $params['override']);
+    ], $params['basepath']);
+    $post_type->save($params['filename'], $params['override']);
 
-    Config::set($params['config-path'], [
-      'capability-type' => $params['capability-type'],
-      'has-archive' => (bool) $params['has-archive']
-    ]);
+    Config::set($params['config-path'], ['has-archive' => (bool) $params['has-archive']]);
 
-    DTOBuilder::build([
-      'entity-name' => $params['entity-name'],
-      'theme' => $params['theme'],
-      'override' => $params['override']
-    ]);
+    if ($params['has-framework']) {
+      EntityBuilder::build([
+        'name' => $params['entity-name'],
+        'base-entity' => 'Post',
+        'theme' => $params['theme'],
+        'override' => $params['override']
+      ]);
 
-    EntityBuilder::build([
-      'name' => $params['entity-name'],
-      'theme' => $params['theme'],
-      'override' => $params['override']
-    ]);
+      DTOBuilder::build([
+        'entity-name' => $params['entity-name'],
+        'base-entity' => 'Post',
+        'theme' => $params['theme'],
+        'override' => $params['override']
+      ]);
 
-    RepositoryBuilder::build([
-      'post-type' => $params['key'],
-      'entity-name' => $params['entity-name'],
-      'theme' => $params['theme'],
-      'override' => $params['override']
-    ]);
+      RepositoryBuilder::build([
+        'post-type' => $params['key'],
+        'entity-name' => $params['entity-name'],
+        'base-entity' => 'Post',
+        'theme' => $params['theme'],
+        'override' => $params['override']
+      ]);
+    }
 
     if ($params['public']) {
       SingleBuilder::build([
@@ -220,6 +225,15 @@ class PostTypeBuilder extends TemplateBuilder implements WizardBuilder
   {
     return Dialog::getAnswer('Description:');
   }
+
+  /**
+   * Asks for framework installation
+   * @return mixed
+   */
+  private static function askForFramework()
+  {
+    return Dialog::getConfirmation('Do you want to add a custom Entity-DTO-Repository bundle for this post type?', true, 'yellow');
+  }
   
   /**
    * Checks params existence and normalizes them
@@ -234,7 +248,7 @@ class PostTypeBuilder extends TemplateBuilder implements WizardBuilder
     Config::check("themes.$theme", 'array', "Error: theme '$theme' doesn't exist.");
 
     // checking params
-    if (!$params['key'] || !$params['general-name'] || !$params['singular-name'] || !$params['text-domain'] || !$params['capability-type'] || !$params['theme']) {
+    if (!$params['key'] || !$params['general-name'] || !$params['singular-name'] || !$params['text-domain'] || !$params['capability-type']) {
       throw new \Exception('Error: unable to create post type because of missing parameters.');
     }
     
@@ -250,6 +264,7 @@ class PostTypeBuilder extends TemplateBuilder implements WizardBuilder
     $has_archive = $public && !$hierarchical && $params['has-archive'] ? 'true' : 'false';
     $icon = StringsManager::toKebabCase($params['icon']);
     $description = ucfirst($params['description']);
+    $has_framework = (bool) $params['has-framework'] ? true : false;
     $rewrite = $public ? '["slug" => "' . StringsManager::toKebabCase($params['general-name']) . '", "with_front" => false]' : false;
     $supports = '["title", "editor", "author", "thumbnail", "excerpt", "trackbacks", "custom-fields", "comments", "revisions", "post-formats", "page-attributes"]';
     $override = strtolower($params['override']);
@@ -259,9 +274,9 @@ class PostTypeBuilder extends TemplateBuilder implements WizardBuilder
     }
 
     // paths
-    $theme_path = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $theme;
-    $filepath = "$theme_path/core/post-types/$key.php";
     $config_path = "themes.$theme.post-types.$key";
+    $basepath = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $theme . '/core/post-types';
+    $filename = "$key.php";
     
     return [
       'key' => $key,
@@ -275,11 +290,13 @@ class PostTypeBuilder extends TemplateBuilder implements WizardBuilder
       'hierarchical' => $hierarchical,
       'icon' => $icon,
       'description' => $description,
+      'has-framework' => $has_framework,
       'rewrite' => $rewrite,
       'supports' => $supports,
-      'filepath' => $filepath,
-      'override' => $override,
       'config-path' => $config_path,
+      'basepath' => $basepath,
+      'filename' => $filename,
+      'override' => $override,
       'theme' => $theme
     ];
   }

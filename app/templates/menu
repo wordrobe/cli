@@ -1,8 +1,8 @@
 <?php
 
-Wordrobe\Feature\Factory::create("Menu", [
-  "location" => "{LOCATION}",
-  "name" => "{NAME}",
-  "description" => "{DESCRIPTION}",
-  "text_domain" => "{TEXT_DOMAIN}"
+Wordrobe\Feature\Factory::create('Menu', [
+  'location' => '{LOCATION}',
+  'name' => '{NAME}',
+  'description' => '{DESCRIPTION}',
+  'text_domain' => '{TEXT_DOMAIN}'
 ]);

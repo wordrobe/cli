@@ -16,8 +16,8 @@ class RepositoryBuilder extends TemplateBuilder implements Builder
    * Builds post handler template
    * @param array $params
    * @example RepositoryBuilder::build([
-   *  'entity-name' => $entity_name,
    *  'post-type' => $post_type,
+   *  'entity-name' => $entity_name,
    *  'theme' => $theme,
    *  'override' => 'ask'|'force'|false
    * ]);
@@ -26,13 +26,13 @@ class RepositoryBuilder extends TemplateBuilder implements Builder
   public static function build($params)
   {
     $params = self::prepareParams($params);
-    $template_model = $params['capability-type'] . '-repository';
+    $template_model = $params['post-type'] ? 'repository-extension' : 'repository';
     $repository = new Template($template_model, [
       '{NAMESPACE}' => $params['namespace'],
-      '{ENTITY_NAME}' => $params['entity-name'],
       '{POST_TYPE}' => $params['post-type'],
-    ]);
-    $repository->save($params['filepath'], $params['override']);
+      '{ENTITY_NAME}' => $params['entity-name']
+    ], $params['basepath']);
+    $repository->save($params['filename'], $params['override']);
   }
 
   /**
@@ -47,15 +47,9 @@ class RepositoryBuilder extends TemplateBuilder implements Builder
     $theme = StringsManager::toKebabCase($params['theme']);
     Config::check("themes.$theme", 'array', "Error: theme '$theme' doesn't exist.");
 
-    // checking params
-    if (!$params['entity-name'] || !$params['post-type'] || !$params['theme']) {
-      throw new \Exception('Error: unable to create post handler because of missing parameters.');
-    }
-
     // normalizing
-    $entity_name = StringsManager::toPascalCase($params['entity-name']);
-    $post_type = StringsManager::toKebabCase($params['post-type']);
-    $capability_type = Config::get("themes.$theme.post-types.$post_type.capability-type");
+    $post_type = $params['post-type'] ? StringsManager::toKebabCase($params['post-type']) : null;
+    $entity_name = $post_type ? ($params['entity-name'] ? StringsManager::toPascalCase($params['entity-name']) : StringsManager::toPascalCase($params['post-type'])) : null;
     $override = strtolower($params['override']);
 
     if ($override !== 'ask' && $override !== 'force') {
@@ -63,17 +57,16 @@ class RepositoryBuilder extends TemplateBuilder implements Builder
     }
 
     // paths
-    $filename = $entity_name . 'Repository';
-    $theme_path = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $theme;
     $namespace = Config::get("themes.$theme.namespace", true);
-    $filepath = "$theme_path/core/Repository/$filename.php";
+    $basepath = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $theme . '/core/Repository';
+    $filename = $entity_name ? $entity_name . 'Repository.php' : 'Repository.php';
 
     return [
       'namespace' => $namespace,
-      'capability-type' => $capability_type,
-      'entity-name' => $entity_name,
       'post-type' => $post_type,
-      'filepath' => $filepath,
+      'entity-name' => $entity_name,
+      'basepath' => $basepath,
+      'filename' => $filename,
       'override' => $override,
       'theme' => $theme
     ];

@@ -60,8 +60,8 @@ class MenuBuilder extends TemplateBuilder implements WizardBuilder
       '{NAME}' => $params['name'],
       '{DESCRIPTION}' => $params['description'],
       '{TEXT_DOMAIN}' => $params['text-domain']
-    ]);
-    $menu->save($params['filepath'], $params['override']);
+    ], $params['basepath']);
+    $menu->save($params['filename'], $params['override']);
   }
   
   /**
@@ -135,15 +135,16 @@ class MenuBuilder extends TemplateBuilder implements WizardBuilder
     }
 
     // paths
-    $theme_path = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $theme;
-    $filepath = "$theme_path/core/menu/$location.php";
+    $basepath = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $theme . '/core/menu';
+    $filename = "$location.php";
     
     return [
       'location' => $location,
       'name' => $name,
       'description' => $description,
       'text-domain' => $text_domain,
-      'filepath' => $filepath,
+      'basepath' => $basepath,
+      'filename' => $filename,
       'override' => $override,
       'theme' => $theme
     ];

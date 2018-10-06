@@ -3,11 +3,9 @@
 	"text-domain": "{TEXT_DOMAIN}",
 	"post-types": {
 	  "post": {
-	    "capability-type": "post",
 	    "has-archive": true
 	  },
 	  "page": {
-	    "capability-type": "page",
 	    "has-archive": false
 	  }
   },

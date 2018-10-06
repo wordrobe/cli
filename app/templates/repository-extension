@@ -1,0 +1,23 @@
+<?php
+
+namespace {NAMESPACE}\Repository;
+
+class {ENTITY_NAME}Repository extends Repository
+{
+  /**
+   * @var string $post_type
+   */
+  protected static $post_type = '{POST_TYPE}';
+
+  /**
+   * @var string $entity_class
+   */
+  protected static $entity_class = '\{NAMESPACE}\Entity\{ENTITY_NAME}';
+
+  /**
+   * @var string $dto_class
+   */
+  protected static $dto_class = '\{NAMESPACE}\DTO\{ENTITY_NAME}DTO';
+
+  // (if needed) override methods here
+}

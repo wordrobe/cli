@@ -17,7 +17,6 @@ class EntityBuilder extends TemplateBuilder implements Builder
    * Builds post entity template
    * @param array $params
    * @example EntityBuilder::build([
-   *  'post-type' => $post_type,
    *  'name' => $name,
    *  'theme' => $theme,
    *  'override' => 'ask'|'force'|false
@@ -27,11 +26,12 @@ class EntityBuilder extends TemplateBuilder implements Builder
   public static function build($params)
   {
     $params = self::prepareParams($params);
-    $entity = new Template('entity', [
+    $template_model = $params['name'] ? 'entity-extension' : 'entity';
+    $entity = new Template($template_model, [
       '{NAMESPACE}' => $params['namespace'],
       '{NAME}' => $params['name']
-    ]);
-    $entity->save($params['filepath'], $params['override']);
+    ], $params['basepath']);
+    $entity->save($params['filename'], $params['override']);
   }
 
   /**
@@ -46,13 +46,8 @@ class EntityBuilder extends TemplateBuilder implements Builder
     $theme = StringsManager::toKebabCase($params['theme']);
     Config::check("themes.$theme", 'array', "Error: theme '$theme' doesn't exist.");
 
-    // checking params
-    if (!$params['name'] || !$params['theme']) {
-      throw new \Exception('Error: unable to create post entity because of missing parameters.');
-    }
-
     // normalizing
-    $name = StringsManager::toPascalCase($params['name']);
+    $name = $params['name'] ? StringsManager::toPascalCase($params['name']) : null;
     $override = strtolower($params['override']);
 
     if ($override !== 'ask' && $override !== 'force') {
@@ -60,14 +55,15 @@ class EntityBuilder extends TemplateBuilder implements Builder
     }
 
     // paths
-    $theme_path = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $theme;
     $namespace = Config::get("themes.$theme.namespace", true);
-    $filepath = "$theme_path/core/Entity/" . $name . ".php";
+    $basepath = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $theme . '/core/Entity';
+    $filename = $name ? "$name.php" : 'Entity.php';
 
     return [
       'namespace' => $namespace,
       'name' => $name,
-      'filepath' => $filepath,
+      'basepath' => $basepath,
+      'filename' => $filename,
       'override' => $override,
       'theme' => $theme
     ];

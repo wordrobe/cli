@@ -32,10 +32,10 @@ class SingleBuilder extends TemplateBuilder implements Builder
       '{ENTITY_NAME}' => $params['entity-name'],
       '{POST_TYPE}' => $params['post-type'],
       '{VIEW_FILENAME}' => $params['filename']
-    ]);
-    $single_view = new Template('view');
-    $single_ctrl->save($params['ctrl-filepath'], $params['override']);
-    $single_view->save($params['view-filepath'], $params['override']);
+    ], $params['basepath']);
+    $single_view = new Template('view', null, $params['basepath'] . '/templates/default');
+    $single_ctrl->save($params['ctrl-filename'], $params['override']);
+    $single_view->save($params['view-filename'], $params['override']);
   }
   
   /**
@@ -51,7 +51,7 @@ class SingleBuilder extends TemplateBuilder implements Builder
     Config::check("themes.$theme", 'array', "Error: theme '$theme' doesn't exist.");
 
     // checking params
-    if (!$params['post-type'] || !$params['theme']) {
+    if (!$params['post-type']) {
       throw new \Exception('Error: unable to create single template because of missing parameters.');
     }
     
@@ -69,18 +69,19 @@ class SingleBuilder extends TemplateBuilder implements Builder
     }
 
     // paths
-    $filename = 'single-' . $post_type;
-    $theme_path = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $theme;
     $namespace = Config::get("themes.$theme.namespace", true);
-    $ctrl_filepath = "$theme_path/$filename.php";
-    $view_filepath = "$theme_path/templates/default/$filename.html.twig";
+    $basepath = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $theme;
+    $filename = 'single-' . $post_type;
+    $ctrl_filename = "$filename.php";
+    $view_filename = "$filename.html.twig";
     
     return [
       'namespace' => $namespace,
       'post-type' => $post_type,
       'entity-name' => $entity_name,
-      'ctrl-filepath' => $ctrl_filepath,
-      'view-filepath' => $view_filepath,
+      'basepath' => $basepath,
+      'ctrl-filename' => $ctrl_filename,
+      'view-filename' => $view_filename,
       'override' => $override,
       'theme' => $theme
     ];
