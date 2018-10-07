@@ -109,11 +109,15 @@ class Theme
    */
   protected function addThemeManager()
   {
-    $functions = new Template('theme-manager', [
-      '{NAMESPACE}' => $this->namespace,
-      '{TEXT_DOMAIN}' => $this->text_domain,
-      '{ROOT_PATH}' => Config::getRelativeRootPath($this->path)
-    ], "$this->path/core");
+    $functions = new Template(
+      "$this->path/core",
+      'theme-manager',
+      [
+        '{NAMESPACE}' => $this->namespace,
+        '{TEXT_DOMAIN}' => $this->text_domain,
+        '{ROOT_PATH}' => Config::getRelativeRootPath($this->path)
+      ]
+    );
     $functions->save('ThemeManager.php', 'force');
   }
 
@@ -145,10 +149,14 @@ class Theme
    */
   protected function addFunctions()
   {
-    $functions = new Template('theme-functions', [
-      '{NAMESPACE}' => $this->namespace,
-      '{ROOT_PATH}' => Config::getRelativeRootPath($this->path)
-    ], $this->path);
+    $functions = new Template(
+      $this->path,
+      'theme-functions',
+      [
+        '{NAMESPACE}' => $this->namespace,
+        '{ROOT_PATH}' => Config::getRelativeRootPath($this->path)
+      ]
+    );
     $functions->save('functions.php', 'force');
   }
 
@@ -158,18 +166,22 @@ class Theme
    */
   protected function addStylesheet()
   {
-    $stylesheet = new Template('theme-stylesheet', [
-      '{THEME_NAME}' => $this->theme_name,
-      '{THEME_URI}' => $this->theme_uri,
-      '{DESCRIPTION}' => $this->description,
-      '{TAGS}' => $this->tags,
-      '{VERSION}' => $this->version,
-      '{AUTHOR}' => $this->author,
-      '{AUTHOR_URI}' => $this->author_uri,
-      '{LICENSE}' => $this->license,
-      '{LICENSE_URI}' => $this->license_uri,
-      '{TEXT_DOMAIN}' => $this->text_domain
-    ], $this->path);
+    $stylesheet = new Template(
+      $this->path,
+      'theme-stylesheet',
+      [
+        '{THEME_NAME}' => $this->theme_name,
+        '{THEME_URI}' => $this->theme_uri,
+        '{DESCRIPTION}' => $this->description,
+        '{TAGS}' => $this->tags,
+        '{VERSION}' => $this->version,
+        '{AUTHOR}' => $this->author,
+        '{AUTHOR_URI}' => $this->author_uri,
+        '{LICENSE}' => $this->license,
+        '{LICENSE_URI}' => $this->license_uri,
+        '{TEXT_DOMAIN}' => $this->text_domain
+      ]
+    );
     $stylesheet->save('style.css', 'force');
   }
 
@@ -179,10 +191,14 @@ class Theme
    */
   protected function updateConfig()
   {
-    $themeConfig = new Template('config-theme', [
-      '{NAMESPACE}' => $this->namespace,
-      '{TEXT_DOMAIN}' => $this->text_domain
-    ], null);
+    $themeConfig = new Template(
+      null,
+      'config-theme',
+      [
+        '{NAMESPACE}' => $this->namespace,
+        '{TEXT_DOMAIN}' => $this->text_domain
+      ]
+    );
     $content = $themeConfig->getContent();
     Config::set("themes.$this->folder_name", json_decode($content));
   }
@@ -195,5 +211,6 @@ class Theme
   {
     $boilerplatePath = dirname(__DIR__) . '/boilerplate/theme';
     FilesManager::copyFiles($boilerplatePath, $this->path);
+    FilesManager::deleteFile(dirname($this->path) . '/.gitkeep');
   }
 }

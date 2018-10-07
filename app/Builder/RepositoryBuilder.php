@@ -27,11 +27,15 @@ class RepositoryBuilder extends TemplateBuilder implements Builder
   {
     $params = self::prepareParams($params);
     $template_model = $params['post-type'] ? 'repository-extension' : 'repository';
-    $repository = new Template($template_model, [
-      '{NAMESPACE}' => $params['namespace'],
-      '{POST_TYPE}' => $params['post-type'],
-      '{ENTITY_NAME}' => $params['entity-name']
-    ], $params['basepath']);
+    $repository = new Template(
+      $params['theme-path'] . '/core/Repository',
+      $template_model,
+      [
+        '{NAMESPACE}' => $params['namespace'],
+        '{POST_TYPE}' => $params['post-type'],
+        '{ENTITY_NAME}' => $params['entity-name']
+      ]
+    );
     $repository->save($params['filename'], $params['override']);
   }
 
@@ -58,14 +62,14 @@ class RepositoryBuilder extends TemplateBuilder implements Builder
 
     // paths
     $namespace = Config::get("themes.$theme.namespace", true);
-    $basepath = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $theme . '/core/Repository';
+    $theme_path = Config::getThemePath($theme, true);
     $filename = $entity_name ? $entity_name . 'Repository.php' : 'Repository.php';
 
     return [
       'namespace' => $namespace,
       'post-type' => $post_type,
       'entity-name' => $entity_name,
-      'basepath' => $basepath,
+      'theme-path' => $theme_path,
       'filename' => $filename,
       'override' => $override,
       'theme' => $theme

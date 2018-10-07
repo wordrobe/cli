@@ -25,7 +25,7 @@ class TermBuilder extends TemplateBuilder implements WizardBuilder
       $slug = self::askForSlug($name);
       $description = self::askForDescription();
       $parent = Config::get("themes.$theme.taxonomies.$taxonomy.hierarchical") ? self::askForParent() : null;
-      $build_archive = self::askForArchiveTemplateBuild($slug);
+      $has_archive = self::askForArchiveTemplateBuild($slug);
       self::build([
         'name' => $name,
         'taxonomy' => $taxonomy,
@@ -33,7 +33,7 @@ class TermBuilder extends TemplateBuilder implements WizardBuilder
         'description' => $description,
         'parent' => $parent,
         'theme' => $theme,
-        'build-archive' => $build_archive,
+        'has-archive' => $has_archive,
         'override' => 'ask'
       ]);
       Dialog::write('Term added!', 'green');
@@ -53,7 +53,7 @@ class TermBuilder extends TemplateBuilder implements WizardBuilder
    *  'description' => $description,
    *  'parent' => $parent,
    *  'theme' => $theme,
-   *  'build-archive' => $build_archive
+   *  'has-archive' => $has_archive
    *  'override' => 'ask'|'force'|false
    * ]);
    * @throws \Exception
@@ -61,16 +61,20 @@ class TermBuilder extends TemplateBuilder implements WizardBuilder
   public static function build($params)
   {
     $params = self::prepareParams($params);
-    $term = new Template('term', [
-      '{NAME}' => $params['name'],
-      '{TAXONOMY}' => $params['taxonomy'],
-      '{SLUG}' => $params['slug'],
-      '{DESCRIPTION}' => $params['description'],
-      '{PARENT}' => $params['parent']
-    ], $params['basepath']);
+    $term = new Template(
+      $params['theme-path'] . '/core/terms',
+      'term',
+      [
+        '{NAME}' => $params['name'],
+        '{TAXONOMY}' => $params['taxonomy'],
+        '{SLUG}' => $params['slug'],
+        '{DESCRIPTION}' => $params['description'],
+        '{PARENT}' => $params['parent']
+      ]
+    );
     $term->save($params['filename'], $params['override']);
     
-    if ($params['build-archive']) {
+    if ($params['has-archive']) {
       ArchiveBuilder::build([
         'type' => $params['type'],
         'key' => $params['key'],
@@ -165,7 +169,7 @@ class TermBuilder extends TemplateBuilder implements WizardBuilder
     $slug = StringsManager::toKebabCase($params['slug']);
     $description = ucfirst($params['description']);
     $parent = Config::get("themes." . $params['theme'] . ".taxonomies.$taxonomy.hierarchical") ? StringsManager::toKebabCase($params['parent']) : '';
-    $build_archive = $params['build-archive'] || false;
+    $has_archive = $params['has-archive'] || false;
     $override = strtolower($params['override']);
     
     if ($override !== 'ask' && $override !== 'force') {
@@ -177,7 +181,7 @@ class TermBuilder extends TemplateBuilder implements WizardBuilder
     }
 
     // paths
-    $basepath = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $theme . '/core/terms';
+    $theme_path = Config::getThemePath($theme, true);
     $filename = "$taxonomy/$slug.php";
 
     return [
@@ -188,9 +192,9 @@ class TermBuilder extends TemplateBuilder implements WizardBuilder
       'parent' => $parent,
       'type' => $taxonomy === 'category' || $taxonomy === 'tag' ? $taxonomy : 'taxonomy',
       'key' => $taxonomy === 'category' || $taxonomy === 'tag' ? $slug : $taxonomy . '-' . $slug,
-      'basepath' => $basepath,
+      'theme-path' => $theme_path,
       'filename' => $filename,
-      'build-archive' => $build_archive,
+      'has-archive' => $has_archive,
       'override' => $override,
       'theme' => $theme
     ];

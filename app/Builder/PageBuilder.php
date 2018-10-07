@@ -21,10 +21,8 @@ class PageBuilder extends TemplateBuilder implements WizardBuilder
     try {
       $theme = self::askForTheme();
       $name = self::askForName();
-      $has_framework = self::askForFramework();
       self::build([
         'name' => $name,
-        'has-framework' => $has_framework,
         'theme' => $theme,
         'override' => 'ask'
       ]);
@@ -40,7 +38,6 @@ class PageBuilder extends TemplateBuilder implements WizardBuilder
    * @param array $params
    * @example PageBuilder::create([
    *  'name' => $name,
-   *  'has-framework => $has_framework,
    *  'theme' => $theme,
    *  'override' => 'ask'|'force'|false
    * ]);
@@ -49,39 +46,44 @@ class PageBuilder extends TemplateBuilder implements WizardBuilder
   public static function build($params)
   {
     $params = self::prepareParams($params);
-    $page_ctrl = new Template('page', [
-      '{TEMPLATE_NAME}' => $params['name'],
-      '{NAMESPACE}' => $params['namespace'],
-      '{ENTITY_NAME}' => $params['entity-name'],
-      '{VIEW_FILENAME}' => $params['filename']
-    ], $params['basepath'] . '/pages');
-    $page_view = new Template('view', null, $params['basepath'] . '/templates/pages');
+    $page_ctrl = new Template(
+      $params['theme-path'] . '/controllers',
+      'page',
+      [
+        '{TEMPLATE_NAME}' => $params['name'],
+        '{NAMESPACE}' => $params['namespace'],
+        '{ENTITY_NAME}' => $params['entity-name'],
+        '{VIEW_FILENAME}' => $params['filename']
+      ]
+    );
+    $page_view = new Template(
+      $params['theme-path'] . '/templates/views',
+      'view'
+    );
     $page_ctrl->save($params['ctrl-filename'], $params['override']);
     $page_view->save($params['view-filename'], $params['override']);
 
-    if ($params['has-framework']) {
-      EntityBuilder::build([
-        'name' => $params['entity-name'],
-        'base-entity' => 'Page',
-        'theme' => $params['theme'],
-        'override' => $params['override']
-      ]);
+    EntityBuilder::build([
+      'name' => $params['entity-name'],
+      'base-entity' => 'Page',
+      'theme' => $params['theme'],
+      'override' => $params['override']
+    ]);
 
-      DTOBuilder::build([
-        'entity-name' => $params['entity-name'],
-        'base-entity' => 'Page',
-        'theme' => $params['theme'],
-        'override' => $params['override']
-      ]);
+    DTOBuilder::build([
+      'entity-name' => $params['entity-name'],
+      'base-entity' => 'Page',
+      'theme' => $params['theme'],
+      'override' => $params['override']
+    ]);
 
-      RepositoryBuilder::build([
-        'post-type' => 'page',
-        'entity-name' => $params['entity-name'],
-        'base-entity' => 'Page',
-        'theme' => $params['theme'],
-        'override' => $params['override']
-      ]);
-    }
+    RepositoryBuilder::build([
+      'post-type' => 'page',
+      'entity-name' => $params['entity-name'],
+      'base-entity' => 'Page',
+      'theme' => $params['theme'],
+      'override' => $params['override']
+    ]);
   }
   
   /**
@@ -92,15 +94,6 @@ class PageBuilder extends TemplateBuilder implements WizardBuilder
   {
     $name = Dialog::getAnswer('Template name (e.g. My Custom Page):');
     return $name ?: self::askForName();
-  }
-
-  /**
-   * Asks for framework installation
-   * @return mixed
-   */
-  private static function askForFramework()
-  {
-    return Dialog::getConfirmation('Do you want to add a custom Entity-DTO-Repository bundle for this page?', true, 'yellow');
   }
   
   /**
@@ -122,7 +115,6 @@ class PageBuilder extends TemplateBuilder implements WizardBuilder
     
     // normalizing
     $name = ucwords($params['name']);
-    $has_framework = (bool) $params['has-framework'] ? true : false;
     $entity_name = StringsManager::toPascalCase($params['name']);
     $override = strtolower($params['override']);
   
@@ -132,7 +124,7 @@ class PageBuilder extends TemplateBuilder implements WizardBuilder
 
     // paths
     $filename = StringsManager::toKebabCase($name);
-    $basepath = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $theme;
+    $theme_path = Config::getThemePath($theme, true);
     $namespace = Config::get("themes.$theme.namespace", true);
     $ctrl_filename = "$filename.php";
     $view_filename = "$filename.html.twig";
@@ -141,8 +133,7 @@ class PageBuilder extends TemplateBuilder implements WizardBuilder
       'name' => $name,
       'namespace' => $namespace,
       'entity-name' => $entity_name,
-      'has-framework' => $has_framework,
-      'basepath' => $basepath,
+      'theme-path' => $theme_path,
       'filename' => $filename,
       'ctrl-filename' => $ctrl_filename,
       'view-filename' => $view_filename,

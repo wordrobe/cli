@@ -29,7 +29,6 @@ class PostTypeBuilder extends TemplateBuilder implements WizardBuilder
       $has_archive = $capability_type === 'post' && $public ? self::askForArchive() : false;
       $icon = self::askForIcon();
       $description = self::askForDescription();
-      $has_framework = self::askForFramework();
       self::build([
         'key' => $key,
         'general-name' => $general_name,
@@ -40,7 +39,6 @@ class PostTypeBuilder extends TemplateBuilder implements WizardBuilder
         'has-archive' => $has_archive,
         'icon' => $icon,
         'description' => $description,
-        'has-framework' => $has_framework,
         'theme' => $theme,
         'override' => 'ask'
       ]);
@@ -64,7 +62,6 @@ class PostTypeBuilder extends TemplateBuilder implements WizardBuilder
    *  'has-archive' => $has_archive,
    *  'icon' => $icon,
    *  'description' => $description,
-   *  'has-framework => $has_framework,
    *  'theme' => $theme,
    *  'override' => 'ask'|'force'|false
    * ]);
@@ -73,47 +70,49 @@ class PostTypeBuilder extends TemplateBuilder implements WizardBuilder
   public static function build($params)
   {
     $params = self::prepareParams($params);
-    $post_type = new Template('post-type', [
-      '{KEY}' => $params['key'],
-      '{GENERAL_NAME}' => $params['general-name'],
-      '{SINGULAR_NAME}' => $params['singular-name'],
-      '{DESCRIPTION}' => $params['description'],
-      '{REWRITE}' => $params['rewrite'],
-      '{TEXT_DOMAIN}' => $params['text-domain'],
-      '{CAPABILITY_TYPE}' => $params['capability-type'],
-      '{PUBLIC}' => $params['public'] ? 'true' : 'false',
-      '{HIERARCHICAL}' => $params['hierarchical'] ? 'true' : 'false',
-      '{HAS_ARCHIVE}' => $params['has-archive'],
-      '{ICON}' => $params['icon'],
-      '{SUPPORTS}' => $params['supports']
-    ], $params['basepath']);
+    $post_type = new Template(
+      $params['theme-path'] . '/core/post-types',
+      'post-type',
+      [
+        '{KEY}' => $params['key'],
+        '{GENERAL_NAME}' => $params['general-name'],
+        '{SINGULAR_NAME}' => $params['singular-name'],
+        '{DESCRIPTION}' => $params['description'],
+        '{REWRITE}' => $params['rewrite'],
+        '{TEXT_DOMAIN}' => $params['text-domain'],
+        '{CAPABILITY_TYPE}' => $params['capability-type'],
+        '{PUBLIC}' => $params['public'] ? 'true' : 'false',
+        '{HIERARCHICAL}' => $params['hierarchical'] ? 'true' : 'false',
+        '{HAS_ARCHIVE}' => $params['has-archive'],
+        '{ICON}' => $params['icon'],
+        '{SUPPORTS}' => $params['supports']
+      ]
+    );
     $post_type->save($params['filename'], $params['override']);
 
     Config::set($params['config-path'], ['has-archive' => (bool) $params['has-archive']]);
 
-    if ($params['has-framework']) {
-      EntityBuilder::build([
-        'name' => $params['entity-name'],
-        'base-entity' => 'Post',
-        'theme' => $params['theme'],
-        'override' => $params['override']
-      ]);
+    EntityBuilder::build([
+      'name' => $params['entity-name'],
+      'base-entity' => 'Post',
+      'theme' => $params['theme'],
+      'override' => $params['override']
+    ]);
 
-      DTOBuilder::build([
-        'entity-name' => $params['entity-name'],
-        'base-entity' => 'Post',
-        'theme' => $params['theme'],
-        'override' => $params['override']
-      ]);
+    DTOBuilder::build([
+      'entity-name' => $params['entity-name'],
+      'base-entity' => 'Post',
+      'theme' => $params['theme'],
+      'override' => $params['override']
+    ]);
 
-      RepositoryBuilder::build([
-        'post-type' => $params['key'],
-        'entity-name' => $params['entity-name'],
-        'base-entity' => 'Post',
-        'theme' => $params['theme'],
-        'override' => $params['override']
-      ]);
-    }
+    RepositoryBuilder::build([
+      'post-type' => $params['key'],
+      'entity-name' => $params['entity-name'],
+      'base-entity' => 'Post',
+      'theme' => $params['theme'],
+      'override' => $params['override']
+    ]);
 
     if ($params['public']) {
       SingleBuilder::build([
@@ -225,15 +224,6 @@ class PostTypeBuilder extends TemplateBuilder implements WizardBuilder
   {
     return Dialog::getAnswer('Description:');
   }
-
-  /**
-   * Asks for framework installation
-   * @return mixed
-   */
-  private static function askForFramework()
-  {
-    return Dialog::getConfirmation('Do you want to add a custom Entity-DTO-Repository bundle for this post type?', true, 'yellow');
-  }
   
   /**
    * Checks params existence and normalizes them
@@ -264,7 +254,6 @@ class PostTypeBuilder extends TemplateBuilder implements WizardBuilder
     $has_archive = $public && !$hierarchical && $params['has-archive'] ? 'true' : 'false';
     $icon = StringsManager::toKebabCase($params['icon']);
     $description = ucfirst($params['description']);
-    $has_framework = (bool) $params['has-framework'] ? true : false;
     $rewrite = $public ? '["slug" => "' . StringsManager::toKebabCase($params['general-name']) . '", "with_front" => false]' : false;
     $supports = '["title", "editor", "author", "thumbnail", "excerpt", "trackbacks", "custom-fields", "comments", "revisions", "post-formats", "page-attributes"]';
     $override = strtolower($params['override']);
@@ -275,7 +264,7 @@ class PostTypeBuilder extends TemplateBuilder implements WizardBuilder
 
     // paths
     $config_path = "themes.$theme.post-types.$key";
-    $basepath = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $theme . '/core/post-types';
+    $theme_path = Config::getThemePath($theme, true);
     $filename = "$key.php";
     
     return [
@@ -290,11 +279,10 @@ class PostTypeBuilder extends TemplateBuilder implements WizardBuilder
       'hierarchical' => $hierarchical,
       'icon' => $icon,
       'description' => $description,
-      'has-framework' => $has_framework,
       'rewrite' => $rewrite,
       'supports' => $supports,
       'config-path' => $config_path,
-      'basepath' => $basepath,
+      'theme-path' => $theme_path,
       'filename' => $filename,
       'override' => $override,
       'theme' => $theme

@@ -8,13 +8,13 @@ use Wordrobe\Helper\StringsManager;
 use Wordrobe\Entity\Template;
 
 /**
- * Class PartialBuilder
+ * Class ComponentBuilder
  * @package Wordrobe\Builder
  */
-class PartialBuilder extends TemplateBuilder implements WizardBuilder
+class ComponentBuilder extends TemplateBuilder implements WizardBuilder
 {
   /**
-   * Handles partial template build wizard
+   * Handles component template build wizard
    */
   public static function startWizard()
   {
@@ -26,7 +26,7 @@ class PartialBuilder extends TemplateBuilder implements WizardBuilder
         'theme' => $theme,
         'override' => 'ask'
       ]);
-      Dialog::write('Partial template added!', 'green');
+      Dialog::write('Component template added!', 'green');
     } catch (\Exception $e) {
       Dialog::write($e->getMessage(), 'red');
       exit;
@@ -34,9 +34,9 @@ class PartialBuilder extends TemplateBuilder implements WizardBuilder
   }
   
   /**
-   * Builds partial template
+   * Builds component template
    * @param array $params
-   * @example PartialBuilder::build([
+   * @example ComponentBuilder::build([
    *  'class-name' => $class_name,
    *  'theme' => $theme,
    *  'override' => 'ask'|'force'|false
@@ -46,20 +46,23 @@ class PartialBuilder extends TemplateBuilder implements WizardBuilder
   public static function build($params)
   {
     $params = self::prepareParams($params);
-    $partial = new Template('partial', [
-      '{CLASS_NAME}' => $params['class-name'],
-      '{CONTENT}' => $params['content']
-    ], $params['basepath']);
-    $partial->save($params['filename'], $params['override']);
+    $component = new Template(
+      $params['theme-path'] . '/templates/components',
+      'component', [
+        '{CLASS_NAME}' => $params['class-name'],
+        '{CONTENT}' => $params['content']
+      ]
+    );
+    $component->save($params['filename'], $params['override']);
   }
   
   /**
-   * Asks for partial class name
+   * Asks for component class name
    * @return string
    */
   private static function askForClassName()
   {
-    $class_name = Dialog::getAnswer('CSS class (e.g. my-partial):');
+    $class_name = Dialog::getAnswer('CSS class (e.g. my-component):');
     return $class_name ?: self::askForClassName();
   }
   
@@ -77,7 +80,7 @@ class PartialBuilder extends TemplateBuilder implements WizardBuilder
 
     // checking params
     if (!$params['class-name']) {
-      throw new \Exception('Error: unable to create partial template because of missing parameters.');
+      throw new \Exception('Error: unable to create component template because of missing parameters.');
     }
     
     // normalizing
@@ -90,12 +93,12 @@ class PartialBuilder extends TemplateBuilder implements WizardBuilder
 
     // paths
     $filename = StringsManager::toKebabCase($params['class-name']) . '.html.twig';
-    $basepath = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $theme . '/templates/partials';
+    $theme_path = Config::getThemePath($theme, true);
     
     return [
       'class-name' => $params['class-name'],
       'content' => $content,
-      'basepath' => $basepath,
+      'theme-path' => $theme_path,
       'filename' => $filename,
       'override' => $override,
       'theme' => $theme

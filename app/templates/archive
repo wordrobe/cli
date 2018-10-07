@@ -1,9 +1,9 @@
 <?php
 
 use Timber\Timber;
-use {NAMESPACE}\Repository\{ENTITY_NAME}Repository;
+use {NAMESPACE}\Repository\Repository;
 
 $context = Timber::get_context();
-$context['posts'] = {ENTITY_NAME}Repository::getAllFormattedData();
+$context['posts'] = Repository::getAllFormattedData($wp_query);
 
-Timber::render('templates/default/{VIEW_FILENAME}.html.twig', $context);
+Timber::render('templates/views/{VIEW_FILENAME}.html.twig', $context);

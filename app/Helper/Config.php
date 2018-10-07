@@ -33,7 +33,11 @@ class Config
  */
   public static function init($params = null)
   {
-    $template = new Template('config-project', $params, self::getRootPath());
+    $template = new Template(
+      self::getRootPath(),
+      'config-project',
+      $params
+    );
     $template->save(self::FILENAME);
   }
   
@@ -110,10 +114,10 @@ class Config
    */
   public static function getRelativeRootPath($from_path)
   {
-    $subdirs = explode('/', $from_path);
+    $subdirectories = explode('/', $from_path);
     $root_path = '';
 
-    for ($i = 0; $i < count($subdirs) - 1; $i++) {
+    for ($i = 0; $i < count($subdirectories) - 1; $i++) {
       $root_path .= '../';
     }
 
@@ -127,6 +131,22 @@ class Config
   public static function getRootPath()
   {
     return dirname(Factory::getComposerFile());
+  }
+
+  /**
+   * Theme root path getter
+   * @param string $theme
+   * @param bool $strict
+   * @return null|string
+   * @throws \Exception
+   */
+  public static function getThemePath($theme, $strict = false)
+  {
+    if (!$theme && $strict) {
+      throw new \Exception('Theme not found.');
+    }
+
+    return $theme ? self::getRootPath() . '/' . self::get('themes-path', true) . '/' . $theme : null;
   }
 
   /**

@@ -23,7 +23,7 @@ abstract class TemplateBuilder
     
     switch (count($themes)) {
       case 0:
-        Dialog::write("Your project doesn't have any themes yet. Please run 'vendor/bin/wordrobe add theme' first.", 'red');
+        Dialog::write("Your project doesn't have any themes yet. Please run 'vendor/bin/wordrobe add:theme' first.", 'red');
         exit;
       case 1:
         $theme = array_keys($themes)[0];

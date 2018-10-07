@@ -3,7 +3,7 @@
 use Symfony\Component\Console\Application;
 use Wordrobe\Command\AddMenuCommand;
 use Wordrobe\Command\AddPageCommand;
-use Wordrobe\Command\AddPartialCommand;
+use Wordrobe\Command\AddComponentCommand;
 use Wordrobe\Command\AddPostTypeCommand;
 use Wordrobe\Command\AddServiceCommand;
 use Wordrobe\Command\AddShortcodeCommand;
@@ -42,7 +42,7 @@ $wordrobe = new Application($ascii, 'v1.0');
 
 $wordrobe->add(new AddMenuCommand());
 $wordrobe->add(new AddPageCommand());
-$wordrobe->add(new AddPartialCommand());
+$wordrobe->add(new AddComponentCommand());
 $wordrobe->add(new AddPostTypeCommand());
 $wordrobe->add(new AddServiceCommand());
 $wordrobe->add(new AddShortcodeCommand());

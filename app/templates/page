@@ -10,4 +10,4 @@ use {NAMESPACE}\Repository\{ENTITY_NAME}Repository;
 $context = Timber::get_context();
 $context['contents'] = {ENTITY_NAME}Repository::getFormattedDataByPost();
 
-Timber::render('templates/pages/{VIEW_FILENAME}.html.twig', $context);
+Timber::render('templates/views/{VIEW_FILENAME}.html.twig', $context);

@@ -54,12 +54,16 @@ class ServiceBuilder extends TemplateBuilder implements WizardBuilder
   public static function build($params)
   {
     $params = self::prepareParams($params);
-    $service = new Template('service', [
-      '{NAMESPACE}' => $params['namespace'],
-      '{ROUTE}' => $params['route'],
-      '{METHOD}' => $params['method'],
-      '{TEXT_DOMAIN}' => $params['text-domain']
-    ], $params['basepath']);
+    $service = new Template(
+      $params['theme-path'] . '/core/services',
+      'service',
+      [
+        '{NAMESPACE}' => $params['namespace'],
+        '{ROUTE}' => $params['route'],
+        '{METHOD}' => $params['method'],
+        '{TEXT_DOMAIN}' => $params['text-domain']
+      ]
+    );
     $service->save($params['filename'], $params['override']);
   }
 
@@ -174,14 +178,14 @@ class ServiceBuilder extends TemplateBuilder implements WizardBuilder
     }
 
     // paths
-    $basepath = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $theme . '/core/services';
+    $theme_path = Config::getThemePath($theme, true);
     $filename = $namespace . '/' . self::getRouteName($params['route']) . '.php';
 
     return [
       'namespace' => $namespace,
       'route' => rtrim($route, '/'),
       'method' => $method,
-      'basepath' => $basepath,
+      'theme-path' => $theme_path,
       'filename' => $filename,
       'override' => $override,
       'theme' => $theme,

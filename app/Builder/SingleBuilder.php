@@ -27,13 +27,20 @@ class SingleBuilder extends TemplateBuilder implements Builder
   public static function build($params)
   {
     $params = self::prepareParams($params);
-    $single_ctrl = new Template('single', [
-      '{NAMESPACE}' => $params['namespace'],
-      '{ENTITY_NAME}' => $params['entity-name'],
-      '{POST_TYPE}' => $params['post-type'],
-      '{VIEW_FILENAME}' => $params['filename']
-    ], $params['basepath']);
-    $single_view = new Template('view', null, $params['basepath'] . '/templates/default');
+    $single_ctrl = new Template(
+      $params['theme-path'] . '/controllers',
+      'single',
+      [
+        '{NAMESPACE}' => $params['namespace'],
+        '{ENTITY_NAME}' => $params['entity-name'],
+        '{POST_TYPE}' => $params['post-type'],
+        '{VIEW_FILENAME}' => $params['post-type']
+      ]
+    );
+    $single_view = new Template(
+      $params['theme-path'] . '/templates/views',
+      'view'
+    );
     $single_ctrl->save($params['ctrl-filename'], $params['override']);
     $single_view->save($params['view-filename'], $params['override']);
   }
@@ -70,16 +77,15 @@ class SingleBuilder extends TemplateBuilder implements Builder
 
     // paths
     $namespace = Config::get("themes.$theme.namespace", true);
-    $basepath = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $theme;
-    $filename = 'single-' . $post_type;
-    $ctrl_filename = "$filename.php";
-    $view_filename = "$filename.html.twig";
+    $theme_path = Config::getThemePath($theme, true);
+    $ctrl_filename = "$post_type.php";
+    $view_filename = "$post_type.html.twig";
     
     return [
       'namespace' => $namespace,
       'post-type' => $post_type,
       'entity-name' => $entity_name,
-      'basepath' => $basepath,
+      'theme-path' => $theme_path,
       'ctrl-filename' => $ctrl_filename,
       'view-filename' => $view_filename,
       'override' => $override,

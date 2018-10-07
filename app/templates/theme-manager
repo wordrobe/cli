@@ -9,7 +9,9 @@ use Timber\Timber;
  * @package {NAMESPACE}
  */
 class ThemeManager {
-
+  /**
+   * @var Timber $timber
+   */
   public static $timber;
 
   /**
@@ -104,6 +106,39 @@ class ThemeManager {
   }
 
   /**
+   * Overrides templates default location
+   * @param $template
+   * @return string
+   */
+  public static function overrideTemplatesLocation($template)
+  {
+    $queried_object = get_queried_object();
+    $controllers_dir = get_stylesheet_directory() . '/controllers';
+
+    if (is_single()) {
+      $template = $controllers_dir . "/$queried_object->post_type.php";
+    } else if (is_page()) {
+      $template = get_page_template() ?: $controllers_dir . '/page.php';
+    } else if (is_category()) {
+      $template = $controllers_dir . "/category-$queried_object->slug.php";
+    } else if (is_tag()) {
+      $template = $controllers_dir . "/tag-$queried_object->slug.php";
+    } else if (is_tax()) {
+      $template = $controllers_dir . "/taxonomy-$queried_object->slug.php";
+    } else if (is_author()) {
+      $template = $controllers_dir . "/author.php";
+    } else if (is_archive()) {
+      $template = $controllers_dir . "/archive-$queried_object->name.php";
+    } else if (is_search()) {
+      $template = $controllers_dir . "/search.php";
+    } else if (is_404()) {
+      $template = $controllers_dir . "/404.php";
+    }
+
+    return $template;
+  }
+
+  /**
    * Global context setter
    * @param $context
    * @return mixed
@@ -133,6 +168,7 @@ class ThemeManager {
 
     // setting theme's configurations
     self::setTemplatesDirectory();
+    add_filter('template_include', __NAMESPACE__ . '\ThemeManager::overrideTemplatesLocation');
     add_filter('timber/twig', __NAMESPACE__ . '\ThemeManager::addStringLoaderExtension');
     add_filter('timber/context', __NAMESPACE__ . '\ThemeManager::setGlobalContext');
     add_action('init', __NAMESPACE__ . '\ThemeManager::setSupport');

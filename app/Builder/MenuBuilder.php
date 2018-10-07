@@ -55,12 +55,16 @@ class MenuBuilder extends TemplateBuilder implements WizardBuilder
   public static function build($params)
   {
     $params = self::prepareParams($params);
-    $menu = new Template('menu', [
-      '{LOCATION}' => $params['location'],
-      '{NAME}' => $params['name'],
-      '{DESCRIPTION}' => $params['description'],
-      '{TEXT_DOMAIN}' => $params['text-domain']
-    ], $params['basepath']);
+    $menu = new Template(
+      $params['theme-path'] . 'core/menu',
+      'menu',
+      [
+        '{LOCATION}' => $params['location'],
+        '{NAME}' => $params['name'],
+        '{DESCRIPTION}' => $params['description'],
+        '{TEXT_DOMAIN}' => $params['text-domain']
+      ]
+    );
     $menu->save($params['filename'], $params['override']);
   }
   
@@ -135,7 +139,7 @@ class MenuBuilder extends TemplateBuilder implements WizardBuilder
     }
 
     // paths
-    $basepath = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $theme . '/core/menu';
+    $theme_path = Config::getThemePath($theme, true);
     $filename = "$location.php";
     
     return [
@@ -143,7 +147,7 @@ class MenuBuilder extends TemplateBuilder implements WizardBuilder
       'name' => $name,
       'description' => $description,
       'text-domain' => $text_domain,
-      'basepath' => $basepath,
+      'theme-path' => $theme_path,
       'filename' => $filename,
       'override' => $override,
       'theme' => $theme

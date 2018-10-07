@@ -27,10 +27,13 @@ class EntityBuilder extends TemplateBuilder implements Builder
   {
     $params = self::prepareParams($params);
     $template_model = $params['name'] ? 'entity-extension' : 'entity';
-    $entity = new Template($template_model, [
-      '{NAMESPACE}' => $params['namespace'],
-      '{NAME}' => $params['name']
-    ], $params['basepath']);
+    $entity = new Template(
+      $params['theme-path'] . '/core/Entity',
+      $template_model, [
+        '{NAMESPACE}' => $params['namespace'],
+        '{NAME}' => $params['name']
+      ]
+    );
     $entity->save($params['filename'], $params['override']);
   }
 
@@ -56,13 +59,13 @@ class EntityBuilder extends TemplateBuilder implements Builder
 
     // paths
     $namespace = Config::get("themes.$theme.namespace", true);
-    $basepath = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $theme . '/core/Entity';
+    $theme_path = Config::getThemePath($theme, true);
     $filename = $name ? "$name.php" : 'Entity.php';
 
     return [
       'namespace' => $namespace,
       'name' => $name,
-      'basepath' => $basepath,
+      'theme-path' => $theme_path,
       'filename' => $filename,
       'override' => $override,
       'theme' => $theme

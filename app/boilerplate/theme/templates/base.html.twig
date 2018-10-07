@@ -24,16 +24,16 @@
 <body {{ function('body_class') }}>
 
   <div class="app-wrapper">
-    {% include 'partials/header.html.twig' %}
+    {% include 'components/header.html.twig' %}
 
     <main class="content">
       {% block content %}{% endblock %}
     </main>
 
-    {% include 'partials/footer.html.twig' %}
+    {% include 'components/footer.html.twig' %}
   </div>
 
-  {% include 'partials/analytics.html.twig' %}
+  {% include 'components/analytics.html.twig' %}
 
   {% block scripts %}{% endblock %}
 

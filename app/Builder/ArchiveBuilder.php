@@ -80,14 +80,21 @@ class ArchiveBuilder extends TemplateBuilder implements WizardBuilder
   public static function build($params)
   {
     $params = self::prepareParams($params);
-    $archive_ctrl = new Template('archive', [
-      '{TITLE}' => $params['title'],
-      '{NAMESPACE}' => $params['namespace'],
-      '{ENTITY_NAME}' => $params['entity-name'],
-      '{QUERY}' => $params['query'],
-      '{VIEW_FILENAME}' => $params['filename']
-    ], $params['basepath']);
-    $archive_view = new Template('view', null, $params['basepath'] . '/templates/default');
+    $archive_ctrl = new Template(
+      $params['theme-path'] . '/controllers',
+      'archive',
+      [
+        '{TITLE}' => $params['title'],
+        '{NAMESPACE}' => $params['namespace'],
+        '{ENTITY_NAME}' => $params['entity-name'],
+        '{QUERY}' => $params['query'],
+        '{VIEW_FILENAME}' => $params['filename']
+      ]
+    );
+    $archive_view = new Template(
+      $params['theme-path'] . '/templates/views',
+      'view'
+    );
     $archive_ctrl->save($params['ctrl-filename'], $params['override']);
     $archive_view->save($params['view-filename'], $params['override']);
   }
@@ -199,7 +206,7 @@ class ArchiveBuilder extends TemplateBuilder implements WizardBuilder
 
     // paths
     $namespace = Config::get("themes.$theme.namespace", true);
-    $basepath = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $theme;
+    $theme_path = Config::getThemePath($theme, true);
     $basename = $type === 'post-type' ? 'archive' : $type;
     $filename = $key ? $basename . '-' . $key : $basename;
     $ctrl_filename = "$filename.php";
@@ -211,8 +218,8 @@ class ArchiveBuilder extends TemplateBuilder implements WizardBuilder
       'title' => $title,
       'namespace' => $namespace,
       'entity-name' => $entity_name,
+      'theme-path' => $theme_path,
       'filename' => $filename,
-      'basepath' => $basepath,
       'ctrl-filename' => $ctrl_filename,
       'view-filename' => $view_filename,
       'override' => $override,

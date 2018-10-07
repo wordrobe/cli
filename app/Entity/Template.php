@@ -11,19 +11,19 @@ use Wordrobe\Helper\Dialog;
  */
 class Template
 {
-  protected $basepath;
+  protected $path;
   protected $content;
   
   /**
    * Template constructor.
+   * @param null|string $path
    * @param string $model
    * @param null|array $replacements
-   * @param null|string $basepath
    * @throws \Exception
    */
-  public function __construct($model, $replacements, $basepath)
+  public function __construct($path, $model, $replacements = null)
   {
-    $this->basepath = $basepath;
+    $this->path = $path;
     $this->content = self::getModelContent($model);
     // auto-fill
     if (is_array($replacements)) {
@@ -69,8 +69,8 @@ class Template
    */
   public function save($filename, $override = false)
   {
-    if ($this->basepath) {
-      $filename = $this->basepath . '/' . $filename;
+    if ($this->path) {
+      $filename = $this->path . '/' . $filename;
       $force_override = false;
 
       switch ($override) {
@@ -87,7 +87,7 @@ class Template
       }
 
       FilesManager::writeFile($filename, $this->content, $force_override);
-      FilesManager::deleteFile($this->basepath . '/.gitkeep');
+      FilesManager::deleteFile($this->path . '/.gitkeep');
     }
   }
   

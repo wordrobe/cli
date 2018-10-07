@@ -55,18 +55,32 @@ class ShortcodeBuilder extends TemplateBuilder implements WizardBuilder
   public static function build($params)
   {
     $params = self::prepareParams($params);
-    $shortcode_ctrl = new Template('shortcode', ['{KEY}' => $params['key']], $params['basepath'] . '/core/shortcodes');
-    $shortcode_plugin = new Template('shortcode-plugin', [
-      '{TITLE}' => $params['title'],
-      '{KEY}' => $params['plugin-key'],
-      '{ICON}' => $params['icon'],
-      '{SHORTCODE}' => $params['key'],
-      '{ATTRIBUTES}' => $params['attributes']
-    ], $params['basepath'] . '/core/shortcodes');
-    $shortcode_view = new Template('partial', [
-      '{CLASS_NAME}' => $params['key'],
-      '{CONTENT}' => '{{ content|shortcodes }}'
-    ], $params['basepath'] . '/templates/partials/shortcodes');
+    $shortcode_ctrl = new Template(
+      $params['theme-path'] . '/core/shortcodes',
+      'shortcode',
+      [
+        '{KEY}' => $params['key']
+      ]
+    );
+    $shortcode_plugin = new Template(
+      $params['theme-path'] . '/core/shortcodes',
+      'shortcode-plugin',
+      [
+        '{TITLE}' => $params['title'],
+        '{KEY}' => $params['plugin-key'],
+        '{ICON}' => $params['icon'],
+        '{SHORTCODE}' => $params['key'],
+        '{ATTRIBUTES}' => $params['attributes']
+      ]
+    );
+    $shortcode_view = new Template(
+      $params['theme-path'] . '/templates/components/shortcodes',
+      'component',
+      [
+        '{CLASS_NAME}' => $params['key'],
+        '{CONTENT}' => '{{ content|shortcodes }}'
+      ]
+    );
     $shortcode_ctrl->save($params['ctrl-filename'], $params['override']);
     $shortcode_plugin->save($params['plugin-filename'], $params['override']);
     $shortcode_view->save($params['view-filename'], $params['override']);
@@ -151,7 +165,7 @@ class ShortcodeBuilder extends TemplateBuilder implements WizardBuilder
     }
 
     // paths
-    $basepath = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $theme;
+    $theme_path = Config::getThemePath($theme, true);
     $ctrl_filename = "$key/index.php";
     $plugin_filename = "$key/index.js";
     $view_filename = "$key.html.twig";
@@ -162,7 +176,7 @@ class ShortcodeBuilder extends TemplateBuilder implements WizardBuilder
       'attributes' => $attributes,
       'title' => ucwords($title),
       'icon' => $icon,
-      'basepath' => $basepath,
+      'theme-path' => $theme_path,
       'ctrl-filename' => $ctrl_filename,
       'plugin-filename' => $plugin_filename,
       'view-filename' => $view_filename,

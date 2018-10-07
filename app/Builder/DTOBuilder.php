@@ -27,10 +27,14 @@ class DTOBuilder extends TemplateBuilder implements Builder
   {
     $params = self::prepareParams($params);
     $template_model = $params['entity-name'] ? 'dto-extension' : 'dto';
-    $dto = new Template($template_model, [
-      '{NAMESPACE}' => $params['namespace'],
-      '{ENTITY_NAME}' => $params['entity-name']
-    ], $params['basepath']);
+    $dto = new Template(
+      $params['theme-path'] . '/core/DTO',
+      $template_model,
+      [
+        '{NAMESPACE}' => $params['namespace'],
+        '{ENTITY_NAME}' => $params['entity-name']
+      ]
+    );
     $dto->save($params['filename'], $params['override']);
   }
 
@@ -56,13 +60,13 @@ class DTOBuilder extends TemplateBuilder implements Builder
 
     // paths
     $namespace = Config::get("themes.$theme.namespace", true);
-    $basepath = Config::getRootPath() . '/' . Config::get('themes-path', true) . '/' . $theme . '/core/DTO';
+    $theme_path = Config::getThemePath($theme, true);
     $filename = $entity_name ? $entity_name . 'DTO.php' : 'DTO.php';
 
     return [
       'namespace' => $namespace,
       'entity-name' => $entity_name,
-      'basepath' => $basepath,
+      'theme-path' => $theme_path,
       'filename' => $filename,
       'override' => $override,
       'theme' => $theme
