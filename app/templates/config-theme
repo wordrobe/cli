@@ -3,18 +3,24 @@
 	"text-domain": "{TEXT_DOMAIN}",
 	"post-types": {
 	  "post": {
+	    "entity": null,
 	    "has-archive": true
 	  },
 	  "page": {
+	    "entity": null,
 	    "has-archive": false
 	  }
   },
 	"taxonomies": {
-	  "category": [
-      "post"
-    ],
-	  "tag": [
-      "post"
-    ]
+	  "category": {
+      "post-type": "post",
+      "hierarchical": true,
+      "terms": []
+    },
+	  "tag": {
+      "post-type": "post",
+      "hierarchical": false,
+      "terms": []
+    }
   }
 }

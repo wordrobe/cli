@@ -83,14 +83,17 @@ class PostTypeBuilder extends TemplateBuilder implements WizardBuilder
         '{CAPABILITY_TYPE}' => $params['capability-type'],
         '{PUBLIC}' => $params['public'] ? 'true' : 'false',
         '{HIERARCHICAL}' => $params['hierarchical'] ? 'true' : 'false',
-        '{HAS_ARCHIVE}' => $params['has-archive'],
+        '{HAS_ARCHIVE}' => $params['has-archive'] ? 'true' : 'false',
         '{ICON}' => $params['icon'],
         '{SUPPORTS}' => $params['supports']
       ]
     );
     $post_type->save($params['filename'], $params['override']);
 
-    Config::set($params['config-path'], ['has-archive' => (bool) $params['has-archive']]);
+    Config::set($params['config-path'], [
+      'entity' => $params['entity-name'],
+      'has-archive' => (bool) $params['has-archive']
+    ]);
 
     EntityBuilder::build([
       'name' => $params['entity-name'],
@@ -124,9 +127,7 @@ class PostTypeBuilder extends TemplateBuilder implements WizardBuilder
 
       if ($params['has-archive']) {
         ArchiveBuilder::build([
-          'type' => 'post-type',
-          'key' => $params['key'],
-          'entity-name' => $params['entity-name'],
+          'post-type' => $params['key'],
           'theme' => $params['theme'],
           'override' => $params['override']
         ]);
@@ -251,7 +252,7 @@ class PostTypeBuilder extends TemplateBuilder implements WizardBuilder
     $capability_type = strtolower($params['capability-type']);
     $public = $params['public'];
     $hierarchical = $params['capability-type'] === 'page';
-    $has_archive = $public && !$hierarchical && $params['has-archive'] ? 'true' : 'false';
+    $has_archive = $public && !$hierarchical && $params['has-archive'];
     $icon = StringsManager::toKebabCase($params['icon']);
     $description = ucfirst($params['description']);
     $rewrite = $public ? '["slug" => "' . StringsManager::toKebabCase($params['general-name']) . '", "with_front" => false]' : false;

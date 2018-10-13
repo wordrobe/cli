@@ -28,11 +28,9 @@ where *feature* can be one from the list below:
 - term
 - menu
 - shortcode
-- ajax-service
+- service
 - page
-- single
-- archive
-- partial
+- component
 
 ### Examples
 
@@ -92,17 +90,11 @@ vendor/bin/wordrobe add:menu
 vendor/bin/wordrobe add:shortcode
 ```
 ```
-vendor/bin/wordrobe add:ajax-service
+vendor/bin/wordrobe add:service
 ```
 ```
 vendor/bin/wordrobe add:page
 ```
 ```
-vendor/bin/wordrobe add:single
-```
-```
-vendor/bin/wordrobe add:archive
-```
-```
-vendor/bin/wordrobe add:partial
+vendor/bin/wordrobe add:component
 ```

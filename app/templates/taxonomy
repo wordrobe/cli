@@ -2,7 +2,7 @@
 
 Wordrobe\Feature\Factory::create('Taxonomy', [
   'key' => '{KEY}',
-  'post_types' => '{POST_TYPES}',
+  'post_types' => '{POST_TYPE}',
   'settings' => [
     'hierarchical' => {HIERARCHICAL},
     'public' => true,

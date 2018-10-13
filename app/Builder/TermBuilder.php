@@ -24,8 +24,9 @@ class TermBuilder extends TemplateBuilder implements WizardBuilder
       $taxonomy = self::askForTaxonomy($theme);
       $slug = self::askForSlug($name);
       $description = self::askForDescription();
-      $parent = Config::get("themes.$theme.taxonomies.$taxonomy.hierarchical") ? self::askForParent() : null;
-      $has_archive = self::askForArchiveTemplateBuild($slug);
+      $parent = Config::get("themes.$theme.taxonomies.$taxonomy.hierarchical") && !empty(Config::get("themes.$theme.taxonomies.$taxonomy.terms")) ? self::askForParent($theme, $taxonomy) : null;
+      $post_type = Config::get("themes.$theme.taxonomies.$taxonomy.post-type");
+      $has_archive = Config::get("themes.$theme.post-types.$post_type.has-archive") ? self::askForArchiveTemplateBuild($slug) : false;
       self::build([
         'name' => $name,
         'taxonomy' => $taxonomy,
@@ -73,11 +74,14 @@ class TermBuilder extends TemplateBuilder implements WizardBuilder
       ]
     );
     $term->save($params['filename'], $params['override']);
+
+    Config::add($params['config-path'], $params['slug']);
     
     if ($params['has-archive']) {
       ArchiveBuilder::build([
-        'type' => $params['type'],
-        'key' => $params['key'],
+        'post-type' => $params['post-type'],
+        'taxonomy' => $params['taxonomy'],
+        'term' => $params['slug'],
         'theme' => $params['theme'],
         'override' => $params['override']
       ]);
@@ -93,7 +97,7 @@ class TermBuilder extends TemplateBuilder implements WizardBuilder
     $name = Dialog::getAnswer('Term name (e.g. Entertainment):');
     return $name ?: self::askForName();
   }
-  
+
   /**
    * Asks for taxonomy
    * @param string $theme
@@ -103,7 +107,14 @@ class TermBuilder extends TemplateBuilder implements WizardBuilder
   private static function askForTaxonomy($theme)
   {
     $taxonomies = Config::get("themes.$theme.taxonomies", ['type' => 'array']);
-    return Dialog::getChoice('Taxonomy:', array_keys($taxonomies), null);
+    $choices = [];
+
+    foreach ($taxonomies as $key => $data) {
+      $choices["(" . $data['post-type'] . ") $key"] = $key;
+    }
+
+    $taxonomy = Dialog::getChoice('Taxonomy:', array_keys($choices), null);
+    return $taxonomy ? $choices[$taxonomy] : self::askForTaxonomy($theme);
   }
   
   /**
@@ -125,25 +136,29 @@ class TermBuilder extends TemplateBuilder implements WizardBuilder
   {
     return Dialog::getAnswer('Description:');
   }
-  
+
   /**
    * Asks for parent
-   * @return mixed|null
+   * @param $theme
+   * @param $taxonomy
+   * @return null|string
+   * @throws \Exception
    */
-  private static function askForParent()
+  private static function askForParent($theme, $taxonomy)
   {
-    $parent_slug = Dialog::getAnswer('Parent term slug [null]:');
-    return $parent_slug ?: null;
+    $terms = Config::get("themes.$theme.taxonomies.$taxonomy.terms");
+    $has_parent = empty($terms) ? false : Dialog::getConfirmation('Has parent term?', false, 'yellow');
+    return $has_parent ? Dialog::getChoice('Parent term:', $terms) : null;
   }
   
   /**
    * Asks for archive template auto-build confirmation
-   * @param string $slug
+   * @param string $term
    * @return mixed
    */
-  private static function askForArchiveTemplateBuild($slug)
+  private static function askForArchiveTemplateBuild($term)
   {
-    return Dialog::getConfirmation("Do you want to automatically create an archive template for '$slug' term?", true, 'yellow');
+    return Dialog::getConfirmation("Do you want to create a custom archive template for '$term' term?", true, 'yellow');
   }
   
   /**
@@ -162,36 +177,37 @@ class TermBuilder extends TemplateBuilder implements WizardBuilder
     if (!$params['name'] || !$params['taxonomy']) {
       throw new \Exception('Error: unable to create term because of missing parameters.');
     }
+
+    // checking taxonomy
+    $taxonomy = StringsManager::toKebabCase($params['taxonomy']);
+    Config::check("themes.$theme.taxonomies.$taxonomy", 'array', "Error: taxonomy '$taxonomy' not found in '$theme' theme.");
     
     // normalizing
+    $post_type = Config::get("themes.$theme.taxonomies.$taxonomy.post-type", true);
     $name = ucwords($params['name']);
-    $taxonomy = StringsManager::toKebabCase($params['taxonomy']);
     $slug = StringsManager::toKebabCase($params['slug']);
     $description = ucfirst($params['description']);
     $parent = Config::get("themes." . $params['theme'] . ".taxonomies.$taxonomy.hierarchical") ? StringsManager::toKebabCase($params['parent']) : '';
-    $has_archive = $params['has-archive'] || false;
+    $has_archive = Config::get("themes.$theme.post-types.$post_type.has-archive") ? (bool) $params['has-archive'] : false;
     $override = strtolower($params['override']);
     
     if ($override !== 'ask' && $override !== 'force') {
       $override = false;
     }
-    
-    if (!in_array($taxonomy, array_keys(Config::get("themes.$theme.taxonomies", ['type' => 'array'])))) {
-      throw new \Exception("Error: taxonomy '$taxonomy' not found in '$theme' theme.");
-    }
 
     // paths
     $theme_path = Config::getThemePath($theme, true);
+    $config_path = Config::get("themes.$theme.taxonomies.$taxonomy.terms", true);
     $filename = "$taxonomy/$slug.php";
 
     return [
       'name' => $name,
+      'post-type' => $post_type,
       'taxonomy' => $taxonomy,
       'slug' => $slug,
       'description' => $description,
       'parent' => $parent,
-      'type' => $taxonomy === 'category' || $taxonomy === 'tag' ? $taxonomy : 'taxonomy',
-      'key' => $taxonomy === 'category' || $taxonomy === 'tag' ? $slug : $taxonomy . '-' . $slug,
+      'config-path' => $config_path,
       'theme-path' => $theme_path,
       'filename' => $filename,
       'has-archive' => $has_archive,
