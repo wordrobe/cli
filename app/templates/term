@@ -4,6 +4,5 @@ Wordrobe\Feature\Factory::create('Term', [
   'name' => '{NAME}',
   'taxonomy' => '{TAXONOMY}',
   'slug' => '{SLUG}',
-  'description' => '{DESCRIPTION}',
-  'parent' => '{PARENT}'
+  'description' => '{DESCRIPTION}'
 ]);

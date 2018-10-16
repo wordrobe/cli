@@ -6,7 +6,7 @@ namespace Wordrobe\Helper;
  * Class FilesManager
  * @package Wordrobe\Helper
  */
-class FilesManager
+final class FilesManager
 {
   
   /**

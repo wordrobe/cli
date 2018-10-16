@@ -15,7 +15,7 @@ class Repository implements RepositoryInterface
   /**
    * @var string $post_type
    */
-  protected static $post_type = 'post';
+  protected static $post_type = ['post', 'page'];
 
   /**
    * @var string $entity_class
@@ -39,22 +39,20 @@ class Repository implements RepositoryInterface
     }
 
     $title = $post->title();
+    $content = $post->content();
     $url = $post->link();
-    // other properties here
-    $my_custom_field = $post->get_field('my_custom_field'); // just an example
 
-    return new static::$entity_class($title, $url, $my_custom_field);
+    return new static::$entity_class($title, $content, $url);
   }
 
   /**
    * Returns all Entities from query
-   * @param array $query_args (wp_query format)
+   * @param false|array $query_args (wp_query format)
    * @return \{NAMESPACE}\Entity\Entity[]
    */
-  public static function getAllEntities($query_args = [])
+  public static function getAllEntities($query_args = false)
   {
-    $args = array_unique(array_merge($query_args, ['post_type' => static::$post_type]));
-    $posts = Timber::get_posts($args);
+    $posts = Timber::get_posts($query_args);
     return array_map(function($post) {
       return self::getEntityByPost($post);
     }, $posts);
@@ -73,10 +71,10 @@ class Repository implements RepositoryInterface
 
   /**
    * Returns all DTOs from query
-   * @param array $query_args (wp_query format)
+   * @param false|array $query_args (wp_query format)
    * @return \{NAMESPACE}\DTO\DTO[]
    */
-  public static function getAllDTO($query_args = [])
+  public static function getAllDTO($query_args = false)
   {
     $entities = self::getAllEntities($query_args);
     return array_map(function($entity) {
@@ -97,10 +95,10 @@ class Repository implements RepositoryInterface
 
   /**
    * Returns all Entities' data formatted by DTO
-   * @param array $query_args (wp_query format)
+   * @param false|array $query_args (wp_query format)
    * @return array
    */
-  public static function getAllFormattedData($query_args = [])
+  public static function getAllFormattedData($query_args = false)
   {
     $dtos = self::getAllDTO($query_args);
     return array_map(function($dto) {

@@ -6,7 +6,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Wordrobe\Helper\Config;
 use Wordrobe\Helper\Dialog;
-use Wordrobe\Helper\SetupManager;
+use Wordrobe\Builder\ConfigBuilder;
 use Wordrobe\Builder\ThemeBuilder;
 
 /**
@@ -47,18 +47,31 @@ abstract class AddCommand extends BaseCommand
 
   /**
    * Checks project setup
+   * @throws \Exception
    */
   private function checkSetup()
   {
-    if (!Config::exists()) {
-      if (Dialog::getConfirmation('Your project is not configured yet. Do you want to run setup right now?', true, 'yellow')) {
-        SetupManager::install();
-        Dialog::write('Resuming ' . $this->builder . ' wizard...', 'cyan');
-      } else {
-        Dialog::write('Unable to continue.', 'red');
+    if (Config::exists()) {
+      return;
+    }
+
+    if (Dialog::getConfirmation('Your project is not configured yet. Do you want to run setup right now?', true, 'yellow')) {
+      ConfigBuilder::startWizard();
+
+      if (Dialog::getConfirmation('Do you want to add a new theme right now?', true, 'yellow')) {
+        ThemeBuilder::startWizard();
+
+        if ($this->builder !== 'ThemeBuilder') {
+          Dialog::write('Resuming ' . $this->builder . ' wizard...', 'cyan');
+          return;
+        }
+
         exit;
       }
     }
+
+    Dialog::write('Unable to continue.', 'red');
+    exit;
   }
 
   /**
@@ -71,10 +84,11 @@ abstract class AddCommand extends BaseCommand
       if (Dialog::getConfirmation('Your project has no themes yet. Do you want to add one right now?', true, 'yellow')) {
         ThemeBuilder::startWizard();
         Dialog::write('Resuming ' . $this->builder . ' wizard...', 'cyan');
-      } else {
-        Dialog::write('Unable to continue.', 'red');
-        exit;
+        return;
       }
+
+      Dialog::write('Unable to continue.', 'red');
+      exit;
     }
   }
 }

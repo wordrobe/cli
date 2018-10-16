@@ -14,13 +14,11 @@
 	"taxonomies": {
 	  "category": {
       "post-type": "post",
-      "hierarchical": true,
-      "terms": []
+      "hierarchical": true
     },
 	  "tag": {
       "post-type": "post",
-      "hierarchical": false,
-      "terms": []
+      "hierarchical": false
     }
   }
 }

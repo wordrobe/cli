@@ -64,7 +64,7 @@ class SingleBuilder extends TemplateBuilder implements Builder
     
     // normalizing
     $post_type = StringsManager::toKebabCase($params['post-type']);
-    $entity_name = $params['entity-name'] ? StringsManager::toPascalCase($params['entity-name']) : StringsManager::toPascalCase($params['post-type']);
+    $entity_name = ($post_type !== 'post' && $post_type !== 'page') ? ($params['entity-name'] ? StringsManager::toPascalCase($params['entity-name']) : StringsManager::toPascalCase($params['post-type'])) : '';
     $override = strtolower($params['override']);
   
     if ($override !== 'ask' && $override !== 'force') {

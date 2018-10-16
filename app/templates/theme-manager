@@ -2,6 +2,7 @@
 
 namespace {NAMESPACE};
 
+use Wordrobe\Helper\TemplateLocator;
 use Timber\Timber;
 
 /**
@@ -12,17 +13,140 @@ final class ThemeManager {
   /**
    * @var Timber $timber
    */
-  public static $timber;
+  private static $timber;
+
+  /**
+   * Theme's features loader
+   */
+  private static function loadFeatures()
+  {
+    $features_paths = [
+      'post-types',
+      'taxonomies',
+      'terms/**',
+      'services/**',
+      'menu',
+      'shortcodes/**'
+    ];
+
+    foreach ($features_paths as $path) {
+      $features = glob(__DIR__ . '/' . $path . '/*.php');
+
+      foreach ($features as $feature) {
+        require_once($feature);
+      }
+    }
+  }
+
+  /**
+   * Theme's Timber instance getter
+   * @return \Timber\Timber
+   */
+  public static function getTimber()
+  {
+    return self::$timber;
+  }
 
   /**
    * Theme support setter
    */
   public static function setSupport()
   {
-    add_theme_support('html5');
     add_theme_support('custom-logo');
+    add_theme_support('title-tag');
     add_theme_support('post-thumbnails');
-    add_theme_support('post-formats', ['gallery', 'link', 'image', 'quote', 'video', 'audio']);
+    add_theme_support('html5', ['search-form', 'gallery', 'caption']);
+    // add_theme_support('post-formats', ['gallery', 'link', 'image', 'quote', 'video', 'audio']);
+  }
+
+ /**
+   * Overrides default template location
+   * @param string $default
+   * @return string
+   * @throws \Exception
+   */
+  public static function overrideTemplateLocation($default)
+  {
+    $queried_object = get_queried_object();
+
+    if (is_single()) {
+      return TemplateLocator::get('single', '{THEME}', $queried_object, $default);
+    }
+
+    if (is_page()) {
+      return TemplateLocator::get('page', '{THEME}', get_page_template(), $default);
+    }
+
+    if (is_category()) {
+      return TemplateLocator::get('category', '{THEME}', $queried_object, $default);
+    }
+
+    if (is_tag()) {
+      return TemplateLocator::get('tag', '{THEME}', $queried_object, $default);
+    }
+
+    if (is_tax()) {
+     return TemplateLocator::get('taxonomy', '{THEME}', $queried_object, $default);
+    }
+
+    if (is_author()) {
+      return TemplateLocator::get('author', '{THEME}', null, $default);
+    }
+
+    if (is_archive()) {
+      return TemplateLocator::get('archive', '{THEME}', $queried_object, $default);
+    }
+
+    if (is_search()) {
+      return TemplateLocator::get('search', '{THEME}', null, $default);
+    }
+
+    if (is_404()) {
+      return TemplateLocator::get('404', '{THEME}', null, $default);
+    }
+
+    return  TemplateLocator::get('index', '{THEME}', null, $default);
+  }
+
+  /**
+   * Adds rewrite rules for archives allowing urls like /post-type/term/sub-term
+   * @param $wp_rewrite
+   */
+  public static function rewriteCustomArchivesUrl($wp_rewrite)
+  {
+    $rules = [];
+    $post_types = get_post_types(['public' => true, '_builtin' => false], 'objects');
+
+    foreach ($post_types as $post_type) {
+      $post_type_name = $post_type->name;
+      $post_type_slug = $post_type->rewrite['slug'];
+      $taxonomies = get_taxonomies(['object_type' => [$post_type_name], 'public' => true, '_builtin' => false], 'objects');
+
+      foreach ($taxonomies as $taxonomy) {
+        $taxonomy_slug = $taxonomy->rewrite['slug'];
+        $rules[$post_type_slug . '/' . $taxonomy_slug . '/?$'] = 'index.php?taxonomy=' . $taxonomy->name;
+        $terms = get_terms($taxonomy->name, ['parent' => 0, 'hide_empty' => 0]);
+
+        foreach ($terms as $term) {
+          $rules[$post_type_slug . '/' . $term->slug . '/?$'] = 'index.php?' . $term->taxonomy . '=' . $term->slug;
+          $subterms = get_terms($taxonomy->name, ['parent' => $term->term_id, 'hide_empty' => 0]);
+
+          foreach ($subterms as $subterm) {
+            $rules[$post_type_slug . '/' . $term->slug . '/' . $subterm->slug . '/?$'] = 'index.php?' . $term->taxonomy . '=' . $subterm->slug;
+          }
+        }
+      }
+    }
+
+    $wp_rewrite->rules = array_merge($rules, $wp_rewrite->rules);
+  }
+
+  /**
+   * Hides pages from admin menu
+   */
+  public static function hideMenuPages()
+  {
+    remove_menu_page('edit-comments.php'); // just an example
   }
 
   /**
@@ -35,11 +159,26 @@ final class ThemeManager {
   }
 
   /**
-   * Hides pages from admin menu
+   * Adds Twig StringLoader extension
+   * @param $twig
+   * @return mixed
    */
-  public static function hideMenuPages()
+  public static function addStringLoaderExtension($twig)
   {
-    remove_menu_page('edit-comments.php'); // just an example
+    $twig->addExtension(new \Twig_Extension_StringLoader());
+    return $twig;
+  }
+
+  /**
+   * Global context setter
+   * @param $context
+   * @return mixed
+   */
+  public static function setGlobalContext($context)
+  {
+    $context['env'] = defined('WP_ENV') ? WP_ENV : 'production';
+    $context['options'] = function_exists('acf_add_options_page') ? get_fields('theme-options') : [];
+    return $context;
   }
 
   /**
@@ -67,12 +206,13 @@ final class ThemeManager {
    */
   public static function initCustomFields()
   {
-    // N.B.: the following features are available on ACF v5 only
+    if (defined('ACF_JSON') && ACF_JSON) {
+      // N.B.: the following features are available on ACF 5 only
+      add_filter('acf/settings/load_json', __NAMESPACE__ . '\ThemeManager::enableCustomFieldsAutoload');
 
-    add_filter('acf/settings/load_json', __NAMESPACE__ . '\ThemeManager::enableCustomFieldsAutoload');
-
-    if (defined('ACF_AUTOSAVE') && ACF_AUTOSAVE) {
-      add_filter('acf/settings/save_json', __NAMESPACE__ . '\ThemeManager::enableCustomFieldsAutosave');
+      if (defined('ACF_JSON_AUTOSAVE') && ACF_JSON_AUTOSAVE) {
+        add_filter('acf/settings/save_json', __NAMESPACE__ . '\ThemeManager::enableCustomFieldsAutosave');
+      }
     }
 
     if (function_exists('acf_add_options_page')) {
@@ -87,70 +227,6 @@ final class ThemeManager {
   }
 
   /**
-   * Adds Twig StringLoader extension
-   * @param $twig
-   * @return mixed
-   */
-  public static function addStringLoaderExtension($twig)
-  {
-    $twig->addExtension(new \Twig_Extension_StringLoader());
-    return $twig;
-  }
-
-  /**
-   * Templates directory setter
-   */
-  public static function setTemplatesDirectory()
-  {
-    Timber::$dirname = 'templates';
-  }
-
-  /**
-   * Overrides templates default location
-   * @param $template
-   * @return string
-   */
-  public static function overrideTemplatesLocation($template)
-  {
-    $queried_object = get_queried_object();
-    $controllers_dir = get_stylesheet_directory() . '/controllers';
-
-    if (is_single()) {
-      $template = $controllers_dir . "/$queried_object->post_type.php";
-    } else if (is_page()) {
-      $template = get_page_template() ?: $controllers_dir . '/page.php';
-    } else if (is_category()) {
-      $template = $controllers_dir . "/category-$queried_object->slug.php";
-    } else if (is_tag()) {
-      $template = $controllers_dir . "/tag-$queried_object->slug.php";
-    } else if (is_tax()) {
-      $template = $controllers_dir . "/taxonomy-$queried_object->slug.php";
-    } else if (is_author()) {
-      $template = $controllers_dir . "/author.php";
-    } else if (is_archive()) {
-      $template = $controllers_dir . "/archive-$queried_object->name.php";
-    } else if (is_search()) {
-      $template = $controllers_dir . "/search.php";
-    } else if (is_404()) {
-      $template = $controllers_dir . "/404.php";
-    }
-
-    return $template;
-  }
-
-  /**
-   * Global context setter
-   * @param $context
-   * @return mixed
-   */
-  public static function setGlobalContext($context)
-  {
-    $context['env'] = defined('WP_ENV') ? WP_ENV : 'production';
-    $context['options'] = function_exists('acf_add_options_page') ? get_fields('theme-options') : [];
-    return $context;
-  }
-
-  /**
    * Sets theme configurations
    */
   public static function init()
@@ -158,36 +234,20 @@ final class ThemeManager {
     // initializing Timber
     self::$timber = new Timber();
 
-    // loading theme's features
-    self::loadFeature('post-types');
-    self::loadFeature('taxonomies');
-    self::loadFeature('terms/**');
-    self::loadFeature('services/**');
-    self::loadFeature('menu');
-    self::loadFeature('shortcodes/**');
+    // overriding default templates directory
+    Timber::$dirname = 'templates';
 
-    // setting theme's configurations
-    self::setTemplatesDirectory();
-    add_filter('template_include', __NAMESPACE__ . '\ThemeManager::overrideTemplatesLocation');
-    add_filter('timber/twig', __NAMESPACE__ . '\ThemeManager::addStringLoaderExtension');
-    add_filter('timber/context', __NAMESPACE__ . '\ThemeManager::setGlobalContext');
+    // loading theme's features
+    self::loadFeatures();
+
+    // adding theme configurations
     add_action('init', __NAMESPACE__ . '\ThemeManager::setSupport');
+    add_filter('template_include', __NAMESPACE__ . '\ThemeManager::overrideTemplateLocation');
+    add_action('generate_rewrite_rules', __NAMESPACE__ . '\ThemeManager::rewriteCustomArchivesUrl');
     add_action('admin_menu', __NAMESPACE__ . '\ThemeManager::hideMenuPages');
     add_action('wp_enqueue_scripts', __NAMESPACE__ . '\ThemeManager::enqueueAssets');
-
-    if (class_exists('acf')) {
-      self::initCustomFields();
-    }
-  }
-
-  /**
-   * Theme's features loader
-   * @param string $path
-   */
-  private static function loadFeature($path)
-  {
-    foreach (glob(__DIR__ . '/' . $path . '/*.php') as $feature) {
-      require($feature);
-    }
+    add_filter('timber/twig', __NAMESPACE__ . '\ThemeManager::addStringLoaderExtension');
+    add_filter('timber/context', __NAMESPACE__ . '\ThemeManager::setGlobalContext');
+    add_action('acf/init', __NAMESPACE__ . '\ThemeManager::initCustomFields');
   }
 }

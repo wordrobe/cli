@@ -8,27 +8,28 @@ namespace {NAMESPACE}\Entity;
  */
 class {NAME} extends Entity
 {
-  // extend properties here
-  private $my_custom_prop; // just an example
+//  /**
+//   * @var mixed $my_custom_prop
+//   */
+//  private $my_custom_prop;
 
   /**
    * {NAME} constructor
    * @param string $title
+   * @param string $content
    * @param string $url
-   * @param mixed $my_custom_prop
    */
-  public function __construct($title, $url, $my_custom_prop)
+  public function __construct($title, $content, $url/*, $my_custom_prop*/)
   {
-    parent::__construct($title, $url);
-    $this->my_custom_prop = $my_custom_prop; // just an example
+    parent::__construct($title, $content, $url);
+    // $this->my_custom_prop = $my_custom_prop;
   }
 
-  // getter methods here
-  /**
-   * {NAME} my_custom_prop getter
-   */
-  public function getMyCustomProp() // just an example
-  {
-    return $this->my_custom_prop;
-  }
+//  /**
+//   * {NAME} my_custom_prop getter
+//   */
+//  public function getMyCustomProp()
+//  {
+//    return $this->my_custom_prop;
+//  }
 }

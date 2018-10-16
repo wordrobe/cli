@@ -24,7 +24,6 @@ class TermBuilder extends TemplateBuilder implements WizardBuilder
       $taxonomy = self::askForTaxonomy($theme);
       $slug = self::askForSlug($name);
       $description = self::askForDescription();
-      $parent = Config::get("themes.$theme.taxonomies.$taxonomy.hierarchical") && !empty(Config::get("themes.$theme.taxonomies.$taxonomy.terms")) ? self::askForParent($theme, $taxonomy) : null;
       $post_type = Config::get("themes.$theme.taxonomies.$taxonomy.post-type");
       $has_archive = Config::get("themes.$theme.post-types.$post_type.has-archive") ? self::askForArchiveTemplateBuild($slug) : false;
       self::build([
@@ -32,7 +31,6 @@ class TermBuilder extends TemplateBuilder implements WizardBuilder
         'taxonomy' => $taxonomy,
         'slug' => $slug,
         'description' => $description,
-        'parent' => $parent,
         'theme' => $theme,
         'has-archive' => $has_archive,
         'override' => 'ask'
@@ -52,7 +50,6 @@ class TermBuilder extends TemplateBuilder implements WizardBuilder
    *  'taxonomy' => $taxonomy,
    *  'slug' => $slug,
    *  'description' => $description,
-   *  'parent' => $parent,
    *  'theme' => $theme,
    *  'has-archive' => $has_archive
    *  'override' => 'ask'|'force'|false
@@ -69,13 +66,10 @@ class TermBuilder extends TemplateBuilder implements WizardBuilder
         '{NAME}' => $params['name'],
         '{TAXONOMY}' => $params['taxonomy'],
         '{SLUG}' => $params['slug'],
-        '{DESCRIPTION}' => $params['description'],
-        '{PARENT}' => $params['parent']
+        '{DESCRIPTION}' => $params['description']
       ]
     );
     $term->save($params['filename'], $params['override']);
-
-    Config::add($params['config-path'], $params['slug']);
     
     if ($params['has-archive']) {
       ArchiveBuilder::build([
@@ -136,20 +130,6 @@ class TermBuilder extends TemplateBuilder implements WizardBuilder
   {
     return Dialog::getAnswer('Description:');
   }
-
-  /**
-   * Asks for parent
-   * @param $theme
-   * @param $taxonomy
-   * @return null|string
-   * @throws \Exception
-   */
-  private static function askForParent($theme, $taxonomy)
-  {
-    $terms = Config::get("themes.$theme.taxonomies.$taxonomy.terms");
-    $has_parent = empty($terms) ? false : Dialog::getConfirmation('Has parent term?', false, 'yellow');
-    return $has_parent ? Dialog::getChoice('Parent term:', $terms) : null;
-  }
   
   /**
    * Asks for archive template auto-build confirmation
@@ -187,7 +167,6 @@ class TermBuilder extends TemplateBuilder implements WizardBuilder
     $name = ucwords($params['name']);
     $slug = StringsManager::toKebabCase($params['slug']);
     $description = ucfirst($params['description']);
-    $parent = Config::get("themes." . $params['theme'] . ".taxonomies.$taxonomy.hierarchical") ? StringsManager::toKebabCase($params['parent']) : '';
     $has_archive = Config::get("themes.$theme.post-types.$post_type.has-archive") ? (bool) $params['has-archive'] : false;
     $override = strtolower($params['override']);
     
@@ -197,7 +176,6 @@ class TermBuilder extends TemplateBuilder implements WizardBuilder
 
     // paths
     $theme_path = Config::getThemePath($theme, true);
-    $config_path = Config::get("themes.$theme.taxonomies.$taxonomy.terms", true);
     $filename = "$taxonomy/$slug.php";
 
     return [
@@ -206,8 +184,6 @@ class TermBuilder extends TemplateBuilder implements WizardBuilder
       'taxonomy' => $taxonomy,
       'slug' => $slug,
       'description' => $description,
-      'parent' => $parent,
-      'config-path' => $config_path,
       'theme-path' => $theme_path,
       'filename' => $filename,
       'has-archive' => $has_archive,

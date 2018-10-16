@@ -255,7 +255,7 @@ class PostTypeBuilder extends TemplateBuilder implements WizardBuilder
     $has_archive = $public && !$hierarchical && $params['has-archive'];
     $icon = StringsManager::toKebabCase($params['icon']);
     $description = ucfirst($params['description']);
-    $rewrite = $public ? '["slug" => "' . StringsManager::toKebabCase($params['general-name']) . '", "with_front" => false]' : false;
+    $rewrite = $public ? "['slug' => '" . StringsManager::toKebabCase($params['general-name']) . "', 'with_front' => false]" : false;
     $supports = '["title", "editor", "author", "thumbnail", "excerpt", "trackbacks", "custom-fields", "comments", "revisions", "post-formats", "page-attributes"]';
     $override = strtolower($params['override']);
   

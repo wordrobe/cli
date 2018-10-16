@@ -4,7 +4,11 @@ namespace Wordrobe\Command;
 
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Wordrobe\Helper\SetupManager;
+use Wordrobe\Helper\Config;
+use Wordrobe\Helper\Dialog;
+use Wordrobe\Builder\ConfigBuilder;
+use Wordrobe\Builder\ThemeBuilder;
+
 
 /**
  * Class SetupCommand
@@ -22,10 +26,20 @@ class SetupCommand extends BaseCommand
    * @param InputInterface $input
    * @param OutputInterface $output
    * @return int|null|void
+   * @throws \Exception
    */
   protected function execute(InputInterface $input, OutputInterface $output)
   {
     parent::execute($input, $output);
-    SetupManager::install();
+
+    if (!Config::exists()) {
+      ConfigBuilder::startWizard();
+    } else {
+      Dialog::write('Project configuration already exists! Check wordrobe.json file in the project root for details.', 'green');
+    }
+
+    if (Dialog::getConfirmation('Do you want to add a new theme right now?', true, 'yellow')) {
+      ThemeBuilder::startWizard();
+    }
   }
 }

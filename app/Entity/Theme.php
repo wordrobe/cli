@@ -8,6 +8,8 @@ use Wordrobe\Helper\FilesManager;
 use Wordrobe\Builder\EntityBuilder;
 use Wordrobe\Builder\DTOBuilder;
 use Wordrobe\Builder\RepositoryBuilder;
+use Wordrobe\Builder\ArchiveBuilder;
+use Wordrobe\Builder\SingleBuilder;
 
 /**
  * Class Theme
@@ -90,6 +92,7 @@ class Theme
       $this->updateConfig();
       $this->copyBoilerplate();
       $this->addBasicFramework();
+      $this->addDefaultTemplates();
       $this->addThemeManager();
       $this->addFunctions();
       $this->addStylesheet();
@@ -114,8 +117,8 @@ class Theme
       'theme-manager',
       [
         '{NAMESPACE}' => $this->namespace,
-        '{TEXT_DOMAIN}' => $this->text_domain,
-        '{ROOT_PATH}' => Config::getRelativeRootPath($this->path)
+        '{THEME}' => $this->folder_name,
+        '{TEXT_DOMAIN}' => $this->text_domain
       ]
     );
     $functions->save('ThemeManager.php', 'force');
@@ -139,6 +142,68 @@ class Theme
 
     RepositoryBuilder::build([
       'theme' => $this->folder_name,
+      'override' => 'force'
+    ]);
+  }
+
+  /**
+   * Adds default templates to theme
+   * @throws \Exception
+   */
+  protected function addDefaultTemplates()
+  {
+    // single post
+    SingleBuilder::build([
+      'post-type' => 'post',
+      'entity-name' => '',
+      'theme' => $this->folder_name,
+      'override' => 'force'
+    ]);
+
+    // single page
+    SingleBuilder::build([
+      'post-type' => 'page',
+      'entity-name' => '',
+      'theme' => $this->folder_name,
+      'override' => 'force'
+    ]);
+
+    // posts archive
+    ArchiveBuilder::build([
+      'post-type' => 'post',
+      'theme' => $this->folder_name,
+      'override' => 'force'
+    ]);
+
+    // category archive
+    ArchiveBuilder::build([
+      'post-type' => 'post',
+      'theme' => $this->folder_name,
+      'filename' => 'category',
+      'override' => 'force'
+    ]);
+
+    // tag archive
+    ArchiveBuilder::build([
+      'post-type' => 'post',
+      'theme' => $this->folder_name,
+      'filename' => 'tag',
+      'override' => 'force'
+    ]);
+
+    // author archive
+    ArchiveBuilder::build([
+      'post-type' => 'post',
+      'theme' => $this->folder_name,
+      'filename' => 'author',
+      'override' => 'force'
+    ]);
+
+    // search archive
+    ArchiveBuilder::build([
+      'post-type' => 'post',
+      'theme' => $this->folder_name,
+      'filename' => 'search',
       'override' => 'force'
     ]);
   }

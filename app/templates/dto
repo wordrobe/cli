@@ -7,17 +7,30 @@ use {NAMESPACE}\Entity\Entity;
 
 class DTO implements DTOInterface
 {
-  // properties here
-  // e.g. private $title;
+  /**
+   * @var string $title
+   */
+  private $title;
 
   /**
-   * DTO's protected constructor
+   * @var string $content
+   */
+  private $content;
+
+  /**
+   * @var string $url
+   */
+  private $url;
+
+  /**
+   * DTO's constructor
    * @param \{NAMESPACE}\Entity\Entity $entity
    */
   public function __construct(Entity $entity)
   {
-    // setting data here
-    // e.g. $this->title = $entity->getTitle();
+    $this->title = $entity->getTitle();
+    $this->content = $entity->getContent();
+    $this->url = $entity->getUrl();
   }
 
   /**
@@ -25,6 +38,10 @@ class DTO implements DTOInterface
    */
   public function getData()
   {
-    return (array) $this; // or map data like you want
+    return [
+      'title' => $this->title,
+      'content' => $this->content,
+      'url' => $this->url
+    ];
   }
 }

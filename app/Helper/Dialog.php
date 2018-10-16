@@ -13,7 +13,7 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
  * Class Dialog
  * @package Wordrobe\Helper
  */
-class Dialog
+final class Dialog
 {
   public static $questionHelper;
   public static $input;

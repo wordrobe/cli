@@ -16,19 +16,26 @@ class Entity implements EntityInterface
   private $title;
 
   /**
+   * @var string $content
+   */
+  private $content;
+
+  /**
    * @var string $url
    */
   private $url;
 
   /**
-   * Entity's protected constructor
+   * Entity's constructor
    * @param string $title
+   * @param string $content
    * @param string $url
    * @param mixed ...$params
    */
-  public function __construct($title, $url, ...$params)
+  public function __construct($title, $content, $url, ...$params)
   {
     $this->title = $title;
+    $this->content = $content;
     $this->url = $url;
   }
 
@@ -38,6 +45,14 @@ class Entity implements EntityInterface
   public function getTitle()
   {
     return $this->title;
+  }
+
+  /**
+   * Entity's content getter
+   */
+  public function getContent()
+  {
+    return $this->content;
   }
 
   /**

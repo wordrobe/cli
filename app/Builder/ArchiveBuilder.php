@@ -67,6 +67,7 @@ class ArchiveBuilder extends TemplateBuilder implements Builder
     Config::check("themes.$theme.post-types.$post_type", 'array', "Error: post type '$post_type' not found in '$theme' theme.");
     
     // normalizing
+    $filename = $params['filename'] ? StringsManager::toKebabCase($params['filename']) : null;
     $taxonomy = $params['taxonomy'] ? StringsManager::toKebabCase($params['taxonomy']) : null;
     $term = $params['term'] ? StringsManager::toKebabCase($params['term']) : null;
     $entity_name = Config::get("themes.$theme.post-types.$post_type.entity") ?: '';
@@ -80,7 +81,7 @@ class ArchiveBuilder extends TemplateBuilder implements Builder
     $namespace = Config::get("themes.$theme.namespace", true);
     $theme_path = Config::getThemePath($theme, true);
     $basename = $taxonomy ? ($taxonomy === 'category' || $taxonomy === 'tag' ? $taxonomy : "taxonomy-$taxonomy") : ($post_type === 'post' ? 'archive' : "archive-$post_type");
-    $filename = $term ? "$basename-$term" : $basename;
+    $filename = $filename ?: ($term ? "$basename-$term" : $basename);
     $ctrl_filename = "$filename.php";
     $view_filename = "$filename.html.twig";
     

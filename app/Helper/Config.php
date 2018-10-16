@@ -2,7 +2,6 @@
 
 namespace Wordrobe\Helper;
 
-use Composer\Factory;
 use Wordrobe\Entity\Template;
 
 
@@ -10,7 +9,7 @@ use Wordrobe\Entity\Template;
  * Class Config
  * @package Wordrobe\Helper
  */
-class Config
+final class Config
 {
   const FILENAME = 'wordrobe.json';
 
@@ -130,7 +129,7 @@ class Config
    */
   public static function getRootPath()
   {
-    return dirname(Factory::getComposerFile());
+    return realpath(dirname(__DIR__) . '/../../../../');
   }
 
   /**

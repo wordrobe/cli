@@ -72,17 +72,12 @@ class TaxonomyBuilder extends TemplateBuilder implements WizardBuilder
         '{SINGULAR_NAME}' => $params['singular-name'],
         '{TEXT_DOMAIN}' => $params['text-domain'],
         '{POST_TYPE}' => $params['post-type'],
-        '{HIERARCHICAL}' => $params['hierarchical'] ? 'true' : 'false',
-        '{REWRITE}' => $params['rewrite'],
+        '{HIERARCHICAL}' => $params['hierarchical'] ? 'true' : 'false'
       ]
     );
     $taxonomy->save($params['filename'], $params['override']);
 
-    Config::set($params['config-path'], [
-      'post-type' => $params['post-type'],
-      'hierarchical' => (bool) $params['hierarchical'],
-      'terms' => []
-    ]);
+    Config::set($params['config-path'], ['post-type' => $params['post-type']]);
     
     if ($params['has-archive']) {
       ArchiveBuilder::build([
@@ -197,8 +192,7 @@ class TaxonomyBuilder extends TemplateBuilder implements WizardBuilder
     $general_name = ucwords($params['general-name']);
     $singular_name = ucwords($params['singular-name']);
     $text_domain = StringsManager::toKebabCase($params['text-domain']);
-    $hierarchical = $params['hierarchical'] ? 1 : 0;
-    $rewrite = "['slug' => '" . StringsManager::toKebabCase($params['general-name']) . "', 'with_front' => false]";
+    $hierarchical = (bool) $params['hierarchical'];
     $has_archive = Config::get("themes.$theme.post-types.$post_type.has-archive") ? (bool) $params['has-archive'] : false;
     $override = strtolower($params['override']);
   
@@ -219,7 +213,6 @@ class TaxonomyBuilder extends TemplateBuilder implements WizardBuilder
       'text-domain' => $text_domain,
       'post-type' => $post_type,
       'hierarchical' => $hierarchical,
-      'rewrite' => $rewrite,
       'namespace' => $namespace,
       'has-archive' => $has_archive,
       'config-path' => $config_path,
