@@ -22,22 +22,15 @@ class Term implements Feature
    * @param string $taxonomy
    * @param null|string $slug
    * @param string $description
-   * @param null|string $parent
+   * @param int $parent
    */
-  public function __construct($name, $taxonomy, $slug = null, $description = '', $parent = null)
+  public function __construct($name, $taxonomy, $slug = null, $description = '', $parent = 0)
   {
     $this->name = ucwords($name);
     $this->description = ucfirst($description);
     $this->taxonomy = StringsManager::toKebabCase($taxonomy);
     $this->slug = $slug ? $slug : StringsManager::toKebabCase($this->name);
-    
-    if ($parent) {
-      $parent = StringsManager::toKebabCase($parent);
-      $this->parent = term_exists($parent, $this->taxonomy) ? $parent : null;
-    } else {
-      $this->parent = null;
-    }
-  
+    $this->parent = is_int($parent) ? $parent : 0;
     add_action('init', [$this, 'register']);
   }
   
