@@ -2,4 +2,6 @@
 
 use Timber\Timber;
 
-Timber::render('templates/views/index.html.twig');
+$context = Timber::get_context();
+
+Timber::render('templates/views/index.html.twig', $context);
