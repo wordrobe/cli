@@ -9,7 +9,7 @@ namespace Wordrobe\Feature;
 interface Feature
 {
   /**
-   * Handles entity registration/definition
+   * Handles feature registration/definition
    */
   public function register();
 }

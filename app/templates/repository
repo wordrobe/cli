@@ -3,7 +3,6 @@
 namespace {NAMESPACE}\Repository;
 
 use Timber\Timber;
-use Timber\Post;
 use Wordrobe\Feature\RepositoryInterface;
 
 /**
@@ -13,9 +12,9 @@ use Wordrobe\Feature\RepositoryInterface;
 class Repository implements RepositoryInterface
 {
   /**
-   * @var string $post_type
+   * @var string $base_query
    */
-  protected static $post_type = ['post', 'page'];
+  protected static $base_query = ['post_type' => ['post', 'page'], 'post_status' => 'publish'];
 
   /**
    * @var string $entity_class
@@ -29,80 +28,76 @@ class Repository implements RepositoryInterface
 
   /**
    * Returns an Entity from a Timber\Post
-   * @param mixed $post
-   * @return \{NAMESPACE}\Entity\Entity
+   * @param null|int $post_id
+   * @return false|\{NAMESPACE}\Entity\Entity
    */
-  public static function getEntityByPost($post = null)
+  public static function getEntity($post_id = null)
   {
-    if (!$post instanceof Post) {
-      $post = new Post($post);
-    }
-
-    $title = $post->title();
-    $content = $post->content();
-    $url = $post->link();
-
-    return new static::$entity_class($title, $content, $url);
+    $post_id = $post_id ?: get_the_ID();
+    $args = array_merge(static::$base_query, ['post__in' => [$post_id]]);
+    $post = Timber::get_post($args);
+    return $post ? new static::$entity_class($post) : false;
   }
 
   /**
    * Returns all Entities from query
-   * @param false|array $query_args (wp_query format)
+   * @param array $query_args (wp_query format)
    * @return \{NAMESPACE}\Entity\Entity[]
    */
-  public static function getAllEntities($query_args = false)
+  public static function getAllEntities($query_args = [])
   {
-    $posts = Timber::get_posts($query_args);
-    return array_map(function($post) {
-      return self::getEntityByPost($post);
-    }, $posts);
+    $args = array_merge($query_args, static::$base_query);
+    $posts = Timber::get_posts($args);
+    return $posts ? array_map(function($post) {
+      return static::getEntity($post->id);
+    }, $posts) : [];
   }
 
  /**
   * Returns a DTO from a Timber\Post
-  * @param mixed $post
-  * @return \{NAMESPACE}\DTO\DTO
+  * @param null|int $post_id
+  * @return false|\{NAMESPACE}\DTO\DTO
   */
-  public static function getDTOByPost($post = null)
+  public static function getDTO($post_id = null)
   {
-    $entity = self::getEntityByPost();
-    return new static::$dto_class($entity);
+    $entity = static::getEntity($post_id);
+    return $entity ? new static::$dto_class($entity) : false;
   }
 
   /**
    * Returns all DTOs from query
-   * @param false|array $query_args (wp_query format)
+   * @param array $query_args (wp_query format)
    * @return \{NAMESPACE}\DTO\DTO[]
    */
-  public static function getAllDTO($query_args = false)
+  public static function getAllDTO($query_args = [])
   {
-    $entities = self::getAllEntities($query_args);
-    return array_map(function($entity) {
+    $entities = static::getAllEntities($query_args);
+    return !empty($entities) ? array_map(function($entity) {
       return new static::$dto_class($entity);
-    }, $entities);
+    }, $entities) : [];
   }
 
   /**
    * Returns Entity's data formatted by DTO
-   * @param mixed $post
+   * @param null|int $post_id
    * @return array
    */
-  public static function getFormattedDataByPost($post = null)
+  public static function getFormattedData($post_id = null)
   {
-    $dto = self::getDTOByPost($post);
-    return $dto->getData();
+    $dto = static::getDTO($post_id);
+    return $dto ? $dto->getData() : [];
   }
 
   /**
    * Returns all Entities' data formatted by DTO
-   * @param false|array $query_args (wp_query format)
+   * @param array $query_args (wp_query format)
    * @return array
    */
-  public static function getAllFormattedData($query_args = false)
+  public static function getAllFormattedData($query_args = [])
   {
-    $dtos = self::getAllDTO($query_args);
-    return array_map(function($dto) {
+    $dtos = static::getAllDTO($query_args);
+    return !empty($dtos) ? array_map(function($dto) {
       return $dto->getData();
-    }, $dtos);
+    }, $dtos) : [];
   }
 }

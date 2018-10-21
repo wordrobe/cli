@@ -17,6 +17,7 @@ class RepositoryBuilder extends TemplateBuilder implements Builder
    * @param array $params
    * @example RepositoryBuilder::build([
    *  'post-type' => $post_type,
+   *  'meta-query' => $meta_query,
    *  'entity-name' => $entity_name,
    *  'theme' => $theme,
    *  'override' => 'ask'|'force'|false
@@ -33,6 +34,7 @@ class RepositoryBuilder extends TemplateBuilder implements Builder
       [
         '{NAMESPACE}' => $params['namespace'],
         '{POST_TYPE}' => $params['post-type'],
+        '{META_QUERY}' => $params['meta-query'],
         '{ENTITY_NAME}' => $params['entity-name']
       ]
     );
@@ -53,7 +55,8 @@ class RepositoryBuilder extends TemplateBuilder implements Builder
 
     // normalizing
     $post_type = $params['post-type'] ? StringsManager::toKebabCase($params['post-type']) : null;
-    $entity_name = $post_type ? ($params['entity-name'] ? StringsManager::toPascalCase($params['entity-name']) : StringsManager::toPascalCase($params['post-type'])) : null;
+    $meta_query = $params['meta-query'] ? (", 'meta_query' => [" . $params['meta-query'] . ']') : '';
+    $entity_name = $params['entity-name'] ? StringsManager::toPascalCase($params['entity-name']) : ($post_type ? Config::get("themes.$theme.post-types.$post_type.entity") : '');
     $override = strtolower($params['override']);
 
     if ($override !== 'ask' && $override !== 'force') {
@@ -68,6 +71,7 @@ class RepositoryBuilder extends TemplateBuilder implements Builder
     return [
       'namespace' => $namespace,
       'post-type' => $post_type,
+      'meta-query' => $meta_query,
       'entity-name' => $entity_name,
       'theme-path' => $theme_path,
       'filename' => $filename,

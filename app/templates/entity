@@ -27,16 +27,13 @@ class Entity implements EntityInterface
 
   /**
    * Entity's constructor
-   * @param string $title
-   * @param string $content
-   * @param string $url
-   * @param mixed ...$params
+   * @param \Timber\Post $post
    */
-  public function __construct($title, $content, $url, ...$params)
+  public function __construct(\Timber\Post $post)
   {
-    $this->title = $title;
-    $this->content = $content;
-    $this->url = $url;
+    $this->title = $post->title();
+    $this->content = $post->content();
+    $this->url = $post->link();
   }
 
   /**

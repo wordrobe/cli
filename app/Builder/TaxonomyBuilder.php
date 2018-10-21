@@ -77,7 +77,10 @@ class TaxonomyBuilder extends TemplateBuilder implements WizardBuilder
     );
     $taxonomy->save($params['filename'], $params['override']);
 
-    Config::set($params['config-path'], ['post-type' => $params['post-type']]);
+    Config::set($params['config-path'], [
+      'post-type' => $params['post-type'],
+      'hierarchical' => $params['hierarchical']
+    ]);
     
     if ($params['has-archive']) {
       ArchiveBuilder::build([

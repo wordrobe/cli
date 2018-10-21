@@ -3,11 +3,11 @@
 	"text-domain": "{TEXT_DOMAIN}",
 	"post-types": {
 	  "post": {
-	    "entity": null,
+	    "entity": "",
 	    "has-archive": true
 	  },
 	  "page": {
-	    "entity": null,
+	    "entity": "",
 	    "has-archive": false
 	  }
   },
@@ -20,5 +20,6 @@
       "post-type": "post",
       "hierarchical": false
     }
-  }
+  },
+  "templates": []
 }

@@ -25,6 +25,7 @@ final class ThemeManager {
       'taxonomies',
       'terms/**',
       'services/**',
+      'services/**/**',
       'menu',
       'shortcodes/**'
     ];

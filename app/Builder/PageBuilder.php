@@ -63,24 +63,24 @@ class PageBuilder extends TemplateBuilder implements WizardBuilder
     $page_ctrl->save($params['ctrl-filename'], $params['override']);
     $page_view->save($params['view-filename'], $params['override']);
 
+    Config::add($params['config-path'], $params['filename']);
+
     EntityBuilder::build([
       'name' => $params['entity-name'],
-      'base-entity' => 'Page',
       'theme' => $params['theme'],
       'override' => $params['override']
     ]);
 
     DTOBuilder::build([
       'entity-name' => $params['entity-name'],
-      'base-entity' => 'Page',
       'theme' => $params['theme'],
       'override' => $params['override']
     ]);
 
     RepositoryBuilder::build([
       'post-type' => 'page',
+      'meta-query' => "['key' => '_wp_page_template', 'value' => 'controllers/" . $params['filename'] . ".php']",
       'entity-name' => $params['entity-name'],
-      'base-entity' => 'Page',
       'theme' => $params['theme'],
       'override' => $params['override']
     ]);
@@ -123,9 +123,10 @@ class PageBuilder extends TemplateBuilder implements WizardBuilder
     }
 
     // paths
-    $filename = StringsManager::toKebabCase($name);
+    $config_path = "themes.$theme.templates";
     $theme_path = Config::getThemePath($theme, true);
     $namespace = Config::get("themes.$theme.namespace", true);
+    $filename = StringsManager::toKebabCase($name);
     $ctrl_filename = "$filename.php";
     $view_filename = "$filename.html.twig";
     
@@ -133,6 +134,7 @@ class PageBuilder extends TemplateBuilder implements WizardBuilder
       'name' => $name,
       'namespace' => $namespace,
       'entity-name' => $entity_name,
+      'config-path' => $config_path,
       'theme-path' => $theme_path,
       'filename' => $filename,
       'ctrl-filename' => $ctrl_filename,

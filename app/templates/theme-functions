@@ -1,9 +1,11 @@
 <?php
 
+use Wordrobe\Helper\Config;
+
 /*==========*/
 /* AUTOLOAD */
 /*==========*/
-$autoload = require(__DIR__ . '/{ROOT_PATH}vendor/autoload.php');
+$autoload = require(Config::getRootPath() . '/vendor/autoload.php');
 $autoload->addPsr4('{NAMESPACE}\\', __DIR__ . '/core');
 
 /*===========*/

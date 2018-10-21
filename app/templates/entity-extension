@@ -2,6 +2,8 @@
 
 namespace {NAMESPACE}\Entity;
 
+use Timber\Post;
+
 /**
  * Class {NAME}
  * @package {NAMESPACE}\Entity
@@ -15,14 +17,12 @@ class {NAME} extends Entity
 
   /**
    * {NAME} constructor
-   * @param string $title
-   * @param string $content
-   * @param string $url
+   * @param \Timber\Post $post
    */
-  public function __construct($title, $content, $url/*, $my_custom_prop*/)
+  public function __construct(Post $post)
   {
-    parent::__construct($title, $content, $url);
-    // $this->my_custom_prop = $my_custom_prop;
+    parent::__construct($post);
+    // $this->my_custom_prop = $post->get_field('my_custom_prop');
   }
 
 //  /**

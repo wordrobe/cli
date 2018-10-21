@@ -218,8 +218,7 @@ class Theme
       $this->path,
       'theme-functions',
       [
-        '{NAMESPACE}' => $this->namespace,
-        '{ROOT_PATH}' => Config::getRelativeRootPath($this->path)
+        '{NAMESPACE}' => $this->namespace
       ]
     );
     $functions->save('functions.php', 'force');

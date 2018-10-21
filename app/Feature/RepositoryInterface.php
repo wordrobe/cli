@@ -10,22 +10,22 @@ interface RepositoryInterface
 {
   /**
    * Returns an entity from a Timber\Post
-   * @param mixed $post
+   * @param mixed $post_id
    * @return EntityInterface
    */
-  public static function getEntityByPost($post = null);
+  public static function getEntity($post_id = null);
 
   /**
    * Returns a DTO from an Entity
-   * @param mixed $post
+   * @param mixed $post_id
    * @return DTOInterface
    */
-  public static function getDTOByPost($post = null);
+  public static function getDTO($post_id = null);
 
   /**
    * Returns Entity data formatted by its DTO
-   * @param mixed $post
+   * @param mixed $post_id
    * @return mixed
    */
-  public static function getFormattedDataByPost($post = null);
+  public static function getFormattedData($post_id = null);
 }

@@ -56,7 +56,7 @@ class MenuBuilder extends TemplateBuilder implements WizardBuilder
   {
     $params = self::prepareParams($params);
     $menu = new Template(
-      $params['theme-path'] . 'core/menu',
+      $params['theme-path'] . '/core/menu',
       'menu',
       [
         '{LOCATION}' => $params['location'],

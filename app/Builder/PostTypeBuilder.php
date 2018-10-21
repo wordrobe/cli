@@ -97,14 +97,12 @@ class PostTypeBuilder extends TemplateBuilder implements WizardBuilder
 
     EntityBuilder::build([
       'name' => $params['entity-name'],
-      'base-entity' => 'Post',
       'theme' => $params['theme'],
       'override' => $params['override']
     ]);
 
     DTOBuilder::build([
       'entity-name' => $params['entity-name'],
-      'base-entity' => 'Post',
       'theme' => $params['theme'],
       'override' => $params['override']
     ]);
@@ -112,7 +110,6 @@ class PostTypeBuilder extends TemplateBuilder implements WizardBuilder
     RepositoryBuilder::build([
       'post-type' => $params['key'],
       'entity-name' => $params['entity-name'],
-      'base-entity' => 'Post',
       'theme' => $params['theme'],
       'override' => $params['override']
     ]);
