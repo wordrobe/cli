@@ -4,6 +4,7 @@ namespace {NAMESPACE};
 
 use {NAMESPACE}\Helper\FeaturesLoader;
 use {NAMESPACE}\Helper\Router;
+use {NAMESPACE}\Helper\TinyMCEManager;
 use {NAMESPACE}\Helper\ACFManager;
 use Timber\Timber;
 
@@ -69,8 +70,11 @@ final class Theme {
     // cleaning admin menu
     remove_menu_page('edit-comments.php'); // just an example
 
+    // customizing tinymce
+    TinyMCEManager::enableCustomFormats();
+
     // customizing ACF
-    ACFManager::init();
+    ACFManager::enableLocalJSON();
     ACFManager::addOptionsPage('options', __('Theme Options', {TEXT_DOMAIN}));
     $this->context['options'] = ACFManager::getOptions('options');
 

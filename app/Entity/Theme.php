@@ -155,9 +155,18 @@ class Theme
       ]
     );
 
+    $tinymce_manager = new Template(
+      "$this->path/core/Helper",
+      'tinymce-manager',
+      [
+        '{NAMESPACE}' => $this->namespace
+      ]
+    );
+
     $features_loader->save('FeaturesLoader.php', 'force');
     $router->save('Router.php', 'force');
     $acf_manager->save('ACFManager.php', 'force');
+    $tinymce_manager->save('TinyMCEManager.php', 'force');
   }
 
   /**

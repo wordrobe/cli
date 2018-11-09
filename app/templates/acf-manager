@@ -41,30 +41,22 @@ final class ACFManager
   }
 
   /**
-   * Enable ACF json handling (available on ACF Pro only)
+   * Enable ACF local json feature (available on ACF Pro only)
    */
-  public static function enableJSON()
-  {
-    if (defined('ACF_JSON_AUTOLOAD') && ACF_JSON_AUTOLOAD) {
-      add_filter('acf/settings/load_json', function($paths) {
-        $paths[0] = get_stylesheet_directory() . '/' . self::JSON_DIR;
-        return $paths;
-      });
-    }
-    if (defined('ACF_JSON_AUTOSAVE') && ACF_JSON_AUTOSAVE) {
-      add_filter('acf/settings/save_json', function() {
-        return get_stylesheet_directory() . '/' . self::JSON_DIR;
-      });
-    }
-  }
-
-  /**
-   * Initializes ACFManager
-   */
-  public static function init()
+  public static function enableLocalJSON()
   {
     if (class_exists('acf')) {
-      add_action('acf/init', __NAMESPACE__ . '\ACFManager::enableJSON');
+      if (defined('ACF_JSON_AUTOLOAD') && ACF_JSON_AUTOLOAD) {
+        add_filter('acf/settings/load_json', function($paths) {
+          $paths[0] = get_stylesheet_directory() . '/' . self::JSON_DIR;
+          return $paths;
+        });
+      }
+      if (defined('ACF_JSON_AUTOSAVE') && ACF_JSON_AUTOSAVE) {
+        add_filter('acf/settings/save_json', function() {
+          return get_stylesheet_directory() . '/' . self::JSON_DIR;
+        });
+      }
     }
   }
 }
