@@ -26,7 +26,7 @@ class BlankTemplateBuilder extends TemplateBuilder implements Builder
     $params = self::prepareParams($params);
     $blank_ctrl = new Template(
       $params['theme-path'] . '/controllers',
-      'blank',
+      'blank-ctrl',
       [
         '{NAMESPACE}' => $params['namespace'],
         '{VIEW_FILENAME}' => $params['filename']
