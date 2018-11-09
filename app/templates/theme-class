@@ -1,0 +1,121 @@
+<?php
+
+namespace {NAMESPACE};
+
+use {NAMESPACE}\Helper\FeaturesLoader;
+use {NAMESPACE}\Helper\Router;
+use {NAMESPACE}\Helper\ACFManager;
+use Timber\Timber;
+
+/**
+ * Class Theme
+ * @package {NAMESPACE}
+ */
+final class Theme {
+
+  const FEATURES_PATHS = ['post-types', 'taxonomies', 'terms/**', 'services/**', 'services/**/**', 'menu', 'shortcodes/**'];
+  const TEMPLATES_DIR = 'templates';
+  const SUPPORTS = ['custom-logo', 'title-tag', 'post-thumbnails', 'html5'];
+
+  /**
+   * Theme instance
+   */
+  private static $instance;
+
+  /**
+   * Theme's Timber instance
+   * @var Timber $timber
+   */
+  private $timber;
+
+  /**
+   * Theme's global context
+   * @var array $context
+   */
+  private $context;
+
+  /**
+   * Theme constructor.
+   */
+  private function __construct()
+  {
+    // setting default properties
+    $this->timber = new Timber();
+    $this->context = [
+      'env' => defined('WP_ENV') ? WP_ENV : 'production'
+    ];
+    $this->setup();
+  }
+
+  /**
+   * Initializes Theme
+   */
+  private function setup()
+  {
+    // loading theme's features
+    FeaturesLoader::loadFrom(self::FEATURES_PATHS);
+
+    // customizing Timber
+    Timber::$dirname = self::TEMPLATES_DIR;
+
+    // customizing routing
+    Router::init();
+
+    // adding theme support
+    foreach (self::SUPPORTS as $feature) {
+      add_theme_support($feature);
+    }
+
+    // cleaning admin menu
+    remove_menu_page('edit-comments.php'); // just an example
+
+    // customizing ACF
+    ACFManager::init();
+    ACFManager::addOptionsPage('options', __('Theme Options', {TEXT_DOMAIN}));
+    $this->context['options'] = ACFManager::getOptions('options');
+
+    // enqueueing assets
+    wp_enqueue_style('main-style', get_template_directory_uri() . '/assets/main.css');
+    wp_enqueue_script('main-script', get_template_directory_uri() . '/assets/main.js', [], '1.0.0', true);
+  }
+
+  /**
+   * Theme's context getter
+   * @return array
+   */
+  public static function getContext()
+  {
+    return self::$instance ? array_merge(Timber::get_context(), self::$instance->context) : null;
+  }
+
+  /**
+   * Adds a property to Theme's context
+   * @param string $key
+   * @param mixed $value
+   */
+  public static function addToContext($key, $value)
+  {
+    if (self::$instance) {
+      self::$instance->context[$key] = $value;
+    }
+  }
+
+  /**
+   * Bootstraps Theme
+   */
+  public static function init()
+  {
+    if (!self::$instance) {
+      self::$instance = new self();
+    }
+  }
+
+  /**
+   * Theme instance getter
+   * @return mixed
+   */
+  public static function get()
+  {
+    return self::$instance;
+  }
+}

@@ -11,4 +11,4 @@ $autoload->addPsr4('{NAMESPACE}\\', __DIR__ . '/core');
 /*===========*/
 /* BOOTSTRAP */
 /*===========*/
-add_action('after_setup_theme', '\{NAMESPACE}\ThemeManager::init');
+add_action('after_setup_theme', '\{NAMESPACE}\Theme::init');

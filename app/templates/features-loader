@@ -1,0 +1,25 @@
+<?php
+
+namespace {NAMESPACE}\Helper;
+
+/**
+ * Class FeaturesLoader
+ * @package {NAMESPACE}\Helper
+ */
+final class FeaturesLoader
+{
+  /**
+   * Loads features from paths
+   * @param array $paths
+   */
+  public static function loadFrom($paths)
+  {
+    foreach ($paths as $path) {
+      $features = glob(__DIR__ . '/' . $path . '/*.php');
+
+      foreach ($features as $feature) {
+        require_once $feature;
+      }
+    }
+  }
+}

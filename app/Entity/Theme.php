@@ -91,9 +91,10 @@ class Theme
       FilesManager::createDirectory($this->path);
       $this->updateConfig();
       $this->copyBoilerplate();
+      $this->addThemeClass();
+      $this->addHelpers();
       $this->addBasicFramework();
       $this->addDefaultTemplates();
-      $this->addThemeManager();
       $this->addFunctions();
       $this->addStylesheet();
     } else {
@@ -107,21 +108,56 @@ class Theme
   }
 
   /**
-   * Adds ThemeManager.php to theme
+   * Adds Theme.php to theme
    * @throws \Exception
    */
-  protected function addThemeManager()
+  protected function addThemeClass()
   {
-    $functions = new Template(
+    $theme = new Template(
       "$this->path/core",
-      'theme-manager',
+      'theme-class',
       [
         '{NAMESPACE}' => $this->namespace,
-        '{THEME}' => $this->folder_name,
         '{TEXT_DOMAIN}' => $this->text_domain
       ]
     );
-    $functions->save('ThemeManager.php', 'force');
+    $theme->save('Theme.php', 'force');
+  }
+
+  /**
+   * Adds helpers to theme
+   * @throws \Exception
+   */
+  protected function addHelpers()
+  {
+    $features_loader = new Template(
+      "$this->path/core/Helper",
+      'features-loader',
+      [
+        '{NAMESPACE}' => $this->namespace
+      ]
+    );
+
+    $router = new Template(
+      "$this->path/core/Helper",
+      'router',
+      [
+        '{NAMESPACE}' => $this->namespace,
+        '{TEXT_DOMAIN}' => $this->text_domain
+      ]
+    );
+
+    $acf_manager = new Template(
+      "$this->path/core/Helper",
+      'acf-manager',
+      [
+        '{NAMESPACE}' => $this->namespace
+      ]
+    );
+
+    $features_loader->save('FeaturesLoader.php', 'force');
+    $router->save('Router.php', 'force');
+    $acf_manager->save('ACFManager.php', 'force');
   }
 
   /**
