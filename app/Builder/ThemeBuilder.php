@@ -14,8 +14,9 @@ class ThemeBuilder implements WizardBuilder
 {
   /**
    * Handles theme build wizard
+   * @param null|array $args
    */
-  public static function startWizard()
+  public static function startWizard($args = null)
   {
     try {
       $theme_name = self::askForThemeName();

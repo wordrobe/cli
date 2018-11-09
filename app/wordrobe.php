@@ -9,6 +9,7 @@ use Wordrobe\Command\AddServiceCommand;
 use Wordrobe\Command\AddShortcodeCommand;
 use Wordrobe\Command\AddTaxonomyCommand;
 use Wordrobe\Command\AddTermCommand;
+use Wordrobe\Command\AddSchemaCommand;
 use Wordrobe\Command\AddThemeCommand;
 use Wordrobe\Command\SetupCommand;
 
@@ -48,6 +49,7 @@ $wordrobe->add(new AddServiceCommand());
 $wordrobe->add(new AddShortcodeCommand());
 $wordrobe->add(new AddTaxonomyCommand());
 $wordrobe->add(new AddTermCommand());
+$wordrobe->add(new AddSchemaCommand());
 $wordrobe->add(new AddThemeCommand());
 $wordrobe->add(new SetupCommand());
 

@@ -10,6 +10,7 @@ interface WizardBuilder extends Builder
 {
   /**
    * Handles entity creation wizard
+   * @param null|array $args
    */
-  public static function startWizard();
+  public static function startWizard($args = null);
 }

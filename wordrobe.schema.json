@@ -1,0 +1,65 @@
+{
+  "component": [
+    {
+      "class-name": "my-component"
+    }
+  ],
+  "menu": [
+    {
+      "location": "my-menu",
+      "name": "My Menu",
+      "description": ""
+    }
+  ],
+  "page": [
+    {
+      "name": "My Page"
+    }
+  ],
+  "post-type": [
+    {
+      "key": "my-post-type",
+      "general-name": "My Post Type",
+      "singular-name": "My Post Type",
+      "capability-type": "post",
+      "public": true,
+      "has-archive": true,
+      "icon": "dashicons-admin-post",
+      "description": ""
+    }
+  ],
+  "service": [
+    {
+      "namespace": "my-api/v1",
+      "route": "/my-endpoint/{my-param}",
+      "method": "GET"
+    }
+  ],
+  "shortcode": [
+    {
+      "key": "my-shortcode",
+      "attributes": "my-first-attribute,my-second-attribute",
+      "title": "My Shortcode",
+      "icon": "dashicons-editor-code"
+    }
+  ],
+  "taxonomy": [
+    {
+      "key": "my-taxonomy",
+      "general-name": "My Taxonomy",
+      "singular-name": "My Taxonomy",
+      "post-type": "my-post-type",
+      "hierarchical": true,
+      "has-archive": true
+    }
+  ],
+  "term": [
+    {
+      "name": "My Term",
+      "taxonomy": "my-taxonomy",
+      "slug": "my-term",
+      "description": "",
+      "has-archive": true
+    }
+  ]
+}

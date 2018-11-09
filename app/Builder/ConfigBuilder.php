@@ -13,8 +13,9 @@ class ConfigBuilder implements WizardBuilder
 {
   /**
    * Handles config template build wizard
+   * @param null|array $args
    */
-  public static function startWizard()
+  public static function startWizard($args = null)
   {
     try {
       $themes_path = self::askForThemesPath();

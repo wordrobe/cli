@@ -17,8 +17,9 @@ class ServiceBuilder extends TemplateBuilder implements WizardBuilder
 
   /**
    * Handles service template build wizard
+   * @param null|array $args
    */
-  public static function startWizard()
+  public static function startWizard($args = null)
   {
     try {
       $theme = self::askForTheme();
@@ -135,11 +136,11 @@ class ServiceBuilder extends TemplateBuilder implements WizardBuilder
   private static function sanitizeRoute($route)
   {
     $paths = array_map(function($path) {
-      return StringsManager::sanitize($path, true, '{}');
+      return StringsManager::sanitize($path, true, '{}-');
     }, array_filter(explode('/', $route), function($path) {
       return !empty($path);
     }));
-    return implode('/', $paths);
+    return str_replace(' ', '-', implode('/', $paths));
   }
 
   /**

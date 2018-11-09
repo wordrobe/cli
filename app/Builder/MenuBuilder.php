@@ -15,8 +15,9 @@ class MenuBuilder extends TemplateBuilder implements WizardBuilder
 {
   /**
    * Handles menu template build wizard
+   * @param null|array $args
    */
-  public static function startWizard()
+  public static function startWizard($args = null)
   {
     try {
       $theme = self::askForTheme();

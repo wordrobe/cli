@@ -15,8 +15,9 @@ class TermBuilder extends TemplateBuilder implements WizardBuilder
 {
   /**
    * Handles term template build wizard
+   * @param null|array $args
    */
-  public static function startWizard()
+  public static function startWizard($args = null)
   {
     try {
       $theme = self::askForTheme();
@@ -31,8 +32,8 @@ class TermBuilder extends TemplateBuilder implements WizardBuilder
         'taxonomy' => $taxonomy,
         'slug' => $slug,
         'description' => $description,
-        'theme' => $theme,
         'has-archive' => $has_archive,
+        'theme' => $theme,
         'override' => 'ask'
       ]);
       Dialog::write('Term added!', 'green');

@@ -5,13 +5,13 @@ namespace Wordrobe\Builder;
 use Wordrobe\Helper\Config;
 use Wordrobe\Helper\Dialog;
 use Wordrobe\Helper\StringsManager;
-use Wordrobe\Entity\Template;
+use Wordrobe\Helper\FilesManager;
 
 /**
- * Class ComponentBuilder
+ * Class SchemaBuilder
  * @package Wordrobe\Builder
  */
-class ComponentBuilder extends TemplateBuilder implements WizardBuilder
+class SchemaBuilder extends TemplateBuilder implements WizardBuilder
 {
   /**
    * Handles component template build wizard
@@ -21,24 +21,24 @@ class ComponentBuilder extends TemplateBuilder implements WizardBuilder
   {
     try {
       $theme = self::askForTheme();
-      $class_name = self::askForClassName();
+      $schema = is_array($args) ? $args['schema'] : null;
       self::build([
-        'class-name' => $class_name,
+        'schema' => $schema,
         'theme' => $theme,
         'override' => 'ask'
       ]);
-      Dialog::write('Component template added!', 'green');
+      Dialog::write('Schema added!', 'green');
     } catch (\Exception $e) {
       Dialog::write($e->getMessage(), 'red');
       exit;
     }
   }
-  
+
   /**
    * Builds component template
    * @param array $params
-   * @example ComponentBuilder::build([
-   *  'class-name' => $class_name,
+   * @example SchemaBuilder::build([
+   *  'schema' => $schema
    *  'theme' => $theme,
    *  'override' => 'ask'|'force'|false
    * ]);
@@ -47,26 +47,22 @@ class ComponentBuilder extends TemplateBuilder implements WizardBuilder
   public static function build($params)
   {
     $params = self::prepareParams($params);
-    $component = new Template(
-      $params['theme-path'] . '/templates/components',
-      'component', [
-        '{CLASS_NAME}' => $params['class-name'],
-        '{CONTENT}' => $params['content']
-      ]
-    );
-    $component->save($params['filename'], $params['override']);
+
+    foreach ($params['schema'] as $feature => $entries) {
+      foreach ($entries as $entry) {
+        $entry['theme'] = $params['theme'];
+        $entry['text-domain'] = $params['text-domain'];
+        $entry['override'] = $params['override'];
+
+        try {
+          call_user_func('Wordrobe\Builder\\' . StringsManager::toPascalCase($feature) . 'Builder::build', $entry);
+        } catch (\Exception $e) {
+          Dialog::write($e->getMessage());
+        }
+      }
+    }
   }
-  
-  /**
-   * Asks for component class name
-   * @return string
-   */
-  private static function askForClassName()
-  {
-    $class_name = Dialog::getAnswer('CSS class (e.g. my-component):');
-    return $class_name ?: self::askForClassName();
-  }
-  
+
   /**
    * Checks params existence and normalizes them
    * @param array $params
@@ -80,29 +76,23 @@ class ComponentBuilder extends TemplateBuilder implements WizardBuilder
     Config::check("themes.$theme", 'array', "Error: theme '$theme' doesn't exist.");
 
     // checking params
-    if (!$params['class-name']) {
-      throw new \Exception('Error: unable to create component template because of missing parameters.');
+    if (!$params['schema'] || !FilesManager::fileExists($params['schema'])) {
+      throw new \Exception('Error: missing schema.');
     }
-    
+
     // normalizing
-    $content = $params['content'] || '';
+    $schema = FilesManager::readFile($params['schema']);
     $override = strtolower($params['override']);
-  
+
     if ($override !== 'ask' && $override !== 'force') {
       $override = false;
     }
 
-    // paths
-    $filename = StringsManager::toKebabCase($params['class-name']) . '.html.twig';
-    $theme_path = Config::getThemePath($theme, true);
-    
     return [
-      'class-name' => $params['class-name'],
-      'content' => $content,
-      'theme-path' => $theme_path,
-      'filename' => $filename,
+      'schema' => json_decode($schema, true),
       'override' => $override,
-      'theme' => $theme
+      'theme' => $theme,
+      'text-domain' => Config::get("themes.$theme.text-domain")
     ];
   }
 }

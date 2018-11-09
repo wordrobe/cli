@@ -11,7 +11,7 @@ use Wordrobe\Entity\Template;
  */
 final class Config
 {
-  const FILENAME = 'wordrobe.json';
+  const FILENAME = 'wordrobe.config.json';
 
   private static $params = null;
 

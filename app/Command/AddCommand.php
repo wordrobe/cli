@@ -42,7 +42,7 @@ abstract class AddCommand extends BaseCommand
     parent::execute($input, $output);
     $this->checkSetup();
     $this->checkThemes();
-    call_user_func('Wordrobe\Builder\\' . $this->builder . '::startWizard');
+    call_user_func('Wordrobe\Builder\\' . $this->builder . '::startWizard', $input->getArguments());
   }
 
   /**

@@ -15,8 +15,9 @@ class ShortcodeBuilder extends TemplateBuilder implements WizardBuilder
 {
   /**
    * Handles shortcode template build wizard
+   * @param null|array $args
    */
-  public static function startWizard()
+  public static function startWizard($args = null)
   {
     try {
       $theme = self::askForTheme();

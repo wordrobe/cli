@@ -15,8 +15,9 @@ class PostTypeBuilder extends TemplateBuilder implements WizardBuilder
 {
   /**
    * Handles post type build wizard
+   * @param null|array $args
    */
-  public static function startWizard()
+  public static function startWizard($args = null)
   {
     try {
       $theme = self::askForTheme();
