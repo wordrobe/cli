@@ -10,6 +10,7 @@ use Wordrobe\Builder\DTOBuilder;
 use Wordrobe\Builder\RepositoryBuilder;
 use Wordrobe\Builder\ArchiveBuilder;
 use Wordrobe\Builder\SingleBuilder;
+use Wordrobe\Builder\BlankTemplateBuilder;
 
 /**
  * Class Theme
@@ -197,6 +198,20 @@ class Theme
    */
   protected function addDefaultTemplates()
   {
+    // index
+    BlankTemplateBuilder::build([
+      'filename' => 'index',
+      'theme' => $this->folder_name,
+      'override' => 'force'
+    ]);
+
+    // 404
+    BlankTemplateBuilder::build([
+      'filename' => '404',
+      'theme' => $this->folder_name,
+      'override' => 'force'
+    ]);
+
     // single post
     SingleBuilder::build([
       'post-type' => 'post',

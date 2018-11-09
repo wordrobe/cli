@@ -1,13 +1,10 @@
 <?php
 
-/*
- * Template Name: {TEMPLATE_NAME}
- */
-
 use {NAMESPACE}\Theme;
 use {NAMESPACE}\Repository\{ENTITY_NAME}Repository;
+use Timber\Timber;
 
 $context = Theme::getContext();
-$context['contents'] = {ENTITY_NAME}Repository::getFormattedData();
+$context['posts'] = {ENTITY_NAME}Repository::getAllFormattedData();
 
 Timber::render('templates/views/{VIEW_FILENAME}.html.twig', $context);

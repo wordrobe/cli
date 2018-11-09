@@ -2,8 +2,9 @@
 
 use {NAMESPACE}\Theme;
 use {NAMESPACE}\Repository\{ENTITY_NAME}Repository;
+use Timber\Timber;
 
 $context = Theme::getContext();
 $context['contents'] = {ENTITY_NAME}Repository::getFormattedData();
 
-Timber::render('templates/views/{POST_TYPE}.html.twig', $context);
+Timber::render('templates/views/{VIEW_FILENAME}.html.twig', $context);

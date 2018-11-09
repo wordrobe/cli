@@ -7,17 +7,15 @@ use Wordrobe\Helper\StringsManager;
 use Wordrobe\Entity\Template;
 
 /**
- * Class SingleBuilder
+ * Class BlankTemplateBuilder
  * @package Wordrobe\Builder
  */
-class SingleBuilder extends TemplateBuilder implements Builder
+class BlankTemplateBuilder extends TemplateBuilder implements Builder
 {
   /**
    * Builds single post template
    * @param array $params
-   * @example SingleBuilder::build([
-   *  'post-type' => $post_type,
-   *  'entity-name' => $entity_name,
+   * @example BlankTemplateBuilder::build([
    *  'theme' => $theme,
    *  'override' => 'ask'|'force'|false
    * ]);
@@ -26,23 +24,22 @@ class SingleBuilder extends TemplateBuilder implements Builder
   public static function build($params)
   {
     $params = self::prepareParams($params);
-    $single_ctrl = new Template(
+    $blank_ctrl = new Template(
       $params['theme-path'] . '/controllers',
-      'single-ctrl',
+      'blank',
       [
         '{NAMESPACE}' => $params['namespace'],
-        '{ENTITY_NAME}' => $params['entity-name'],
-        '{VIEW_FILENAME}' => $params['view-filename']
+        '{VIEW_FILENAME}' => $params['filename']
       ]
     );
-    $single_view = new Template(
+    $blank_view = new Template(
       $params['theme-path'] . '/templates/views',
       'view'
     );
-    $single_ctrl->save($params['ctrl-filename'], $params['override']);
-    $single_view->save($params['view-filename'], $params['override']);
+    $blank_ctrl->save($params['ctrl-filename'], $params['override']);
+    $blank_view->save($params['view-filename'], $params['override']);
   }
-  
+
   /**
    * Checks params existence and normalizes them
    * @param array $params
@@ -56,32 +53,26 @@ class SingleBuilder extends TemplateBuilder implements Builder
     Config::check("themes.$theme", 'array', "Error: theme '$theme' doesn't exist.");
 
     // checking params
-    if (!$params['post-type']) {
-      throw new \Exception('Error: unable to create single template because of missing parameters.');
-    }
-    
-    // normalizing
-    $post_type = StringsManager::toKebabCase($params['post-type']);
-    $entity_name = ($post_type !== 'post' && $post_type !== 'page') ? ($params['entity-name'] ? StringsManager::toPascalCase($params['entity-name']) : StringsManager::toPascalCase($params['post-type'])) : '';
-    $override = strtolower($params['override']);
-  
-    if ($override !== 'ask' && $override !== 'force') {
-      $override = false;
+    if (!$params['filename']) {
+      throw new \Exception('Error: unable to create blank template because of missing parameters.');
     }
 
-    if (!Config::get("themes.$theme.post-types.$post_type")) {
-      throw new \Exception("Error: post type '$post_type' not found in '$theme' theme.");
+    // normalizing
+    $filename = StringsManager::toKebabCase($params['filename']);
+    $override = strtolower($params['override']);
+
+    if ($override !== 'ask' && $override !== 'force') {
+      $override = false;
     }
 
     // paths
     $namespace = Config::get("themes.$theme.namespace", true);
     $theme_path = Config::getThemePath($theme, true);
-    $ctrl_filename = "$post_type.php";
-    $view_filename = "$post_type.html.twig";
-    
+    $ctrl_filename = "$filename.php";
+    $view_filename = "$filename.html.twig";
+
     return [
       'namespace' => $namespace,
-      'entity-name' => $entity_name,
       'theme-path' => $theme_path,
       'ctrl-filename' => $ctrl_filename,
       'view-filename' => $view_filename,

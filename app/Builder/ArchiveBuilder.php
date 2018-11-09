@@ -30,7 +30,7 @@ class ArchiveBuilder extends TemplateBuilder implements Builder
     $params = self::prepareParams($params);
     $archive_ctrl = new Template(
       $params['theme-path'] . '/controllers',
-      'archive',
+      'archive-ctrl',
       [
         '{NAMESPACE}' => $params['namespace'],
         '{ENTITY_NAME}' => $params['entity-name'],

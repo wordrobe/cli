@@ -48,7 +48,7 @@ class PageBuilder extends TemplateBuilder implements WizardBuilder
     $params = self::prepareParams($params);
     $page_ctrl = new Template(
       $params['theme-path'] . '/controllers',
-      'page',
+      'page-ctrl',
       [
         '{TEMPLATE_NAME}' => $params['name'],
         '{NAMESPACE}' => $params['namespace'],
