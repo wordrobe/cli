@@ -45,18 +45,16 @@ final class ACFManager
    */
   public static function enableJSON()
   {
-    if (defined('ACF_JSON') && ACF_JSON) {
-      if (defined('ACF_JSON_AUTOSAVE') && ACF_JSON_AUTOLOAD) {
-        add_filter('acf/settings/load_json', function($paths) {
-          $paths[0] = get_stylesheet_directory() . '/' . self::JSON_DIR;
-          return $paths;
-        });
-      }
-      if (defined('ACF_JSON_AUTOSAVE') && ACF_JSON_AUTOSAVE) {
-        add_filter('acf/settings/save_json', function() {
-          return get_stylesheet_directory() . '/' . self::JSON_DIR;
-        });
-      }
+    if (defined('ACF_JSON_AUTOLOAD') && ACF_JSON_AUTOLOAD) {
+      add_filter('acf/settings/load_json', function($paths) {
+        $paths[0] = get_stylesheet_directory() . '/' . self::JSON_DIR;
+        return $paths;
+      });
+    }
+    if (defined('ACF_JSON_AUTOSAVE') && ACF_JSON_AUTOSAVE) {
+      add_filter('acf/settings/save_json', function() {
+        return get_stylesheet_directory() . '/' . self::JSON_DIR;
+      });
     }
   }
 
