@@ -22,5 +22,13 @@ class {ENTITY_NAME}DTO extends DTO
     // e.g. $this->my_custom_prop = $entity->getMyCustomProp();
   }
 
-  // (if needed) override methods here
+  /**
+   * {ENTITY_NAME}DTO's data getter
+   */
+  public function getData()
+  {
+    return array_merge(parent::getData(), [
+      // e.g. 'my-custom-prop' => $this->my_custom_prop
+    ]);
+  }
 }
