@@ -3,6 +3,7 @@
 namespace Wordrobe\Builder;
 
 use Wordrobe\Helper\Config;
+use Wordrobe\Helper\Schema;
 use Wordrobe\Helper\Dialog;
 use Wordrobe\Helper\StringsManager;
 use Wordrobe\Entity\Template;
@@ -71,6 +72,14 @@ class TermBuilder extends TemplateBuilder implements WizardBuilder
       ]
     );
     $term->save($params['filename'], $params['override']);
+
+    Schema::add($params['theme'], 'term', [
+      'name' => $params['name'],
+      'post-type' => $params['post-type'],
+      'taxonomy' => $params['taxonomy'],
+      'slug' => $params['slug'],
+      'description' => $params['description']
+    ]);
     
     if ($params['has-archive']) {
       ArchiveBuilder::build([

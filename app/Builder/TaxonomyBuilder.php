@@ -3,6 +3,7 @@
 namespace Wordrobe\Builder;
 
 use Wordrobe\Helper\Config;
+use Wordrobe\Helper\Schema;
 use Wordrobe\Helper\Dialog;
 use Wordrobe\Helper\StringsManager;
 use Wordrobe\Entity\Template;
@@ -81,6 +82,15 @@ class TaxonomyBuilder extends TemplateBuilder implements WizardBuilder
     Config::set($params['config-path'], [
       'post-type' => $params['post-type'],
       'hierarchical' => $params['hierarchical']
+    ]);
+
+    Schema::add($params['theme'], 'taxonomy', [
+      'key' => $params['key'],
+      'general-name' => $params['general-name'],
+      'singular-name' => $params['singular-name'],
+      'post-type' => $params['post-type'],
+      'hierarchical' => $params['hierarchical'],
+      'has-archive' => $params['has-archive']
     ]);
     
     if ($params['has-archive']) {

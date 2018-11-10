@@ -3,6 +3,7 @@
 namespace Wordrobe\Builder;
 
 use Wordrobe\Helper\Config;
+use Wordrobe\Helper\Schema;
 use Wordrobe\Helper\Dialog;
 use Wordrobe\Helper\StringsManager;
 use Wordrobe\Entity\Template;
@@ -71,7 +72,7 @@ class ShortcodeBuilder extends TemplateBuilder implements WizardBuilder
         '{KEY}' => $params['plugin-key'],
         '{ICON}' => $params['icon'],
         '{SHORTCODE}' => $params['key'],
-        '{ATTRIBUTES}' => $params['attributes']
+        '{ATTRIBUTES}' => $params['formatted-attributes']
       ]
     );
     $shortcode_view = new Template(
@@ -85,6 +86,13 @@ class ShortcodeBuilder extends TemplateBuilder implements WizardBuilder
     $shortcode_ctrl->save($params['ctrl-filename'], $params['override']);
     $shortcode_plugin->save($params['plugin-filename'], $params['override']);
     $shortcode_view->save($params['view-filename'], $params['override']);
+
+    Schema::add($params['theme'], 'shortcode', [
+      'key' => $params['key'],
+      'attributes' => $params['attributes'],
+      'title' => $params['title'],
+      'icon' => $params['icon']
+    ]);
   }
 
   /**
@@ -149,14 +157,16 @@ class ShortcodeBuilder extends TemplateBuilder implements WizardBuilder
     $title = $params['title'] ? StringsManager::removeMultipleSpaces($params['title']) : StringsManager::removeDashes($key, ' ');
     $icon = $params['icon'] ? StringsManager::toKebabCase($params['icon']) : 'dashicons-editor-code';
     $override = strtolower($params['override']);
-    $attributes = '';
+    $attributes = [];
+    $formatted_attributes = '';
 
     if (!empty($params['attributes'])) {
       $attributesList = explode(',', $params['attributes']);
 
       foreach ($attributesList as $attr) {
         if (!empty(trim($attr))) {
-          $attributes .= ' ' . StringsManager::toKebabCase($attr) . '=""';
+          $attributes[] = StringsManager::toKebabCase($attr);
+          $formatted_attributes .= ' ' . StringsManager::toKebabCase($attr) . '=""';
         }
       }
     }
@@ -174,7 +184,8 @@ class ShortcodeBuilder extends TemplateBuilder implements WizardBuilder
     return [
       'key' => $key,
       'plugin-key' => $plugin_key,
-      'attributes' => $attributes,
+      'attributes' => implode(',', $attributes),
+      'formatted-attributes' => $formatted_attributes,
       'title' => ucwords($title),
       'icon' => $icon,
       'theme-path' => $theme_path,

@@ -3,6 +3,7 @@
 namespace Wordrobe\Builder;
 
 use Wordrobe\Helper\Config;
+use Wordrobe\Helper\Schema;
 use Wordrobe\Helper\Dialog;
 use Wordrobe\Helper\StringsManager;
 use Wordrobe\Entity\Template;
@@ -65,6 +66,10 @@ class PageBuilder extends TemplateBuilder implements WizardBuilder
     $page_view->save($params['view-filename'], $params['override']);
 
     Config::add($params['config-path'], $params['filename']);
+
+    Schema::add($params['theme'], 'page', [
+      'name' => $params['name']
+    ]);
 
     EntityBuilder::build([
       'name' => $params['entity-name'],

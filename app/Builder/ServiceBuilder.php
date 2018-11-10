@@ -3,6 +3,7 @@
 namespace Wordrobe\Builder;
 
 use Wordrobe\Helper\Config;
+use Wordrobe\Helper\Schema;
 use Wordrobe\Helper\Dialog;
 use Wordrobe\Helper\StringsManager;
 use Wordrobe\Entity\Template;
@@ -60,12 +61,18 @@ class ServiceBuilder extends TemplateBuilder implements WizardBuilder
       'service',
       [
         '{NAMESPACE}' => $params['namespace'],
-        '{ROUTE}' => $params['route'],
+        '{ROUTE}' => $params['encoded-route'],
         '{METHOD}' => $params['method'],
         '{TEXT_DOMAIN}' => $params['text-domain']
       ]
     );
     $service->save($params['filename'], $params['override']);
+
+    Schema::add($params['theme'], 'service', [
+      'namespace' => $params['namespace'],
+      'route' => $params['route'],
+      'method' => $params['method']
+    ]);
   }
 
   /**
@@ -157,7 +164,7 @@ class ServiceBuilder extends TemplateBuilder implements WizardBuilder
 
     // checking params
     if (!$params['namespace'] || !$params['route']) {
-      throw new \Exception('Error: unable to create shortcode because of missing parameters.');
+      throw new \Exception('Error: unable to create service because of missing parameters.');
     }
 
     // normalizing
@@ -166,11 +173,12 @@ class ServiceBuilder extends TemplateBuilder implements WizardBuilder
     $path_params = self::checkPathParams($params['route']);
     $method = $params['method'] && in_array($params['method'], self::METHODS) ? $params['method'] : self::METHODS[0];
     $override = strtolower($params['override']);
+    $encoded_route = $route;
 
     if ($path_params) {
       foreach ($path_params as $param) {
         $param_regex = "(?P<$param>[a-zA-Z0-9-]+)";
-        $route = str_replace('{' . $param . '}', $param_regex, $route);
+        $encoded_route = str_replace('{' . $param . '}', $param_regex, $route);
       }
     }
 
@@ -185,6 +193,7 @@ class ServiceBuilder extends TemplateBuilder implements WizardBuilder
     return [
       'namespace' => $namespace,
       'route' => rtrim($route, '/'),
+      'encoded-route' => rtrim($encoded_route, '/'),
       'method' => $method,
       'theme-path' => $theme_path,
       'filename' => $filename,

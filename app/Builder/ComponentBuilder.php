@@ -3,6 +3,7 @@
 namespace Wordrobe\Builder;
 
 use Wordrobe\Helper\Config;
+use Wordrobe\Helper\Schema;
 use Wordrobe\Helper\Dialog;
 use Wordrobe\Helper\StringsManager;
 use Wordrobe\Entity\Template;
@@ -55,6 +56,10 @@ class ComponentBuilder extends TemplateBuilder implements WizardBuilder
       ]
     );
     $component->save($params['filename'], $params['override']);
+
+    Schema::add($params['theme'], 'component', [
+      'class-name' => $params['class-name']
+    ]);
   }
   
   /**

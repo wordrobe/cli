@@ -3,6 +3,7 @@
 namespace Wordrobe\Builder;
 
 use Wordrobe\Helper\Config;
+use Wordrobe\Helper\Schema;
 use Wordrobe\Helper\Dialog;
 use Wordrobe\Helper\StringsManager;
 use Wordrobe\Entity\Template;
@@ -67,6 +68,12 @@ class MenuBuilder extends TemplateBuilder implements WizardBuilder
       ]
     );
     $menu->save($params['filename'], $params['override']);
+
+    Schema::add($params['theme'], 'menu', [
+      'location' => $params['location'],
+      'name' => $params['name'],
+      'description' => $params['description']
+    ]);
   }
   
   /**

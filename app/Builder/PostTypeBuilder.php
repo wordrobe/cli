@@ -3,6 +3,7 @@
 namespace Wordrobe\Builder;
 
 use Wordrobe\Helper\Config;
+use Wordrobe\Helper\Schema;
 use Wordrobe\Helper\Dialog;
 use Wordrobe\Helper\StringsManager;
 use Wordrobe\Entity\Template;
@@ -94,6 +95,18 @@ class PostTypeBuilder extends TemplateBuilder implements WizardBuilder
     Config::set($params['config-path'], [
       'entity' => $params['entity-name'],
       'has-archive' => (bool) $params['has-archive']
+    ]);
+
+    Schema::add($params['theme'], 'post-type', [
+      'key' => $params['key'],
+      'general-name' => $params['general-name'],
+      'singular-name' => $params['singular-name'],
+      'capability-type' => $params['capability-type'],
+      'public' => $params['public'],
+      'has-archive' => $params['has-archive'],
+      'hierarchical' => $params['hierarchical'],
+      'icon' => $params['icon'],
+      'description' => $params['description']
     ]);
 
     EntityBuilder::build([

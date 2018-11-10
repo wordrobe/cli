@@ -4,15 +4,17 @@ namespace Wordrobe\Helper;
 
 use Wordrobe\Entity\Template;
 
-
 /**
  * Class Config
  * @package Wordrobe\Helper
  */
 final class Config
 {
-  const FILENAME = 'wordrobe.config.json';
+  const FILENAME = 'wordrobe.json';
 
+  /**
+   * @var null $params
+   */
   private static $params = null;
 
   /**
@@ -25,11 +27,11 @@ final class Config
     return FilesManager::fileExists(self::getRootPath() . '/' . self::FILENAME);
   }
 
-/**
- * Initializes Config
- * @param null|array $params
- * @throws \Exception
- */
+  /**
+   * Initializes Config
+   * @param null|array $params
+   * @throws \Exception
+   */
   public static function init($params = null)
   {
     $template = new Template(
@@ -69,7 +71,7 @@ final class Config
    */
   public static function get($path, $strict = false)
   {
-    self::getContent();
+    self::readContent();
     
     if ($strict === true) {
       self::check($path);
@@ -88,7 +90,7 @@ final class Config
    */
   public static function set($path, $value)
   {
-    self::getContent();
+    self::readContent();
     ArraysManager::set(self::$params, $path, $value);
     self::updateContent();
   }
@@ -101,7 +103,7 @@ final class Config
    */
   public static function add($path, $value)
   {
-    self::getContent();
+    self::readContent();
     ArraysManager::add(self::$params, $path, $value);
     self::updateContent();
   }
@@ -149,10 +151,10 @@ final class Config
   }
 
   /**
-   * Gets Config file contents
+   * Reads Config file contents
    * @throws \Exception
    */
-  private static function getContent()
+  private static function readContent()
   {
     $content = FilesManager::readFile(self::getRootPath() . '/' . self::FILENAME);
     if ($content) {

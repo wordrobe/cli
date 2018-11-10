@@ -62,7 +62,7 @@ final class ArraysManager
    * Adds value to array param
    * @param array $array
    * @param string $path
-   * @param string $value
+   * @param mixed $value
    * @return array
    */
   public static function add(&$array, $path, $value)
