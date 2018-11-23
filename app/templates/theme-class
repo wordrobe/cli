@@ -67,9 +67,6 @@ final class Theme {
       add_theme_support($feature);
     }
 
-    // cleaning admin menu
-    remove_menu_page('edit-comments.php'); // just an example
-
     // customizing tinymce
     TinyMCEManager::enableCustomFormats();
 
@@ -77,10 +74,6 @@ final class Theme {
     ACFManager::enableLocalJSON();
     ACFManager::addOptionsPage('options', __('Theme Options', {TEXT_DOMAIN}));
     $this->context['options'] = ACFManager::getOptions('options');
-
-    // enqueueing assets
-    wp_enqueue_style('main-style', get_template_directory_uri() . '/assets/main.css');
-    wp_enqueue_script('main-script', get_template_directory_uri() . '/assets/main.js', [], '1.0.0', true);
   }
 
   /**
