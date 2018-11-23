@@ -15,7 +15,7 @@ final class FeaturesLoader
   public static function loadFrom($paths)
   {
     foreach ($paths as $path) {
-      $features = glob(__DIR__ . '/' . $path . '/*.php');
+      $features = glob(dirname(__DIR__) . '/' . $path . '/*.php');
 
       foreach ($features as $feature) {
         require_once $feature;
