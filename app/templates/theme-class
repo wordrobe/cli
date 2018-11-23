@@ -72,7 +72,7 @@ final class Theme {
 
     // customizing ACF
     ACFManager::enableLocalJSON();
-    ACFManager::addOptionsPage('options', __('Theme Options', {TEXT_DOMAIN}));
+    ACFManager::addOptionsPage('options', __('Theme Options', '{TEXT_DOMAIN}'));
     $this->context['options'] = ACFManager::getOptions('options');
   }
 
