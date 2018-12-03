@@ -1,100 +1,76 @@
-# Wordrobe CLI
+<div>
+  <a href="https://www.fiad.one/wordrobe/">
+    <img src="https://www.fiad.one/media/wordrobe/banner-cli.jpg" style="display:block; margin:0 auto; width:100%; max-width:100%" />
+  </a>
+</div>
 
-### Wordpress Development Booster
+###
 
-###### A COMMAND LINE INTERFACE PROVIDING (AWE)SOME AUTOMATED PROCESSES THAT HELP TO EASILY CREATE THEMES, POST TYPES, TAXONOMIES, TEMPLATES AND MORE.
+*Wordrobe* is a *Wordpress* development boosting tool that combines the quickness of automated processes with the solidity of a structured workflow.
 
-## Setup and Configuration
-To make your project ready for **Wordrobe**, a *wordrobe.json* configuration file is needed. It must contain basic info about project's structure in order to allow **Wordrobe** to create and handle files at right paths.
+By taking charge of the most common operations concerning *Wordpress* themes development and by providing a well organized development model, it allows you to save time and to produce a better quality code with an eye towards modularity and maintainability.
 
-The following command provides a tiny wizard to setup your project:
+## Installation
+To install and use *Wordrobe*, *[Composer](https://getcomposer.org)* is required. After verifying it's correctly installed, run the following command at the root of your project:
+
+```
+composer require wordrobe/cli
+```
+
+Once installed, *Wordrobe* also requires a simple starting configuration to fit in your project's structure so it could write and handle files at correct paths.
+
+By running
 ```
 vendor/bin/wordrobe setup
 ```
-It creates the *wordrobe.json* configuration file and lets you setup a new theme.
+a setup wizard will start and a *wordrobe.json* file will be automatically created at your project's root. It will look like this:
+```
+{
+  "themes-path": "your/path/to/themes",
+  "themes": {}
+}
+```
+:information_source: in a standard *Wordpress* installation, "themes-path" will be "wp-content/themes".
 
-## Theme development
-As easily as project setup, **Wordrobe** allows you to create themes and themes' features by running simple command line wizards.
+#### The *Wordrobe Skeleton*
+*Wordrobe* also offers its own skeleton to setup a new project from scratch. It provides an advanced and boosted structure based on *[Bedrock](https://github.com/roots/bedrock)* by *[Roots](https://roots.io)*. Check *Wordrobe Skeleton* [documentation](https://bitbucket.org/fiad/wordrobe-skeleton/src/master) for more information.
 
-Run the following command to add the wanted feature:
+## Usage
+*Wordrobe* exposes all its power of adding features to your *Wordpress* based application by the simplest way ever: just run the following command and enjoy the wizard:
 ```
 vendor/bin/wordrobe add:[feature]
 ```
-where *feature* can be one from the list below:
+Check the complete [commands list](./doc/COMMANDS.md) to discover all supported features.
 
-- theme
-- post-type
-- taxonomy
-- term
-- menu
-- shortcode
-- service
-- page
-- component
+### Fundamentals
+#### Adding a new theme
+One of the most basic but most important operations you deal with when you start a new *Wordpress* project, is the creation of a brand new theme. At this stage, many doubts about structure and files organization usually arise, specially when focus about code modularity and maintainability is required.
 
-### Examples
+*Wordrobe* offers an optimized theme's file system that helps you to keep your code scoped and well organized, encouraging frontend/backend separation, integration and reusability. For more information, check theme's [in-depth documentation](./doc/THEME.md).
 
-#### Custom post types
-```
-vendor/bin/wordrobe add:post-type
-```
-The wizard allows to create both a new custom post type and relative template files.
-
-#### Custom page templates
-```
-vendor/bin/wordrobe add:page
-```
-The wizard allows to create a new custom page template. 
-
-## Template engine
-During a theme setup wizard, you can choose between two different templating modes: **Twig (Timber)** and **PHP (Standard Wordpress)**.
-
-#### Twig (Timber)
-It provides an advanced theme scaffolding/boilerplate based on Controller/View paradigm. It involves *Timber* plugin and lets you to use *Twig* template engine in your theme development.
-
-With this mode, the *add* command provides both controllers and views files if chosen content requires both. 
-
-Please read [Timber documentation](TIMBER.md) for more information.
-
-#### PHP (Standard Wordpress)
-It provides a standard theme scaffolding/boilerplate based on default Wordpress templates files.
-
-## Theme boilerplate
-**Wordrobe** provides an optimized theme's boilerplate that helps you to automatically keep all your files and features organized and ready-to-use.
-
-The *functions.php* file will automatically load files stored in *[theme-name]/includes* subfolders so you don't have to care about adding new features to it.
-Each feature type (post-type, taxonomy, etc) will have its own subfolder at *[theme-name]/includes* that will be automatically created when you run the wizard of that type for the first time.
-
-The *Theme.php* file located in *[theme-name]/includes* folder will provide basic theme options such as support, assets enqueueing, etc. You can extend it for custom settings.
-
-## Complete command list
-```
-vendor/bin/wordrobe setup
-```
+To create a new theme, simply run the command below and follow the wizard:
 ```
 vendor/bin/wordrobe add:theme
 ```
+:information_source: *Wordrobe* supports multi-theme development, so if more than one theme will be added to your project, you will be asked which theme you want to deal with each time you'll run the __*add*__ command.
+
+#### Adding a page template
+Page templates are one of the most commonly used ways to make an association between specific contents and layout. To let *Wordrobe* to create one for you, just run the following command:
+```
+vendor/bin/wordrobe add:page
+``` 
+The page template creation process let us to observe the first pillar of *Wordrobe* architecture: the __*controller/view pattern*__ implementation. It's entrusted to *[Twig](https://twig.symfony.com)* through the use of *[Timber]()* plugin by *[Upstatement](https://www.upstatement.com)* and allows a perfect separation between frontend and backend development.
+
+For more information, check the __*controller/view pattern*__'s *[in-depth documentation](./doc/PATTERN.md)*.
+
+#### Adding a custom post-type
+Another common operation in *Wordpress* development is the creation of custom post-types, aimed to handle project-specif content types. By the following command, *Wordrobe* comes in support for this goal too:
 ```
 vendor/bin/wordrobe add:post-type
 ```
-```
-vendor/bin/wordrobe add:taxonomy
-```
-```
-vendor/bin/wordrobe add:term
-```
-```
-vendor/bin/wordrobe add:menu
-```
-```
-vendor/bin/wordrobe add:shortcode
-```
-```
-vendor/bin/wordrobe add:service
-```
-```
-vendor/bin/wordrobe add:page
-```
-```
-vendor/bin/wordrobe add:component
-```
+Along with the post-type registration code and the __*controller/view pattern*__ implementation, the command above provides the scaffolding that allows *Wordrobe* to carry out its own architecture through the introduction of its second pillar: the __*entity/repository/dto framework*__.
+
+It's inspired by *[Doctrine](https://www.doctrine-project.org)* and you can learn more about it by reading its *[in-depth documentation](./doc/FRAMEWORK.md)*.
+
+### More?
+Check our [examples](./doc/EXAMPLES.md) for more details and information about *Wordrobe* usage.
