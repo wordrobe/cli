@@ -1,6 +1,6 @@
 <div>
   <a href="https://www.fiad.one/wordrobe/">
-    <img src="https://www.fiad.one/media/wordrobe/banner-cli.jpg" style="display:block; margin:0 auto; width:100%; max-width:100%" />
+    <img src="https://www.fiad.one/media/wordrobe/banner-cli.jpg" style="display:block; margin:0 auto; width:100%;" />
   </a>
 </div>
 
