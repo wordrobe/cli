@@ -11,6 +11,7 @@ Wordrobe\Feature\Factory::create('Taxonomy', [
     'show_in_nav_menus' => true,
     'show_tagcloud' => true,
     'rewrite' => false,
+    'show_in_rest' => true,
     'labels' => [
       'name' => _x("{GENERAL_NAME}", '{SINGULAR_NAME} General Name', '{TEXT_DOMAIN}'),
       'singular_name' => _x("{SINGULAR_NAME}", '{SINGULAR_NAME} Singular Name', '{TEXT_DOMAIN}'),

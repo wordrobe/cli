@@ -20,6 +20,7 @@ Wordrobe\Feature\Factory::create('PostType', [
     'publicly_queryable' => {PUBLIC},
     'exclude_from_search' => !{PUBLIC},
     'rewrite' => {REWRITE},
+    'show_in_rest' => true,
     'labels' => [
       'name' => _x("{GENERAL_NAME}", '{SINGULAR_NAME} General Name', '{TEXT_DOMAIN}'),
       'singular_name' => _x("{SINGULAR_NAME}", '{SINGULAR_NAME} Singular Name', '{TEXT_DOMAIN}'),
