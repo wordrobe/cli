@@ -24,7 +24,7 @@
 </head>
 <body {{ function('body_class') }}>
 
-  <div class="app-wrapper">
+  <div class="page-wrapper">
     {% include 'components/header.html.twig' %}
 
     <main class="content">
@@ -32,6 +32,8 @@
     </main>
 
     {% include 'components/footer.html.twig' %}
+
+    {% block overlay %}{% endblock %}
   </div>
 
   {% include 'components/analytics.html.twig' %}
