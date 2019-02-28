@@ -74,6 +74,7 @@ class BlankTemplateBuilder extends TemplateBuilder implements Builder
     return [
       'namespace' => $namespace,
       'theme-path' => $theme_path,
+      'filename' => $filename,
       'ctrl-filename' => $ctrl_filename,
       'view-filename' => $view_filename,
       'override' => $override,

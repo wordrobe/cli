@@ -32,7 +32,7 @@ class SingleBuilder extends TemplateBuilder implements Builder
       [
         '{NAMESPACE}' => $params['namespace'],
         '{ENTITY_NAME}' => $params['entity-name'],
-        '{VIEW_FILENAME}' => $params['view-filename']
+        '{VIEW_FILENAME}' => $params['filename']
       ]
     );
     $single_view = new Template(
@@ -83,6 +83,7 @@ class SingleBuilder extends TemplateBuilder implements Builder
       'namespace' => $namespace,
       'entity-name' => $entity_name,
       'theme-path' => $theme_path,
+      'filename' => $post_type,
       'ctrl-filename' => $ctrl_filename,
       'view-filename' => $view_filename,
       'override' => $override,
