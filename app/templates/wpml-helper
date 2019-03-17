@@ -1,0 +1,23 @@
+<?php
+
+namespace {NAMESPACE}\Helper;
+
+/**
+ * Class WPMLManager
+ * @package {NAMESPACE}\Helper
+ */
+final class WPMLManager
+{
+  /**
+   * Available languages getter
+   * @return array
+   */
+  public static function getLanguages()
+  {
+    if (!function_exists('icl_get_languages')) {
+      return [];
+    }
+
+    return array_values(icl_get_languages('skip_missing=0'));
+  }
+}

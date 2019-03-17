@@ -15,7 +15,7 @@ final class ACFManager
    * @param string $page_slug
    * @return array|bool|null
    */
-  public static function getOptions($page_slug)
+  public static function getOptions(string $page_slug)
   {
     return function_exists('acf_add_options_page') ? get_fields($page_slug) : null;
   }
@@ -27,7 +27,7 @@ final class ACFManager
    * @param string $capability
    * @param bool $redirect
    */
-  public static function addOptionsPage($slug, $title, $capability = 'edit_posts', $redirect = false)
+  public static function addOptionsPage(string $slug, string $title, string $capability = 'edit_posts', bool $redirect = false)
   {
     if (function_exists('acf_add_options_page')) {
       acf_add_options_page([
