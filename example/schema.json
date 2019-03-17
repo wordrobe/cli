@@ -1,0 +1,22 @@
+{
+    "component": [],
+    "menu": [],
+    "page": [],
+    "post-type": [
+        {
+            "key": "event",
+            "general-name": "Events",
+            "singular-name": "Event",
+            "capability-type": "post",
+            "public": true,
+            "has-archive": true,
+            "hierarchical": false,
+            "icon": "dashicons-admin-post",
+            "description": ""
+        }
+    ],
+    "service": [],
+    "shortcode": [],
+    "taxonomy": [],
+    "term": []
+}

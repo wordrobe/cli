@@ -3,10 +3,10 @@
 namespace {NAMESPACE}\Helper;
 
 /**
- * Class TinyMCEManager
+ * Class TinyMCE
  * @package {NAMESPACE}\Helper
  */
-final class TinyMCEManager
+final class TinyMCE
 {
   const STYLE_FORMATS = [
 //    [

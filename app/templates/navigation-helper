@@ -15,7 +15,7 @@ final class Navigation
    * @param $location
    * @return array
    */
-  public static function getMenu(string $location)
+  public static function getMenu($location)
   {
       $menu = new Menu($location);
       return $menu->get_items();
@@ -23,7 +23,7 @@ final class Navigation
 
   /**
    * Cleans admin menu
-   * @param pages
+   * @param $pages
    */
   public static function cleanAdminMenu(array $pages)
   {

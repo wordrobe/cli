@@ -3,10 +3,10 @@
 namespace {NAMESPACE}\Helper;
 
 /**
- * Class WPMLManager
+ * Class WPML
  * @package {NAMESPACE}\Helper
  */
-final class WPMLManager
+final class WPML
 {
   /**
    * Available languages getter
@@ -14,10 +14,6 @@ final class WPMLManager
    */
   public static function getLanguages()
   {
-    if (!function_exists('icl_get_languages')) {
-      return [];
-    }
-
-    return array_values(icl_get_languages('skip_missing=0'));
+    return function_exists('icl_get_languages') ? array_values(icl_get_languages('skip_missing=0')) : [];
   }
 }

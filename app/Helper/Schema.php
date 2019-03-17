@@ -11,9 +11,9 @@ final class Schema
   const FILENAME = 'schema.json';
 
   /**
-   * @var null $contents
+   * @var array $contents
    */
-  private static $contents = null;
+  private static $contents = [];
 
   /**
    * Adds Schema param
@@ -40,7 +40,7 @@ final class Schema
     if ($content) {
       self::$contents = json_decode($content, true);
     } else {
-      self::$contents = null;
+      self::$contents = [];
     }
   }
 

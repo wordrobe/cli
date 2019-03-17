@@ -5,6 +5,10 @@ use {NAMESPACE}\Repository\{ENTITY_NAME}Repository;
 use Timber\Timber;
 
 $context = Theme::getContext();
-$context['contents'] = {ENTITY_NAME}Repository::getFormattedData();
+$context['data'] = {ENTITY_NAME}Repository::getFormattedData();
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    wp_send_json($context);
+}
 
 Timber::render('templates/views/{VIEW_FILENAME}.html.twig', $context);

@@ -7,9 +7,6 @@ use {NAMESPACE}\Entity\{ENTITY_NAME};
 
 class {ENTITY_NAME}DTO extends DTO
 {
-  // extend properties here
-  // e.g. private $my_custom_prop;
-
   /**
    * {ENTITY_NAME}DTO constructor
    * @param \{NAMESPACE}\Entity\{ENTITY_NAME} $entity
@@ -17,18 +14,14 @@ class {ENTITY_NAME}DTO extends DTO
   public function __construct({ENTITY_NAME} $entity)
   {
     parent::__construct($entity);
-
-    // extend data here
-    // e.g. $this->my_custom_prop = $entity->getMyCustomProp();
   }
 
   /**
    * {ENTITY_NAME}DTO's data getter
+   * @return array
    */
   public function getData()
   {
-    return array_merge(parent::getData(), [
-      // e.g. 'my-custom-prop' => $this->my_custom_prop
-    ]);
+    return parent::getData();
   }
 }

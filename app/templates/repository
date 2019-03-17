@@ -44,7 +44,7 @@ class Repository implements RepositoryInterface
    * @param array $query_args (wp_query format)
    * @return \{NAMESPACE}\Entity\Entity[]
    */
-  public static function getAllEntities($query_args = [])
+  public static function getAllEntities(array $query_args = [])
   {
     $args = array_merge($query_args, static::$base_query);
     $posts = Timber::get_posts($args);
@@ -69,7 +69,7 @@ class Repository implements RepositoryInterface
    * @param array $query_args (wp_query format)
    * @return \{NAMESPACE}\DTO\DTO[]
    */
-  public static function getAllDTO($query_args = [])
+  public static function getAllDTO(array $query_args = [])
   {
     $entities = static::getAllEntities($query_args);
     return !empty($entities) ? array_map(function($entity) {
@@ -93,7 +93,7 @@ class Repository implements RepositoryInterface
    * @param array $query_args (wp_query format)
    * @return array
    */
-  public static function getAllFormattedData($query_args = [])
+  public static function getAllFormattedData(array $query_args = [])
   {
     $dtos = static::getAllDTO($query_args);
     return !empty($dtos) ? array_map(function($dto) {

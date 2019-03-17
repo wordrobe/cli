@@ -13,9 +13,9 @@ final class Config
   const FILENAME = 'wordrobe.json';
 
   /**
-   * @var null $params
+   * @var array $params
    */
-  private static $params = null;
+  private static $params = [];
 
   /**
    * Checks Config existence
@@ -29,10 +29,10 @@ final class Config
 
   /**
    * Initializes Config
-   * @param null|array $params
+   * @param array $params
    * @throws \Exception
    */
-  public static function init($params = null)
+  public static function init($params = [])
   {
     $template = new Template(
       self::getRootPath(),
@@ -160,7 +160,7 @@ final class Config
     if ($content) {
       self::$params = json_decode($content, true);
     } else {
-      self::$params = null;
+      self::$params = [];
     }
   }
 

@@ -148,17 +148,33 @@ class Theme
       ]
     );
 
-    $acf_manager = new Template(
+    $navigation = new Template(
       "$this->path/core/Helper",
-      'acf-manager',
+      'navigation-helper',
       [
         '{NAMESPACE}' => $this->namespace
       ]
     );
 
-    $tinymce_manager = new Template(
+    $acf = new Template(
       "$this->path/core/Helper",
-      'tinymce-manager',
+      'acf-helper',
+      [
+        '{NAMESPACE}' => $this->namespace
+      ]
+    );
+
+    $wpml = new Template(
+      "$this->path/core/Helper",
+      'wpml-helper',
+      [
+        '{NAMESPACE}' => $this->namespace
+      ]
+    );
+
+    $tinymce = new Template(
+      "$this->path/core/Helper",
+      'tinymce-helper',
       [
         '{NAMESPACE}' => $this->namespace
       ]
@@ -166,8 +182,10 @@ class Theme
 
     $features_loader->save('FeaturesLoader.php', 'force');
     $router->save('Router.php', 'force');
-    $acf_manager->save('ACFManager.php', 'force');
-    $tinymce_manager->save('TinyMCEManager.php', 'force');
+    $navigation->save('Navigation.php', 'force');
+    $acf->save('ACF.php', 'force');
+    $wpml->save('WPML.php', 'force');
+    $tinymce->save('TinyMCE.php', 'force');
   }
 
   /**

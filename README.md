@@ -73,4 +73,4 @@ Along with the post-type registration code and the __*controller/view pattern*__
 It's inspired by *[Doctrine](https://www.doctrine-project.org)* and you can learn more about it by reading its [in-depth documentation](./doc/FRAMEWORK.md).
 
 ### More?
-Check our [examples](./doc/EXAMPLES.md) for more details and information about *Wordrobe* usage.
+Check the [example](./example) for more details and information about *Wordrobe* usage.

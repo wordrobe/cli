@@ -80,7 +80,7 @@ class PostTypeBuilder extends TemplateBuilder implements WizardBuilder
         '{GENERAL_NAME}' => $params['general-name'],
         '{SINGULAR_NAME}' => $params['singular-name'],
         '{DESCRIPTION}' => $params['description'],
-        '{REWRITE}' => $params['rewrite'],
+        '{REWRITE}' => $params['rewrite'] ?: 'false',
         '{TEXT_DOMAIN}' => $params['text-domain'],
         '{CAPABILITY_TYPE}' => $params['capability-type'],
         '{PUBLIC}' => $params['public'] ? 'true' : 'false',

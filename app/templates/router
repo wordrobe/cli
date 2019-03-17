@@ -12,7 +12,7 @@ final class Router
 {
   /**
    * Locates a template
-   * @param $default
+   * @param string $default
    * @return string
    * @throws \Exception
    */
@@ -61,9 +61,9 @@ final class Router
 
   /**
    * Adds rewrite rules for archives allowing urls like /post-type/term/sub-term
-   * @param $wp_rewrite
+   * @param \WP_Rewrite $wp_rewrite
    */
-  public static function rewriteCustomArchivesUrl($wp_rewrite)
+  public static function rewriteCustomArchivesUrl(\WP_Rewrite $wp_rewrite)
   {
     $rules = [];
     $post_types = get_post_types(['public' => true, '_builtin' => false], 'objects');

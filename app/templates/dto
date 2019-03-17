@@ -3,45 +3,36 @@
 namespace {NAMESPACE}\DTO;
 
 use Wordrobe\Feature\DTOInterface;
+use Wordrobe\Feature\EntityInterface;
 use {NAMESPACE}\Entity\Entity;
 
 class DTO implements DTOInterface
 {
   /**
-   * @var string $title
+   * @var \Wordrobe\Feature\EntityInterface $entity
    */
-  private $title;
-
-  /**
-   * @var string $content
-   */
-  private $content;
-
-  /**
-   * @var string $url
-   */
-  private $url;
+  private $entity;
 
   /**
    * DTO's constructor
-   * @param \{NAMESPACE}\Entity\Entity $entity
+   * @param \Wordrobe\Feature\EntityInterface $entity
    */
-  public function __construct(Entity $entity)
+  public function __construct(EntityInterface $entity)
   {
-    $this->title = $entity->getTitle();
-    $this->content = $entity->getContent();
-    $this->url = $entity->getUrl();
+    $this->entity = $entity;
   }
 
   /**
    * DTO's data getter
+   * @return array
    */
   public function getData()
   {
     return [
-      'title' => $this->title,
-      'content' => $this->content,
-      'url' => $this->url
+      'title' => $this->entity->getTitle(),
+      'url' => $this->entity->getUrl(),
+      'content' => $this->entity->getContent(),
+      'fields' => $this->entity->getCustomFields()
     ];
   }
 }

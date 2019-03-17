@@ -18,6 +18,4 @@ class {ENTITY_NAME}Repository extends Repository
    * @var string $dto_class
    */
   protected static $dto_class = '\{NAMESPACE}\DTO\{ENTITY_NAME}DTO';
-
-  // (if needed) override methods here
 }

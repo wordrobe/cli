@@ -4,8 +4,11 @@ namespace {NAMESPACE};
 
 use {NAMESPACE}\Helper\FeaturesLoader;
 use {NAMESPACE}\Helper\Router;
-use {NAMESPACE}\Helper\TinyMCEManager;
-use {NAMESPACE}\Helper\ACFManager;
+use {NAMESPACE}\Helper\Navigation;
+use {NAMESPACE}\Helper\ACF;
+use {NAMESPACE}\Helper\WPML;
+use {NAMESPACE}\Helper\TinyMCE;
+
 use Timber\Timber;
 
 /**
@@ -40,11 +43,8 @@ final class Theme {
    */
   private function __construct()
   {
-    // setting default properties
     $this->timber = new Timber();
-    $this->context = [
-      'env' => defined('WP_ENV') ? WP_ENV : 'production'
-    ];
+    $this->context = $this->buildContext();
     $this->setup();
   }
 
@@ -55,25 +55,62 @@ final class Theme {
   {
     // loading theme's features
     FeaturesLoader::loadFrom(self::FEATURES_PATHS);
-
     // customizing Timber
     Timber::$dirname = self::TEMPLATES_DIR;
-
     // customizing routing
     Router::init();
-
     // adding theme support
     foreach (self::SUPPORTS as $feature) {
       add_theme_support($feature);
     }
-
+    // cleaning admin menu
+    // Navigation::cleanAdminMenu(['edit-comments.php']);
     // customizing tinymce
-    TinyMCEManager::enableCustomFormats();
-
+    TinyMCE::enableCustomFormats();
     // customizing ACF
-    ACFManager::enableLocalJSON();
-    ACFManager::addOptionsPage('options', __('Theme Options', '{TEXT_DOMAIN}'));
-    $this->context['options'] = ACFManager::getOptions('options');
+    ACF::enableLocalJSON();
+    ACF::addOptionsPage('options', __('Theme Options', '{TEXT_DOMAIN}'));
+  }
+
+  /**
+   * Builds context
+   * @return array
+   */
+  private function buildContext()
+  {
+    $context = Timber::get_context();
+    return [
+      'env' => defined('WP_ENV') ? WP_ENV : 'production',
+      'request' => [
+        'post' => $context['request']->post,
+        'get' => $context['request']->get
+      ],
+      'locale' => $context['site']->language,
+      'languages' => self::getLanguages(),
+      'title' => $context['wp_title'],
+      'description' => $context['site']->description,
+      'charset' => $context['site']->charset,
+      'url' => $context['site']->url,
+      'pingback' => $context['site']->pingback,
+      'rdf' => $context['site']->rdf,
+      'rss' => $context['site']->rss,
+      'rss2' => $context['site']->rss2,
+      'atom' => $context['site']->atom,
+      'theme' => [
+        'uri' => $context['theme']->uri,
+        'textdomain' => Config::get('text-domain')
+      ],
+      'user' => [
+        'id' => $context['user']->id,
+        'avatar' => $context['user']->avatar->abs_url,
+        'firstName' => $context['user']->first_name,
+        'lastName' => $context['user']->last_name,
+        'nickname' => $context['user']->nickname,
+        'nicename' => $context['user']->user_nicename,
+        'email' => $context['user']->user_email
+      ],
+      'options' => self::getOptions()
+    ];
   }
 
   /**
@@ -82,7 +119,7 @@ final class Theme {
    */
   public static function getContext()
   {
-    return self::$instance ? array_merge(Timber::get_context(), self::$instance->context) : null;
+    return self::$instance ? self::$instance->context : null;
   }
 
   /**
@@ -95,6 +132,33 @@ final class Theme {
     if (self::$instance) {
       self::$instance->context[$key] = $value;
     }
+  }
+
+  /**
+   * Theme's options getter
+   * @return array
+   */
+  public static function getOptions()
+  {
+    return ACF::getOptions('option');
+  }
+
+  /**
+   * Theme's languages getter
+   * @return array
+   */
+  public static function getLanguages()
+  {
+    if (!function_exists('icl_object_id')) {
+      return [];
+    }
+
+    global $sitepress;
+    $default_language = $sitepress->get_default_language();
+    return array_map(function($language) use ($default_language) {
+      $language['default'] = $language['code'] === $default_language;
+      return $language;
+    }, WPML::getLanguages());
   }
 
   /**

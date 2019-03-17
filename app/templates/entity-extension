@@ -10,11 +10,6 @@ use Timber\Post;
  */
 class {NAME} extends Entity
 {
-//  /**
-//   * @var mixed $my_custom_prop
-//   */
-//  private $my_custom_prop;
-
   /**
    * {NAME} constructor
    * @param \Timber\Post $post
@@ -22,14 +17,5 @@ class {NAME} extends Entity
   public function __construct(Post $post)
   {
     parent::__construct($post);
-    // $this->my_custom_prop = $post->get_field('my_custom_prop');
   }
-
-//  /**
-//   * {NAME} my_custom_prop getter
-//   */
-//  public function getMyCustomProp()
-//  {
-//    return $this->my_custom_prop;
-//  }
 }
