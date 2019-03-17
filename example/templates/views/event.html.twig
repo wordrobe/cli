@@ -2,7 +2,17 @@
 
 {% block head %}{% endblock %}
 
-{% block content %}{% endblock %}
+{% block content %}
+
+    <article class="event">
+        <h1 class="event__title">{{ data.title }}</h1>
+        <p class="event__date">{{ data.date }}</p>
+        <p class="event__location">{{ data.location }}</p>
+        <p class="event__address">{{ data.address }}</p>
+        <p class="event__description">{{ data.description }}</p>
+    </article>
+
+{% endblock %}
 
 {% block overlay %}{% endblock %}
 

@@ -1,7 +1,7 @@
 # *Wordrobe* framework
 
 ## Entity
-An *Entity* basically represents a *Post* object, so you can see it as an alternative of a *WP_Post*. The advantage of using *Entities* instead of standard *WP_Post* (or *Timber\Post*) is that they grant you full control on data and so allow you to manage cleaner and more circumscribed sets of information. This way you can easily prevent to get lost in rubbish.
+An *Entity* basically represents a *Post* object, so you can see it as an alternative of a *WP_Post*. The advantage of using an *Entity* instead of standard *WP_Post* (or *Timber\Post*) is that it grants you full control on data and so allow you to manage cleaner and more circumscribed sets of information. This way you can easily prevent to get lost in rubbish.
 
 See the *Entity* example *[here](../example/core/Entity/Event.php)*.
 

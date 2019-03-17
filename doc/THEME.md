@@ -22,7 +22,7 @@ Before analyzing subdirectories, take a look at root's files:
 * *style.css*: the theme's definition file
 
 ## Assets
-The *assets* folder is for all distributed frontend files, such as images and other media, processed css, compiled javascript, etc.
+The *assets* folder is for all distributed front-end files, such as images and other media, processed css, compiled javascript, etc.
 When a new theme is created, its structure looks like follows:
 ```
   assets/
@@ -30,7 +30,7 @@ When a new theme is created, its structure looks like follows:
   |-- main.css
   `-- main.js
 ```
-:bulb: The *main.css* and *main.js* are included by default in the basic template file (look at "Templates" section for details), so keep in mind to modify that inclusion if you need to rename these files according to your frontend workflow.
+:bulb: The *main.css* and *main.js* are included by default in the basic template file (look at "Templates" section for details), so keep in mind to modify that inclusion if you need to rename these files according to your front-end workflow.
 
 ## Controllers
 The first *Wordrobe*'s architecture pillars is the __*controller/view pattern*__ implementation (check [documentation](./PATTERN.md) for details), that allows to keep business logic separate from layout code (look at "Templates" section to learn more about views).
@@ -81,7 +81,7 @@ All these folders contain files deputed to handle features registration (in term
 The second *Wordrobe*'s architecture pillars is represented by the __*entity/repository/dto framework*__. Basically:
 * *Entity*: provides a data model for a post-type or a page template 
 * *Repository*: handles queries for a specific entity 
-* *DTO*: helps to arrange and format entity data to be exposed outwards (to frontend, to api, etc)
+* *DTO*: helps to arrange and format entity data to be exposed outwards (to front-end, to api, etc)
 
 Check [framework documentation](./FRAMEWORK.md) to learn more.
 
