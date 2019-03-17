@@ -1,8 +1,4 @@
-<div>
-  <a href="https://www.fiad.one/wordrobe/">
-    <img src="https://www.fiad.one/media/wordrobe/banner-cli.jpg" style="display:block; margin:0 auto; width:100%;" />
-  </a>
-</div>
+<img src="https://www.fiad.one/media/wordrobe/banner-cli.jpg" style="display:block; margin:0 auto; width:100%;" />
 
 ###
 
@@ -31,9 +27,6 @@ a setup wizard will start and a *wordrobe.json* file will be automatically creat
 }
 ```
 :bulb: In a standard *Wordpress* installation, "themes-path" will be "wp-content/themes".
-
-#### The *Wordrobe Skeleton*
-*Wordrobe* also offers its own skeleton to setup a new project from scratch. It provides an advanced and boosted structure based on *[Bedrock](https://github.com/roots/bedrock)* by *[Roots](https://roots.io)*. Check *Wordrobe Skeleton* [documentation](https://bitbucket.org/fiad/wordrobe-skeleton/src/master) for more information.
 
 ## Usage
 *Wordrobe* exposes all its power of adding features to your *Wordpress* based application by the simplest way ever: just run the following command and enjoy the wizard:
