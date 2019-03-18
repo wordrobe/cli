@@ -87,7 +87,9 @@ final class Theme {
       ],
       'locale' => $context['site']->language,
       'languages' => self::getLanguages(),
-      'title' => $context['wp_title'],
+      'meta' => [
+        'title' => $context['wp_title']
+      ],
       'description' => $context['site']->description,
       'charset' => $context['site']->charset,
       'url' => $context['site']->url,
