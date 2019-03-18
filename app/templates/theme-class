@@ -88,10 +88,10 @@ final class Theme {
       'locale' => $context['site']->language,
       'languages' => self::getLanguages(),
       'meta' => [
-        'title' => $context['wp_title']
+        'title' => $context['wp_title'],
+        'description' => $context['site']->description,
+        'charset' => $context['site']->charset
       ],
-      'description' => $context['site']->description,
-      'charset' => $context['site']->charset,
       'url' => $context['site']->url,
       'pingback' => $context['site']->pingback,
       'rdf' => $context['site']->rdf,
