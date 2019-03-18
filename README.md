@@ -6,14 +6,20 @@
 
 By taking charge of the most common operations concerning *Wordpress* themes development and by providing a well organized development model, it allows you to save time and to produce a better quality code with an eye towards modularity and maintainability.
 
+## Requirements
+
+* *[Composer](https://getcomposer.org)* >= 1.6.5
+* PHP (CLI) >= 7.1
+* PHP *iconv* extension
+
 ## Installation
-In order to install and use *Wordrobe*, *[Composer](https://getcomposer.org)* is required. After verifying it's correctly installed, run the following command at the root of your project:
+To install *Wordrobe* just run the following command at the root of your project:
 
 ```
 composer require wordrobe/cli
 ```
 
-Once installed, *Wordrobe* also requires a simple starting configuration to fit in your project's structure so it could write and handle files at correct paths.
+Once installed, *Wordrobe* requires a simple initial configuration to fit in your project's structure so it can write and handle files at correct paths.
 
 By running
 ```
