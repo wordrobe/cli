@@ -85,7 +85,8 @@ final class Theme {
         'post' => $context['request']->post,
         'get' => $context['request']->get
       ],
-      'locale' => $context['site']->language,
+      'lang' => $context['site']->language,
+      'locale' => str_replace('-', '_', $context['site']->language),
       'languages' => self::getLanguages(),
       'meta' => [
         'title' => $context['wp_title'],

@@ -85,11 +85,14 @@ final class Theme {
         'post' => $context['request']->post,
         'get' => $context['request']->get
       ],
-      'locale' => $context['site']->language,
+      'lang' => $context['site']->language,
+      'locale' => str_replace('-', '_', $context['site']->language),
       'languages' => self::getLanguages(),
-      'title' => $context['wp_title'],
-      'description' => $context['site']->description,
-      'charset' => $context['site']->charset,
+      'meta' => [
+        'title' => $context['wp_title'],
+        'description' => $context['site']->description,
+        'charset' => $context['site']->charset
+      ],
       'url' => $context['site']->url,
       'pingback' => $context['site']->pingback,
       'rdf' => $context['site']->rdf,

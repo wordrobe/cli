@@ -7,7 +7,7 @@ class {ENTITY_NAME}Repository extends Repository
   /**
    * @var string $base_query
    */
-  protected static $base_query = ['post_type' => '{POST_TYPE}', 'post_status' => 'publish'{META_QUERY}];
+  protected static $base_query = ['post_type' => '{POST_TYPE}', 'post_status' => 'publish', 'suppress_filters' => 0{META_QUERY}];
 
   /**
    * @var string $entity_class

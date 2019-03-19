@@ -4,14 +4,13 @@ namespace Example\DTO;
 
 use Wordrobe\Feature\DTOInterface;
 use Wordrobe\Feature\EntityInterface;
-use Example\Entity\Entity;
 
 class DTO implements DTOInterface
 {
   /**
    * @var \Wordrobe\Feature\EntityInterface $entity
    */
-  private $entity;
+  protected $entity;
 
   /**
    * DTO's constructor
@@ -29,6 +28,8 @@ class DTO implements DTOInterface
   public function getData()
   {
     return [
+      'id' => $this->entity->getId(),
+      'slug' => $this->entity->getSlug(),
       'title' => $this->entity->getTitle(),
       'url' => $this->entity->getUrl(),
       'content' => $this->entity->getContent(),

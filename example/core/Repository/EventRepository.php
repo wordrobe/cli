@@ -7,7 +7,7 @@ class EventRepository extends Repository
   /**
    * @var string $base_query
    */
-  protected static $base_query = ['post_type' => 'event', 'post_status' => 'publish'];
+  protected static $base_query = ['post_type' => 'event', 'post_status' => 'publish', 'suppress_filters' => 0];
 
   /**
    * @var string $entity_class

@@ -2,7 +2,6 @@
 
 namespace Example\DTO;
 
-use Wordrobe\Feature\DTOInterface;
 use Example\Entity\Event;
 
 class EventDTO extends DTO
@@ -23,6 +22,8 @@ class EventDTO extends DTO
   public function getData()
   {
     return [
+      'id' => $this->entity->getId(),
+      'slug' => $this->entity->getSlug(),
       'title' => $this->entity->getTitle(),
       'url' => $this->entity->getUrl(),
       'date' => $this->entity->getStartDate() . ' - ' . $this->entity->getEndDate(),

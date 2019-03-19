@@ -52,13 +52,13 @@ class Event extends Entity
   public function __construct(Post $post)
   {
     parent::__construct($post);
-    $this->start_date = $post->start_date;
-    $this->end_date = $post->end_date;
-    $this->location = $post->location;
-    $this->address = $post->address;
-    $this->zip_code = $post->zip_code;
-    $this->city = $post->city;
-    $this->description = $post->description;
+    $this->start_date = get_field('start_date', $post->id);
+    $this->end_date = get_field('end_date', $post->id);
+    $this->location = get_field('location', $post->id);
+    $this->address = get_field('address', $post->id);
+    $this->zip_code = get_field('zip_code', $post->id);
+    $this->city = get_field('city', $post->id);
+    $this->description = get_field('description', $post->id);
   }
 
   /**

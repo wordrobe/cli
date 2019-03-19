@@ -8,9 +8,8 @@ By taking charge of the most common operations concerning *Wordpress* themes dev
 
 ## Requirements
 
-* *[Composer](https://getcomposer.org)* >= 1.6.5
-* PHP (CLI) >= 7.1
-* PHP *iconv* extension
+* *[Composer](https://getcomposer.org)* >= 1.8
+* PHP (CLI) >= 7.2
 
 ## Installation
 To install *Wordrobe* just run the following command at the root of your project:

@@ -2,8 +2,8 @@
 
 namespace {NAMESPACE}\Repository;
 
-use Timber\Timber;
 use Wordrobe\Feature\RepositoryInterface;
+use Timber\Timber;
 
 /**
  * Class Repository
@@ -14,7 +14,7 @@ class Repository implements RepositoryInterface
   /**
    * @var string $base_query
    */
-  protected static $base_query = ['post_type' => ['post', 'page'], 'post_status' => 'publish'];
+  protected static $base_query = ['post_type' => ['post', 'page'], 'post_status' => 'publish', 'suppress_filters' => 0];
 
   /**
    * @var string $entity_class

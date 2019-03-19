@@ -11,6 +11,16 @@ use Wordrobe\Feature\EntityInterface;
 class Entity implements EntityInterface
 {
   /**
+   * @var int $id
+   */
+  protected $id;
+
+  /**
+   * @var string $slug
+   */
+  protected $slug;
+
+  /**
    * @var string $title
    */
   protected $title;
@@ -36,10 +46,30 @@ class Entity implements EntityInterface
    */
   public function __construct(\Timber\Post $post)
   {
+    $this->id = $post->id;
+    $this->slug = $post->slug;
     $this->title = $post->title();
     $this->content = $post->content();
     $this->url = $post->link();
     $this->custom_fields = function_exists('get_fields') ? get_fields($post->ID) : [];
+  }
+
+  /**
+   * Entity's id getter
+   * @return int
+   */
+  public function getId()
+  {
+    return $this->id;
+  }
+
+  /**
+   * Entity's slug getter
+   * @return string
+   */
+  public function getSlug()
+  {
+    return $this->slug;
   }
 
   /**
