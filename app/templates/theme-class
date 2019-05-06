@@ -10,6 +10,7 @@ use {NAMESPACE}\Helper\WPML;
 use {NAMESPACE}\Helper\TinyMCE;
 
 use Timber\Timber;
+use Wordrobe\Helper\Config;
 
 /**
  * Class Theme
