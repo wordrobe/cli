@@ -296,7 +296,8 @@ class Theme
       $this->path,
       'theme-functions',
       [
-        '{NAMESPACE}' => $this->namespace
+        '{NAMESPACE}' => $this->namespace,
+        '{ROOT_PATH}' => Config::getRootPath()
       ]
     );
     $functions->save('functions.php', 'force');
