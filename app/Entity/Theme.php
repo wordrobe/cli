@@ -292,12 +292,17 @@ class Theme
    */
   protected function addFunctions()
   {
+    $themes_path = Config::get('themes-path');
+    $folders = explode('/', $themes_path);
     $functions = new Template(
       $this->path,
       'theme-functions',
       [
         '{NAMESPACE}' => $this->namespace,
-        '{ROOT_PATH}' => Config::getRootPath()
+        '{BACK_TO_ROOT}' => array_reduce($folders, function($carry, $item) {
+          $carry .= '../';
+          return $carry;
+        }, '')
       ]
     );
     $functions->save('functions.php', 'force');

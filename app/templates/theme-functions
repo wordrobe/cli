@@ -3,7 +3,7 @@
 /*==========*/
 /* AUTOLOAD */
 /*==========*/
-$autoload = require('{ROOT_PATH}/vendor/autoload.php');
+$autoload = require(__DIR__ . '/{BACK_TO_ROOT}../vendor/autoload.php');
 $autoload->addPsr4('{NAMESPACE}\\', __DIR__ . '/core');
 
 /*===========*/
