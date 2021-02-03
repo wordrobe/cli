@@ -49,7 +49,7 @@ class Shortcode implements Feature
   public function registerShortcode($atts, $content = null)
   {
     if (!is_null($this->logic)) {
-      call_user_func($this->logic, [$atts, $content]);
+      return call_user_func($this->logic, $atts, $content);
     }
   }
 
