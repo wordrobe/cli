@@ -7,6 +7,6 @@ Wordrobe\Feature\Factory::create('Shortcode', [
   'logic' => function($atts, $content) {
     // define logic and arrange data here to pass custom params to shortcode view
     $data = ['attributes' => $atts, 'content' => $content];
-    return Timber::compile('templates/partials/shortcodes/{KEY}.html.twig', $data);
+    return Timber::compile('templates/components/shortcodes/{KEY}.html.twig', $data);
   }
 ]);
